@@ -130,56 +130,125 @@
         <h2 class="post-title">任意要求卡</h2>
         
         <section class="post-content">
-            <h2>任意要求卡</h2>
-<p>剩余次数：<span id="remaining-count">2</span> 次</p>
-<p>签发人：朱苓榛老公</p>
-<p>授予人：杜沐老婆</p>
+            <hr>
+<h2 id="title-任意要求卡date-2023-09-24-11-03-07"><a href="#title-任意要求卡date-2023-09-24-11-03-07" class="headerlink" title="title: 任意要求卡date: 2023-09-24 11:03:07"></a>title: 任意要求卡<br>date: 2023-09-24 11:03:07</h2><style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        text-align: center;
+        padding: 20px;
+    }
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: auto;
+    }
+    h2 {
+        color: #ff5722;
+    }
+    p {
+        font-size: 16px;
+    }
+    input {
+        width: 80%;
+        padding: 8px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    button {
+        background-color: #ff5722;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    button:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+    .history {
+        margin-top: 20px;
+        text-align: left;
+    }
+    .history h3 {
+        color: #333;
+    }
+    .history ul {
+        list-style: none;
+        padding: 0;
+    }
+    .history li {
+        background: #eee;
+        margin: 5px 0;
+        padding: 8px;
+        border-radius: 5px;
+    }
+    img {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
 
-<form id="request-form">
-    <label for="request">请输入你的具体要求：</label><br>
-    <input type="text" id="request" required><br>
-    <button type="submit">提交申请</button>
-</form>
+<div class="container">
+    <img src="/image/avatar.jpg" alt="任意要求卡">
+    
+<pre><code>&lt;p&gt;剩余次数：&lt;span id=&quot;remaining-count&quot;&gt;2&lt;/span&gt; 次&lt;/p&gt;
+&lt;p&gt;签发人：朱苓榛老公&lt;/p&gt;
+&lt;p&gt;授予人：杜沐老婆&lt;/p&gt;
 
-<h3>申请记录：</h3>
-<ul id="request-list"></ul>
+&lt;form id=&quot;request-form&quot;&gt;
+    &lt;label for=&quot;request&quot;&gt;尊敬的老婆大人，请输入你的具体要求：&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; id=&quot;request&quot; required&gt;&lt;br&gt;
+    &lt;button type=&quot;submit&quot;&gt;提交申请&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;div class=&quot;history&quot;&gt;
+    &lt;h3&gt;申请记录：&lt;/h3&gt;
+    &lt;ul id=&quot;history-list&quot;&gt;&lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
+</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let remainingCount = 2;  // 初始剩余次数
-        const countElement = document.getElementById("remaining-count");
-        const form = document.getElementById("request-form");
-        const requestList = document.getElementById("request-list");
+        let remainingCount = 2;  // 剩余次数
+        const countDisplay = document.getElementById("remaining-count");
+        const requestForm = document.getElementById("request-form");
+        const requestInput = document.getElementById("request");
+        const historyList = document.getElementById("history-list");
+        const submitButton = requestForm.querySelector("button");
 
-        form.addEventListener("submit", function (event) {
+        requestForm.addEventListener("submit", function (event) {
             event.preventDefault();
-            if (remainingCount <= 0) {
-                alert("已达到最大使用次数，无法申请！");
-                return;
+            if (remainingCount > 0) {
+                const requestText = requestInput.value.trim();
+                if (requestText) {
+                    // 追加记录
+                    const newRecord = document.createElement("li");
+                    newRecord.textContent = requestText;
+                    historyList.appendChild(newRecord);
+
+                    // 更新次数
+                    remainingCount -= 1;
+                    countDisplay.textContent = remainingCount;
+
+                    // 清空输入框
+                    requestInput.value = "";
+
+                    // 禁用按钮
+                    if (remainingCount === 0) {
+                        submitButton.disabled = true;
+                    }
+                }
             }
-
-            const requestInput = document.getElementById("request");
-            const requestText = requestInput.value.trim();
-            if (requestText === "") {
-                alert("请输入具体要求！");
-                return;
-            }
-
-            // 添加请求记录
-            const listItem = document.createElement("li");
-            listItem.textContent = requestText;
-            requestList.appendChild(listItem);
-
-            // 更新剩余次数
-            remainingCount--;
-            countElement.textContent = remainingCount;
-
-            // 禁用表单
-            if (remainingCount === 0) {
-                form.innerHTML = "<p>已达到最大使用次数，无法再申请。</p>";
-            }
-
-            requestInput.value = "";
         });
     });
 </script>
