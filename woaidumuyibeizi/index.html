@@ -130,187 +130,77 @@
         <h2 class="post-title">任意要求卡</h2>
         
         <section class="post-content">
-            <style>
-    /* 全局样式 */
-    body {
-        font-family: "Georgia", "serif";
-        background: linear-gradient(to right, #f9f9f9, #f2f2f2);
-        color: #333;
-        text-align: center;
-        padding: 0;
-        margin: 0;
-    }
+            <!-- 顶部图片 -->
+<img src="/images/card.jpg" alt="任意要求卡" style="width:100%; max-width:600px; display:block; margin:0 auto 20px; border-radius:10px;">
 
-    /* 容器 */
-    .container {
-        max-width: 600px;
-        margin: 50px auto;
-        padding: 30px;
-        background: rgba(255, 255, 255, 0.8);
-        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        transition: 0.3s ease-in-out;
-    }
+<p>剩余次数：<span id="remaining-count">2</span> 次</p>
+<p>签发人：朱苓榛老公</p>
+<p>授予人：杜沐老婆</p>
 
-    .container:hover {
-        box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.2);
-    }
+<!-- 申请表单 -->
+<form id="request-form">
+    <label for="request">请输入你的具体要求：</label><br>
+    <input type="text" id="request" required style="width:80%; padding:10px; margin-top:10px; border:1px solid #ddd; border-radius:5px; font-size:16px;"><br>
+    <button type="submit" style="
+        background-color: #1B5E20; 
+        color: white; 
+        border: none; 
+        padding: 12px 20px; 
+        font-size: 16px; 
+        font-weight: bold; 
+        border-radius: 5px; 
+        cursor: pointer; 
+        transition: all 0.3s ease;">
+        提交申请
+    </button>
+</form>
 
-    /* 标题 */
-    h2 {
-        font-size: 28px;
-        color: #2E8B57;
-        margin-bottom: 15px;
-        font-weight: bold;
-    }
-
-    p {
-        font-size: 16px;
-        line-height: 1.8;
-    }
-
-    /* 按钮 */
-    button {
-        background-color: #2E8B57;
-        color: white;
-        border: none;
-        padding: 12px 18px;
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        display: inline-block;
-        text-decoration: none;
-        margin-top: 10px;
-    }
-
-    button:hover {
-        background-color: #206A43;
-        transform: scale(1.05);
-    }
-
-    button:disabled {
-        background-color: gray;
-        cursor: not-allowed;
-    }
-
-    /* 输入框 */
-    input {
-        width: 90%;
-        padding: 10px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        font-size: 16px;
-        margin-top: 10px;
-        outline: none;
-        transition: border-color 0.3s ease-in-out;
-    }
-
-    input:focus {
-        border-color: #2E8B57;
-    }
-
-    /* 历史记录 */
-    .history {
-        margin-top: 20px;
-        text-align: left;
-        background: rgba(240, 240, 240, 0.8);
-        padding: 15px;
-        border-radius: 12px;
-    }
-
-    .history h3 {
-        color: #333;
-        font-size: 20px;
-    }
-
-    .history ul {
-        list-style: none;
-        padding: 0;
-        font-size: 16px;
-    }
-
-    .history li {
-        background: #e6f4ea;
-        padding: 10px;
-        border-radius: 8px;
-        margin: 5px 0;
-        transition: 0.3s ease-in-out;
-    }
-
-    .history li:hover {
-        background: #d0ead0;
-        transform: scale(1.02);
-    }
-
-    /* 图片 */
-    img {
-        width: 100%;
-        max-width: 500px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    }
-</style>
-
-<div class="container">
-    <h2>任意要求卡</h2>
-    <img src="/images/card.jpg" alt="任意要求卡">
-    <p>剩余次数：<span id="remaining-count">2</span> 次</p>
-    <p>签发人：朱苓榛老公</p>
-    <p>授予人：杜沐老婆</p>
-    <form id="request-form">
-        <label for="request">请输入你的具体要求：</label><br>
-        <input type="text" id="request" required><br>
-        <button type="submit">提交申请</button>
-    </form>
-    <div class="history">
-        <h3>申请记录：</h3>
-        <ul id="history-list"></ul>
-    </div>
+<!-- 申请记录 -->
+<div id="history-container" style="background-color:#333; color:#EEE; padding:15px; margin-top:20px; border-radius:8px;">
+    <h3 style="border-bottom: 2px solid #EEE; padding-bottom: 5px;">申请记录：</h3>
+    <ul id="request-list" style="list-style:none; padding:0;"></ul>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let remainingCount = 2;  // 剩余次数
-        const countDisplay = document.getElementById("remaining-count");
-        const requestForm = document.getElementById("request-form");
-        const requestInput = document.getElementById("request");
-        const historyList = document.getElementById("history-list");
-        const submitButton = requestForm.querySelector("button");
+        let remainingCount = 2;  
+        const countElement = document.getElementById("remaining-count");
+        const form = document.getElementById("request-form");
+        const requestList = document.getElementById("request-list");
 
-        requestForm.addEventListener("submit", function (event) {
+        form.addEventListener("submit", function (event) {
             event.preventDefault();
-            if (remainingCount > 0) {
-                const requestText = requestInput.value.trim();
-                if (requestText) {
-                    // 追加记录
-                    const newRecord = document.createElement("li");
-                    newRecord.textContent = requestText;
-                    historyList.appendChild(newRecord);
-
-                    // 添加淡入效果
-                    newRecord.style.opacity = "0";
-                    setTimeout(() => {
-                        newRecord.style.opacity = "1";
-                        newRecord.style.transition = "opacity 0.5s ease-in-out";
-                    }, 50);
-
-                    // 更新次数
-                    remainingCount -= 1;
-                    countDisplay.textContent = remainingCount;
-
-                    // 清空输入框
-                    requestInput.value = "";
-
-                    // 禁用按钮
-                    if (remainingCount === 0) {
-                        submitButton.disabled = true;
-                    }
-                }
+            if (remainingCount <= 0) {
+                alert("已达到最大使用次数，无法申请！");
+                return;
             }
+
+            const requestInput = document.getElementById("request");
+            const requestText = requestInput.value.trim();
+            if (requestText === "") {
+                alert("请输入具体要求！");
+                return;
+            }
+
+            // 添加请求记录
+            const listItem = document.createElement("li");
+            listItem.textContent = requestText;
+            listItem.style.background = "#444";
+            listItem.style.padding = "8px";
+            listItem.style.margin = "5px 0";
+            listItem.style.borderRadius = "5px";
+            requestList.appendChild(listItem);
+
+            // 更新剩余次数
+            remainingCount--;
+            countElement.textContent = remainingCount;
+
+            // 禁用表单
+            if (remainingCount === 0) {
+                form.innerHTML = "<p style='color:red;'>已达到最大使用次数，无法再申请。</p>";
+            }
+
+            requestInput.value = "";
         });
     });
 </script>
