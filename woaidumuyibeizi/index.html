@@ -130,8 +130,59 @@
         <h2 class="post-title">任意要求卡</h2>
         
         <section class="post-content">
-            <p>剩余次数：2 次<br>签发人：朱苓榛老公<br>授予人：杜沐老婆</p>
-<p>实现老婆大人任意要求，仅可使用一次，用后作废，有效期永久</p>
+            <h2>任意要求卡</h2>
+<p>剩余次数：<span id="remaining-count">2</span> 次</p>
+<p>签发人：朱苓榛老公</p>
+<p>授予人：杜沐老婆</p>
+
+<form id="request-form">
+    <label for="request">请输入你的具体要求：</label><br>
+    <input type="text" id="request" required><br>
+    <button type="submit">提交申请</button>
+</form>
+
+<h3>申请记录：</h3>
+<ul id="request-list"></ul>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let remainingCount = 2;  // 初始剩余次数
+        const countElement = document.getElementById("remaining-count");
+        const form = document.getElementById("request-form");
+        const requestList = document.getElementById("request-list");
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            if (remainingCount <= 0) {
+                alert("已达到最大使用次数，无法申请！");
+                return;
+            }
+
+            const requestInput = document.getElementById("request");
+            const requestText = requestInput.value.trim();
+            if (requestText === "") {
+                alert("请输入具体要求！");
+                return;
+            }
+
+            // 添加请求记录
+            const listItem = document.createElement("li");
+            listItem.textContent = requestText;
+            requestList.appendChild(listItem);
+
+            // 更新剩余次数
+            remainingCount--;
+            countElement.textContent = remainingCount;
+
+            // 禁用表单
+            if (remainingCount === 0) {
+                form.innerHTML = "<p>已达到最大使用次数，无法再申请。</p>";
+            }
+
+            requestInput.value = "";
+        });
+    });
+</script>
 
         </section>
     </article>
