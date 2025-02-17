@@ -130,80 +130,139 @@
         <h2 class="post-title">任意要求卡</h2>
         
         <section class="post-content">
-            <hr>
-<h2 id="title-任意要求卡date-2023-09-24-11-03-07"><a href="#title-任意要求卡date-2023-09-24-11-03-07" class="headerlink" title="title: 任意要求卡date: 2023-09-24 11:03:07"></a>title: 任意要求卡<br>date: 2023-09-24 11:03:07</h2><style>
+            <style>
+    /* 全局样式 */
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
+        font-family: "Georgia", "serif";
+        background: linear-gradient(to right, #f9f9f9, #f2f2f2);
+        color: #333;
         text-align: center;
-        padding: 20px;
+        padding: 0;
+        margin: 0;
     }
+
+    /* 容器 */
     .container {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        max-width: 500px;
-        margin: auto;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease-in-out;
     }
+
+    .container:hover {
+        box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 标题 */
     h2 {
-        color: #ff5722;
+        font-size: 28px;
+        color: #2E8B57;
+        margin-bottom: 15px;
+        font-weight: bold;
     }
+
     p {
         font-size: 16px;
+        line-height: 1.8;
     }
-    input {
-        width: 80%;
-        padding: 8px;
-        margin: 10px 0;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
+
+    /* 按钮 */
     button {
-        background-color: #ff5722;
+        background-color: #2E8B57;
         color: white;
         border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
+        padding: 12px 18px;
         font-size: 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+        text-decoration: none;
+        margin-top: 10px;
     }
+
+    button:hover {
+        background-color: #206A43;
+        transform: scale(1.05);
+    }
+
     button:disabled {
         background-color: gray;
         cursor: not-allowed;
     }
+
+    /* 输入框 */
+    input {
+        width: 90%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-top: 10px;
+        outline: none;
+        transition: border-color 0.3s ease-in-out;
+    }
+
+    input:focus {
+        border-color: #2E8B57;
+    }
+
+    /* 历史记录 */
     .history {
         margin-top: 20px;
         text-align: left;
+        background: rgba(240, 240, 240, 0.8);
+        padding: 15px;
+        border-radius: 12px;
     }
+
     .history h3 {
         color: #333;
+        font-size: 20px;
     }
+
     .history ul {
         list-style: none;
         padding: 0;
+        font-size: 16px;
     }
+
     .history li {
-        background: #eee;
+        background: #e6f4ea;
+        padding: 10px;
+        border-radius: 8px;
         margin: 5px 0;
-        padding: 8px;
-        border-radius: 5px;
+        transition: 0.3s ease-in-out;
     }
+
+    .history li:hover {
+        background: #d0ead0;
+        transform: scale(1.02);
+    }
+
+    /* 图片 */
     img {
         width: 100%;
-        max-width: 400px;
-        border-radius: 10px;
+        max-width: 500px;
+        border-radius: 15px;
         margin-bottom: 20px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
     }
 </style>
 
 <div class="container">
-    <img src="/image/avatar.jpg" alt="任意要求卡">
+    <h2>任意要求卡</h2>
+    <img src="/images/card.jpg" alt="任意要求卡">
     <p>剩余次数：<span id="remaining-count">2</span> 次</p>
     <p>签发人：朱苓榛老公</p>
     <p>授予人：杜沐老婆</p>
     <form id="request-form">
-        <label for="request">尊敬的老婆大人，请输入你的具体要求：</label><br>
+        <label for="request">请输入你的具体要求：</label><br>
         <input type="text" id="request" required><br>
         <button type="submit">提交申请</button>
     </form>
@@ -231,6 +290,13 @@
                     const newRecord = document.createElement("li");
                     newRecord.textContent = requestText;
                     historyList.appendChild(newRecord);
+
+                    // 添加淡入效果
+                    newRecord.style.opacity = "0";
+                    setTimeout(() => {
+                        newRecord.style.opacity = "1";
+                        newRecord.style.transition = "opacity 0.5s ease-in-out";
+                    }, 50);
 
                     // 更新次数
                     remainingCount -= 1;
