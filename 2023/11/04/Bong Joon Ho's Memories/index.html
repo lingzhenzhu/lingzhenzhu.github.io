@@ -13,7 +13,7 @@
 
 
 
-<title>Hello World | Lingzhen Zhu&#39;s Website</title>
+<title>Bong Joon Ho&#39;s Memories | Lingzhen Zhu&#39;s Website</title>
 
 
 
@@ -127,76 +127,11 @@
                 <div class="container">
     
     
-        <div class="post-toc">
-    <div class="tocbot-list">
-    </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
-</div>
-
-<script>
-    var tocbot_timer;
-    var DEPTH_MAX = 6; // 为 6 时展开所有
-    var tocbot_default_config = {
-        tocSelector: '.tocbot-list',
-        contentSelector: '.post-content',
-        headingSelector: 'h1, h2, h3, h4, h5',
-        orderedList: false,
-        scrollSmooth: true,
-        onClick: extend_click,
-    };
-
-    function extend_click() {
-        clearTimeout(tocbot_timer);
-        tocbot_timer = setTimeout(function() {
-            tocbot.refresh(obj_merge(tocbot_default_config, {
-                hasInnerContainers: true
-            }));
-        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
-    }
-
-    document.ready(function() {
-        tocbot.init(obj_merge(tocbot_default_config, {
-            collapseDepth: 1
-        }));
-    });
-
-    function expand_toc() {
-        var b = document.querySelector('.tocbot-toc-expand');
-        var expanded = b.getAttribute('data-expanded');
-        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
-        tocbot.refresh(obj_merge(tocbot_default_config, {
-            collapseDepth: expanded ? 1 : DEPTH_MAX
-        }));
-        b.innerText = expanded ? 'Expand all' : 'Collapse all';
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-    function obj_merge(target, source) {
-        for (var item in source) {
-            if (source.hasOwnProperty(item)) {
-                target[item] = source[item];
-            }
-        }
-        return target;
-    }
-</script>
-    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Hello World</h1>
+            <h1 class="post-title">Bong Joon Ho&#39;s Memories</h1>
             
                 <div class="post-meta">
                     
@@ -205,7 +140,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">February 16, 2025&nbsp;&nbsp;3:38:26</a>
+                        Date: <a href="#">November 4, 2023&nbsp;&nbsp;12:00:00</a>
                         </span>
                     
                     
@@ -214,19 +149,7 @@
         </header>
 
         <div class="post-content">
-            <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+            <p>Ⅰ. Introduction<br>Bong Joon Ho is an internationally acclaimed director, he defines his profession as a Cinematic Sociologist, and I think he has positioned himself very accurately. In his series of works, I can always feel his concern and critique of society, and his ability to “cinematize” social issues makes his films have a strong sense of realism.<br>After watched three of his films in this semester, I decided to use his film Memories of Murder as an example to analyze how director Bong reflects reality and criticizes politics through his films.<br>Ⅱ. Analysis<br>Is this a murder mystery or a social criticism film?<br>This movie is about a serial murder case target on woman and there is no doubt that it is a suspension movie. But it is also a social critique movie, as the film gives us a vivid picture of Korean society at that time, although there are only a few direct scenes of social conflict.<br>Background: 1980s Korea<br>This film is set in the 1980s Korea. According to Wikipedia, on the day of May 18 in 1980, the democratization movement Gwangju Uprising was forcefully suppressed by soldier Chun Doo-hwan, who then overthrew the current government and established a military government and continued to suppress domestic opposition during his seven-years’ govern. Meanwhile, the country’s relationship with DPRK remains very tense and always need to worry about being invade. In this circumstance, the serial murders took place.<br>Director Bong’s ability to “cinematize” social issues<br>Although the process of tracking the killer is certainly fascinating, but let’s get back to how director Bong expressing his political ideas using his film. The key point is the large number of details.<br>For example, curfew scenes often appear in the film. Curfew is a way to maintain social stability, but it also helps the killer to commit the crime. When night is coming, the alarm went off, people will rush home and turn off the lights, making streets empty. In the absence of witnesses and poor lighting conditions, it is a good choice to commit crimes. In the film, the last victim that middle school student is caught by the killer, and at the same time, the curfew begins, all the families begin to close their doors. The desperation in the girl’s eyes at this point is breathtaking through the camera.<br>Similar details include the second time before the crime, the police could have been set up in advance to prevent the crime from happening, however, the radio station was unwilling to cooperate with the police and refuse to tell them the name of the person who ordered the song. Also, the army were sent to suppress the protesting crowd and could not be deployed, which in turn led to the death of the woman.<br>Another technique that director Bong used is to create Distinct contrast. Officer Park and Officer Su represent the struggling Korean society that wait to change. Officer Park used to think that Korea was small, and he could handle cases by walk on his feet when, but later on he started to rethink on his way of deciding cases. Officer Su starts out relying on logical deduction and rational analysis, and hopes to rely on American DNA technology, but when he fails over and over again, he starts thinking he might as well shoot the suspect he thinks he has. In a way, this alludes to the struggle between the two forces in Korea at that time. They both believe they can make the country more prosperous, while in the process of struggle and debate, they both become confused and no longer stick to their original intention and compromise with reality. At the end of the movie, Officer Park becomes a big businessman and lives a rich life, which symbolizes the future of Korea is getting better.<br>Officer Joe in the movie, he is good at torturing criminals, the character is violent but also has his decent side, such as his dedication to his work, which are actually a good aspect of the military government rule. However, just like his right leg that needed to be cut off, when his existence no longer fit the real world, it had to be cut off in order to continue surviving. This means Korea needs to abolish military rule in order to continue to develop better. It is worth noticing that the surgery for Officer Joe to have his right leg removed coincided with the time 1987, when June Struggle broke out in the country, a successful democracy movement that ended military rule and put Korea on the road to democracy.<br>Ⅲ. Summary<br>As director Bong says he wants to cinematize the social issues, by using all these techniques, his movie soon get success all over the world. It is surprised that Bong’s stories always resonate with people all over the world, even these stories were taking place in Korea.<br>Recently, Bong’s Parasite was a huge success, becoming the first non-English language film to win the Academy Award for Best Picture. As he said in the interview, I just want to put into the film what we suffer from living in a capitalist world.</p>
 
         </div>
 
@@ -241,7 +164,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://lingzhen718.github.io/2025/02/16/hello-world/">http://lingzhen718.github.io/2025/02/16/hello-world/</a></span>
+                        <span><a href="http://lingzhen718.github.io/2023/11/04/Bong%20Joon%20Ho's%20Memories/">http://lingzhen718.github.io/2023/11/04/Bong%20Joon%20Ho's%20Memories/</a></span>
                     </p>
                 
                 
@@ -269,10 +192,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2025/02/16/blog1/">Test For New Blog</a>
             
-            
-            <a class="next" rel="next" href="/2025/02/16/math/">MathJax Test</a>
+            <a class="next" rel="next" href="/2023/11/04/Choice/">Bong Joon Ho's Memories</a>
             
         </section>
 
