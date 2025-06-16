@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Lingzhen Zhu">
+
+
+
+
+
+<title>Teaching | Lingzhen Zhu&#39;s Website</title>
+
+
+
+    <link rel="icon" href="/z.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Home</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/research">Research</a>
+                
+                    <a class="menu-item" href="/teaching">Teaching</a>
+                
+                    <a class="menu-item" href="/media">Media</a>
+                
+                    <a class="menu-item" href="/archives">Blog</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Home</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/research">Research</a>
+                
+                    <a class="menu-item" href="/teaching">Teaching</a>
+                
+                    <a class="menu-item" href="/media">Media</a>
+                
+                    <a class="menu-item" href="/archives">Blog</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    <article class="post-wrap page">
+        
+        <h2 class="post-title">Teaching</h2>
+        
+        <section class="post-content">
+            <style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+    }
+  
+    h3 {
+        color: #1B5E20;
+        margin-top: 20px;
+    }
+    .course {
+        background-color: #f5f5f5;
+        padding: 12px;
+        margin-top: 12px;
+        border-radius: 8px;
+    }
+    .year {
+        font-weight: bold;
+        color: #1B5E20;
+    }
+</style>
+
+
+
+<div style="text-align:center; display:inline-block; max-width: 50px;">
+    <img src="/image/uva.jpg" alt="uva" 
+         style="width:100%; display:block; border-radius:10px;">
+</div>
+
+<h3 id="2025-Spring"><a href="#2025-Spring" class="headerlink" title="2025 Spring"></a><span class="year">2025 Spring</span></h3><div class="course">
+
+<p><strong>DS 5111: Software and Automation Skills</strong><br>Graduate Teaching Assistant</p>
+</div>
+
+<h3 id="2024-Fall"><a href="#2024-Fall" class="headerlink" title="2024 Fall"></a><span class="year">2024 Fall</span></h3><div class="course">
+
+<p><strong>DS 6030: Bayesian Machine Learning</strong><br>Graduate Teaching Assistant</p>
+</div>
+
+<h3 id="2024-Spring"><a href="#2024-Spring" class="headerlink" title="2024 Spring"></a><span class="year">2024 Spring</span></h3><div class="course">
+
+<p><strong>DS 1002: Programming for Data Science</strong><br>Graduate Teaching Assistant</p>
+</div>
+
+        </section>
+    </article>
+</div>
+
+  
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Lingzhen Zhu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
