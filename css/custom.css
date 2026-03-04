@@ -1,7 +1,7 @@
 /* ============================================================
    custom.css — Design overhaul for lingzhenzhu.github.io
    Goals:
-     1. Unified content width across all pages (max-width: 780px)
+     1. Unified content width across all pages (780px visible content)
      2. Refined typography with Google Fonts (Cormorant Garamond + Inter)
      3. Subtle artistic touches while preserving minimalism
    ============================================================ */
@@ -45,8 +45,9 @@ body.dark-theme {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Navbar container — match the 780px content width */
 .navbar .container {
-  max-width: 860px;
+  max-width: 780px;
   padding-left: 2em;
   padding-right: 2em;
 }
@@ -113,38 +114,70 @@ body.dark-theme {
   background-color: #e0e0d8;
 }
 
-/* ---------- Unified Content Width ---------- */
-/* Home page profile container */
-.profile-container {
+/* ============================================================
+   UNIFIED LAYOUT — The core fix
+   
+   Three different HTML structures exist across pages:
+   
+   1. Home:     .main > .container.profile-container > .intro
+   2. Archives: .main > .post-wrap.archive
+   3. Others:   .main > .container > article.post-wrap.page
+   
+   Strategy: make ALL three render a 780px-wide content column,
+   perfectly centered, with identical left/right margins.
+   We strip padding from .container on inner pages so that
+   .post-wrap inside it can use its own max-width freely.
+   ============================================================ */
+
+/* --- Case 1: Home page ---
+   .profile-container also has class .container, so .main .container rules
+   (flex: 1, display: flex) override .profile-container.
+   We use .main .container.profile-container for higher specificity. */
+.main .container.profile-container {
   max-width: 780px;
   width: 100%;
   margin: 0 auto;
   padding: 3rem 2em 2rem;
   box-sizing: border-box;
+  /* override flex from .main .container */
+  display: block;
+  flex: none;
+  height: auto;
+  align-self: center;
 }
 
-/* Inner pages: post-wrap already has max-width: 780px, just ensure consistency */
-.post-wrap {
+/* --- Case 2: Archives (Blog list) --- */
+.post-wrap.archive {
   max-width: 780px;
+  width: 100%;
   margin: 0 auto;
-  padding-top: 2.5rem;
-  padding-left: 2em;
-  padding-right: 2em;
+  padding: 2.5rem 2em 2rem;
   box-sizing: border-box;
 }
 
-/* Archive list */
-.post-wrap.archive {
-  padding-top: 2.5rem;
+/* --- Case 3: Inner pages (Research, Teaching, Media, blog posts) ---
+   .container wraps .post-wrap; we neutralize container's own padding
+   so .post-wrap can center itself within .main directly */
+.main .container {
+  max-width: none;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  margin: 0;
+  box-sizing: border-box;
+  /* keep flex column from layout.css */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
 }
 
-/* Main container for inner pages */
-.main .container {
+/* .post-wrap inside .container now centers itself */
+.main .container .post-wrap {
   max-width: 780px;
-  margin: 0 auto;
   width: 100%;
-  padding-left: 2em;
-  padding-right: 2em;
+  margin: 0 auto;
+  padding: 2.5rem 2em 2rem;
   box-sizing: border-box;
 }
 
@@ -327,11 +360,6 @@ article.post-wrap.page h2.post-title {
   color: #555;
 }
 
-/* ---------- Thin decorative line above footer ---------- */
-.wrapper::after {
-  content: none;
-}
-
 /* ---------- Hover accent color ---------- */
 a:hover {
   color: #8b7355;
@@ -382,11 +410,11 @@ a:hover {
   .profile-container {
     padding: 2rem 1.5em;
   }
-  .post-wrap {
+  .post-wrap.archive {
     padding-left: 1.5em;
     padding-right: 1.5em;
   }
-  .main .container {
+  .main .container .post-wrap {
     padding-left: 1.5em;
     padding-right: 1.5em;
   }
@@ -400,11 +428,11 @@ a:hover {
   .profile-container {
     padding: 1.5rem 1em;
   }
-  .post-wrap {
+  .post-wrap.archive {
     padding-left: 1em;
     padding-right: 1em;
   }
-  .main .container {
+  .main .container .post-wrap {
     padding-left: 1em;
     padding-right: 1em;
   }
