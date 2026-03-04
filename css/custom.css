@@ -21,11 +21,13 @@ body {
   color: #1a1a1a;
   background-color: #fafaf8;
   /* Narrow column layout — matches the retro feel of Research/Teaching pages.
-     The inline <style> in those pages sets body { max-width: 800px; margin: auto }
-     which constrains the entire .wrapper including navbar. We apply the same
-     rule globally so ALL pages (Home, Blog, etc.) look identical. */
+     The inline <style> in those pages sets body { max-width: 800px; margin: auto; padding: 20px }
+     which constrains the entire .wrapper including navbar AND pushes it down 20px.
+     We apply max-width globally and force padding:0 to neutralise the inline style,
+     so ALL pages have navbar starting at the very top of the viewport. */
   max-width: 800px;
   margin: 0 auto;
+  padding: 0 !important;
 }
 
 body.dark-theme {
@@ -143,7 +145,7 @@ body.dark-theme {
   max-width: 780px;
   width: 100%;
   margin: 0 auto;
-  padding: 3rem 2em 2rem;
+  padding: 2.5rem 2em 2rem;
   box-sizing: border-box;
   /* override flex from .main .container */
   display: block;
