@@ -1,15 +1,14 @@
 /* ============================================================
    custom.css — Design overhaul for lingzhenzhu.github.io
-   Goals:
-     1. Unified content width across all pages (780px visible content)
-     2. Refined typography with Google Fonts (Cormorant Garamond + Inter)
-     3. Subtle artistic touches while preserving minimalism
+   All pages now share the SAME HTML structure:
+     .wrapper > header > .main > .container > article.post-wrap.page
+   This file assumes that structure and applies unified styles.
    ============================================================ */
 
 /* ---------- Google Fonts Import ---------- */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
 
-/* ---------- Typography ---------- */
+/* ---------- Base Typography ---------- */
 html {
   font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
   letter-spacing: 0.01em;
@@ -20,11 +19,7 @@ body {
   line-height: 1.9em;
   color: #1a1a1a;
   background-color: #fafaf8;
-  /* Narrow column layout — matches the retro feel of Research/Teaching pages.
-     The inline <style> in those pages sets body { max-width: 800px; margin: auto; padding: 20px }
-     which constrains the entire .wrapper including navbar AND pushes it down 20px.
-     We apply max-width globally and force padding:0 to neutralise the inline style,
-     so ALL pages have navbar starting at the very top of the viewport. */
+  /* Narrow column: constrains the entire .wrapper including navbar */
   max-width: 800px;
   margin: 0 auto;
   padding: 0 !important;
@@ -53,11 +48,10 @@ body.dark-theme {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Navbar container — match the 780px content width */
-.navbar .container {
-  max-width: 780px;
-  padding-left: 2em;
-  padding-right: 2em;
+/* Hide the old toggle checkbox — replaced by a11y panel */
+.switch_default,
+.toggleBtn {
+  display: none !important;
 }
 
 .navbar-header.header-logo a {
@@ -101,71 +95,20 @@ body.dark-theme {
   transition: left 0.25s ease, right 0.25s ease;
 }
 
-.menu-item:hover {
-  color: #1a1a1a;
-}
+.menu-item:hover { color: #1a1a1a; }
+.menu-item:hover::after { left: 0.9em; right: 0.9em; }
 
-.menu-item:hover::after {
-  left: 0.9em;
-  right: 0.9em;
-}
-
-.dark-theme .menu-item {
-  color: #999;
-}
-
-.dark-theme .menu-item:hover {
-  color: #e0e0d8;
-}
-
-.dark-theme .menu-item::after {
-  background-color: #e0e0d8;
-}
+.dark-theme .menu-item { color: #999; }
+.dark-theme .menu-item:hover { color: #e0e0d8; }
+.dark-theme .menu-item::after { background-color: #e0e0d8; }
 
 /* ============================================================
-   UNIFIED LAYOUT — The core fix
-   
-   Three different HTML structures exist across pages:
-   
-   1. Home:     .main > .container.profile-container > .intro
-   2. Archives: .main > .post-wrap.archive
-   3. Others:   .main > .container > article.post-wrap.page
-   
-   Strategy: make ALL three render a 780px-wide content column,
-   perfectly centered, with identical left/right margins.
-   We strip padding from .container on inner pages so that
-   .post-wrap inside it can use its own max-width freely.
+   UNIFIED LAYOUT
+   All pages now use: .main > .container > article.post-wrap.page
+   We neutralise .container's own padding so .post-wrap can
+   centre itself freely within .main.
    ============================================================ */
 
-/* --- Case 1: Home page ---
-   .profile-container also has class .container, so .main .container rules
-   (flex: 1, display: flex) override .profile-container.
-   We use .main .container.profile-container for higher specificity. */
-.main .container.profile-container {
-  max-width: 780px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2.5rem 2em 2rem;
-  box-sizing: border-box;
-  /* override flex from .main .container */
-  display: block;
-  flex: none;
-  height: auto;
-  align-self: center;
-}
-
-/* --- Case 2: Archives (Blog list) --- */
-.post-wrap.archive {
-  max-width: 780px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2.5rem 2em 2rem;
-  box-sizing: border-box;
-}
-
-/* --- Case 3: Inner pages (Research, Teaching, Media, blog posts) ---
-   .container wraps .post-wrap; we neutralize container's own padding
-   so .post-wrap can center itself within .main directly */
 .main .container {
   max-width: none;
   width: 100%;
@@ -173,28 +116,46 @@ body.dark-theme {
   padding-right: 0;
   margin: 0;
   box-sizing: border-box;
-  /* keep flex column from layout.css */
   display: flex;
   flex-direction: column;
   flex: 1;
   height: 100%;
 }
 
-/* .post-wrap inside .container now centers itself */
 .main .container .post-wrap {
-  max-width: 780px;
+  max-width: 760px;
   width: 100%;
   margin: 0 auto;
-  padding: 2.5rem 2em 2rem;
+  padding: 2.5rem 2em 3rem;
   box-sizing: border-box;
 }
 
-/* ---------- Home Page Profile ---------- */
-.intro {
-  text-align: center;
+/* ---------- Post Title (all pages) ---------- */
+.post-wrap .post-title,
+article.post-wrap.page h2.post-title {
+  font-family: 'Cormorant Garamond', 'lanting', serif;
+  font-size: 2em;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.3em;
+  color: #1a1a1a;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  padding-bottom: 0.5em;
+  margin-bottom: 1.5em;
 }
 
-.intro .avatar img {
+.dark-theme .post-wrap .post-title {
+  color: #e0e0d8;
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+
+/* ---------- Home Page ---------- */
+.home-content .home-profile {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.home-content .home-profile .avatar img {
   width: 110px;
   height: 110px;
   border-radius: 50%;
@@ -202,90 +163,26 @@ body.dark-theme {
   object-fit: cover;
 }
 
-.nickname {
-  font-family: 'Cormorant Garamond', 'lanting', serif;
-  font-size: 2.2em;
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  line-height: 1.3em;
-  margin: 0.4em 0 0.2em;
-  color: #1a1a1a;
-}
-
-.dark-theme .nickname {
-  color: #e0e0d8;
-}
-
-.description {
-  max-width: 600px;
-  margin: 1.5rem auto 0;
-  text-align: left;
-  font-size: 0.95em;
-  line-height: 1.85em;
-  color: #333;
-}
-
-.dark-theme .description {
-  color: #b0b0a8;
-}
-
-/* Section headings inside description */
-.description h2 {
-  font-family: 'Cormorant Garamond', 'lanting', serif;
-  font-size: 1.05em;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #1a1a1a;
-  margin-top: 1.8em;
-  margin-bottom: 0.3em;
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.dark-theme .description h2 {
-  color: #e0e0d8;
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
-
-/* Remove the # prefix from description headings */
-.description h2::before {
-  content: none !important;
-}
-
-.links {
+.home-content .links {
   margin-top: 1.5rem;
 }
 
-.links a {
+.home-content .links a {
   padding: 0 0.5em;
   opacity: 0.6;
   transition: opacity 0.2s ease;
 }
 
-.links a:hover {
+.home-content .links a:hover {
   opacity: 1;
   background-color: transparent;
 }
 
-.links .iconfont {
+.home-content .links .iconfont {
   font-size: 1.5em;
 }
 
-/* ---------- Post / Article Pages ---------- */
-.post-wrap .post-title {
-  font-family: 'Cormorant Garamond', 'lanting', serif;
-  font-size: 2em;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  line-height: 1.3em;
-  color: #1a1a1a;
-}
-
-.dark-theme .post-wrap .post-title {
-  color: #e0e0d8;
-}
-
+/* ---------- Post Content ---------- */
 .post-content {
   font-size: 1em;
   line-height: 1.9em;
@@ -303,25 +200,8 @@ body.dark-theme {
   letter-spacing: 0.03em;
 }
 
-/* ---------- Archive List ---------- */
-.archive-item-link {
-  font-size: 0.95em;
-  letter-spacing: 0.01em;
-}
-
-.archive-item-date {
-  font-size: 0.8em;
-  letter-spacing: 0.03em;
-  color: #aaa;
-}
-
-.post-wrap .archive-item {
-  margin-left: 1.5rem;
-  padding: 0.15em 0;
-}
-
-/* Year headings in archive */
-.post-wrap h3 {
+/* ---------- Archive List (Blog page) ---------- */
+.archive-list h3 {
   font-family: 'Cormorant Garamond', 'lanting', serif;
   font-size: 1.4em;
   font-weight: 300;
@@ -331,26 +211,24 @@ body.dark-theme {
   margin-bottom: 0.5em;
 }
 
-.dark-theme .post-wrap h3 {
+.dark-theme .archive-list h3 {
   color: #666;
 }
 
-/* ---------- Page Title (Research, Teaching, etc.) ---------- */
-.post-wrap.page .post-title,
-article.post-wrap.page h2.post-title {
-  font-family: 'Cormorant Garamond', 'lanting', serif;
-  font-size: 2em;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  color: #1a1a1a;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  padding-bottom: 0.5em;
-  margin-bottom: 1.5em;
+.archive-item {
+  margin-left: 1.5rem;
+  padding: 0.15em 0;
 }
 
-.dark-theme .post-wrap.page .post-title {
-  color: #e0e0d8;
-  border-bottom-color: rgba(255, 255, 255, 0.07);
+.archive-item-link {
+  font-size: 0.95em;
+  letter-spacing: 0.01em;
+}
+
+.archive-item-date {
+  font-size: 0.8em;
+  letter-spacing: 0.03em;
+  color: #aaa;
 }
 
 /* ---------- Footer ---------- */
@@ -368,7 +246,7 @@ article.post-wrap.page h2.post-title {
   color: #555;
 }
 
-/* ---------- Hover accent color ---------- */
+/* ---------- Links ---------- */
 a:hover {
   color: #8b7355;
 }
@@ -388,7 +266,7 @@ a:hover {
   border-bottom-color: rgba(74, 111, 165, 0.6);
 }
 
-/* ---------- Blockquote refinement ---------- */
+/* ---------- Blockquote ---------- */
 .post-content blockquote {
   border-left: 2px solid #c8a97e;
   background-color: rgba(200, 169, 126, 0.05);
@@ -404,44 +282,212 @@ a:hover {
   color: #999;
 }
 
-/* ---------- Dark mode toggle ---------- */
-.switch_default + label {
-  background-color: #ddd;
+/* ============================================================
+   ACCESSIBILITY PANEL
+   ============================================================ */
+
+.a11y-panel {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
 }
 
-.switch_default:checked + label {
+.a11y-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background-color: #1a1a1a;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  padding: 0;
+}
+
+.a11y-btn:hover {
+  background-color: #8b7355;
+  transform: scale(1.08);
+}
+
+.a11y-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+}
+
+.dark-theme .a11y-btn {
+  background-color: #3a3a3a;
+}
+
+.dark-theme .a11y-btn:hover {
   background-color: #8b7355;
 }
 
-/* ---------- Responsive ---------- */
+.a11y-menu {
+  display: none;
+  flex-direction: column;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  min-width: 180px;
+  order: -1; /* appears above the button */
+}
+
+.a11y-menu.open {
+  display: flex;
+}
+
+.dark-theme .a11y-menu {
+  background-color: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.a11y-menu-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #aaa;
+  padding: 0.75rem 1rem 0.4rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .a11y-menu-title {
+  color: #666;
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.a11y-option {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88em;
+  color: #333;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.a11y-option:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.a11y-option.active {
+  color: #8b7355;
+  font-weight: 500;
+}
+
+.a11y-option.active .a11y-icon {
+  color: #8b7355;
+}
+
+.dark-theme .a11y-option {
+  color: #c0c0b8;
+}
+
+.dark-theme .a11y-option:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-theme .a11y-option.active {
+  color: #c8a97e;
+}
+
+.a11y-icon {
+  font-size: 1em;
+  width: 1.4em;
+  text-align: center;
+  color: #888;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   ACCESSIBILITY FEATURE CLASSES
+   ============================================================ */
+
+/* Larger text */
+body.a11y-large-text {
+  font-size: 12.5pt;
+}
+
+body.a11y-large-text .post-wrap .post-title {
+  font-size: 2.3em;
+}
+
+/* High contrast */
+body.a11y-high-contrast {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+body.a11y-high-contrast.dark-theme {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+body.a11y-high-contrast .navbar {
+  background-color: #fff !important;
+  border-bottom: 2px solid #000 !important;
+}
+
+body.a11y-high-contrast.dark-theme .navbar {
+  background-color: #000 !important;
+  border-bottom: 2px solid #fff !important;
+}
+
+body.a11y-high-contrast .post-content,
+body.a11y-high-contrast .post-wrap .post-title {
+  color: #000 !important;
+}
+
+body.a11y-high-contrast.dark-theme .post-content,
+body.a11y-high-contrast.dark-theme .post-wrap .post-title {
+  color: #fff !important;
+}
+
+/* Reduce motion */
+body.a11y-reduce-motion *,
+body.a11y-reduce-motion *::before,
+body.a11y-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media screen and (max-width: 860px) {
-  .profile-container {
-    padding: 2rem 1.5em;
-  }
-  .post-wrap.archive {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-  }
   .main .container .post-wrap {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-  }
-  .navbar .container {
     padding-left: 1.5em;
     padding-right: 1.5em;
   }
 }
 
 @media screen and (max-width: 479px) {
-  .profile-container {
-    padding: 1.5rem 1em;
-  }
-  .post-wrap.archive {
-    padding-left: 1em;
-    padding-right: 1em;
-  }
   .main .container .post-wrap {
     padding-left: 1em;
     padding-right: 1em;
+  }
+
+  .a11y-panel {
+    bottom: 1rem;
+    right: 1rem;
   }
 }

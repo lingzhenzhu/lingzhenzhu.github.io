@@ -9,26 +9,15 @@
 
     <meta name="author" content="Lingzhen Zhu">
 
-
-
-
-
 <title>Research | Lingzhen Zhu&#39;s Website</title>
 
-
-
     <link rel="icon" href="/z.ico">
-
-
-
 
     <!-- stylesheets list from _config.yml -->
     
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/custom.css">
     
-
-
 
     <!-- scripts list from _config.yml -->
     
@@ -37,31 +26,20 @@
     <script src="/js/tocbot.min.js"></script>
     
 
-
-
-    
-    
-        
-    
-
-
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
     <script>
-        // this function is used to check current theme before page loaded.
+        // Check system preference first, then localStorage override
         (() => {
-            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
-            const isDark = currentTheme === 'dark';
-            const pagebody = document.getElementsByTagName('body')[0]
+            const stored = window.localStorage && window.localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = stored === 'dark' || (stored === null && prefersDark);
+            const pagebody = document.getElementsByTagName('body')[0];
             if (isDark) {
                 pagebody.classList.add('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
             } else {
                 pagebody.classList.remove('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· Light"
             }
         })();
     </script>
@@ -81,8 +59,6 @@
                 
                     <a class="menu-item" href="/archives">Blog</a>
                 
-                <input id="switch_default" type="checkbox" class="switch_default">
-                <label for="switch_default" class="toggleBtn"></label>
             </div>
         </div>
     </nav>
@@ -92,7 +68,7 @@
         <div class="container">
             <div class="navbar-header">
                 <div>
-                    <a href="/">Home</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    <a href="/">Home</a>
                 </div>
                 <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
             </div>
@@ -131,75 +107,35 @@
         <h2 class="post-title">Research</h2>
         
         <section class="post-content">
-            <style>
-    body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        color: #333;
-        max-width: 800px;
-        margin: auto;
-        padding: 20px;
-    }
 
-    h3 {
-        color: #1B5E20;
-        margin-top: 20px;
-    }
-    ul {
-        list-style-type: none;
-        padding-left: 10px;
-    }
-    ul li::before {
-        content: "•";
-        color: #1B5E20;
-        font-weight: bold;
-        display: inline-block; 
-        width: 1em;
-        margin-left: -1em;
-    }
-    .project {
-        background-color: #f5f5f5;
-        padding: 15px;
-        margin-top: 15px;
-        border-radius: 8px;
-    }
-    .highlight {
-        font-weight: bold;
-        color: #D32F2F;
-    }
-</style>
-
-<h3 id="Interests-Areas"><a href="#Interests-Areas" class="headerlink" title="Interests Areas"></a>Interests Areas</h3><ul>
+<h3 id="Interests-Areas">Interests Areas</h3>
+<ul>
 <li><strong>Health Care</strong></li>
 <li><strong>ESG</strong></li>
 <li><strong>Urban Planning</strong></li>
 </ul>
-<h3 id="Projects"><a href="#Projects" class="headerlink" title="Projects"></a>Projects</h3><p><em>PINN for ECG Signal Denoising</em></p>
+
+<h3 id="Projects">Projects</h3>
+<p><em>PINN for ECG Signal Denoising</em></p>
 <div style="text-align:center; display:block; max-width: 500px; margin: auto;">
     <img src="/image/hsp.jpg" alt="PINN for ECG Signal Denoising" 
          style="width:100%; max-width: 100%; display:block; border-radius:10px;">
 </div>
 
-<div class="project">
-
-<p>In this study, we propose <span class="highlight">EAND-ARN</span>, a novel <strong>Electrophysiology-Aware Adaptive ResNet</strong> enhanced by <strong>numerical differentiation</strong> to address the <strong>inverse ECG problem</strong>.<br>ECG imaging (ECGI) aims to <strong>non-invasively reconstruct heart surface potentials (HSP)</strong> from body surface potentials (BSPM), but the ill-posed nature of the problem makes it <strong>highly sensitive to measurement noise</strong>.</p>
+<p>In this study, we propose <strong>EAND-ARN</strong>, a novel <strong>Electrophysiology-Aware Adaptive ResNet</strong> enhanced by <strong>numerical differentiation</strong> to address the <strong>inverse ECG problem</strong>.<br>ECG imaging (ECGI) aims to <strong>non-invasively reconstruct heart surface potentials (HSP)</strong> from body surface potentials (BSPM), but the ill-posed nature of the problem makes it <strong>highly sensitive to measurement noise</strong>.</p>
 <p>Our key contributions include:</p>
 <ul>
 <li><strong>Numerical Differentiation for EP Constraints</strong><br>  Unlike automatic differentiation (AD), our approach explicitly computes <strong>spatial Laplacian and temporal derivatives</strong>, effectively incorporating <strong>electrophysiological (EP) priors</strong> to improve stability and accuracy.</li>
 <li><strong>Adaptive Residual Network (ARN)</strong><br>  We introduce <strong>trainable residual connections</strong> to optimize gradient flow, enabling <strong>deeper networks</strong> and <strong>mitigating initialization issues</strong>.</li>
 </ul>
 <p>Results &amp; Impact:</p>
-<p>Extensive experiments show that <strong>EAND-ARN outperforms traditional methods</strong> (e.g., <strong>Tikhonov regularization, STRE, and prior deep learning models</strong>) across <strong>multiple noise levels</strong>.  Our model achieves</p>
-<p>✅ <strong>Lower Relative Error (RE)</strong><br>✅ <strong>Lower Mean Squared Error (MSE)</strong><br>✅ <strong>Higher Correlation (CC)</strong>  </p>
+<p>Extensive experiments show that <strong>EAND-ARN outperforms traditional methods</strong> (e.g., <strong>Tikhonov regularization, STRE, and prior deep learning models</strong>) across <strong>multiple noise levels</strong>. Our model achieves</p>
+<p>✅ <strong>Lower Relative Error (RE)</strong><br>✅ <strong>Lower Mean Squared Error (MSE)</strong><br>✅ <strong>Higher Correlation (CC)</strong></p>
 <p>Particularly in <strong>complex cardiac regions</strong>, these findings <strong>demonstrate the clinical potential of EAND-ARN</strong>, offering a <strong>more reliable computational tool</strong> for <strong>cardiac electrophysiology research and arrhythmia diagnosis</strong>.</p>
-</div>
 
 <p><em>fMRI-fNIRS</em></p>
-<div class="project">
-Functional near-infrared spectroscopy (fNIRS) and functional magnetic resonance imaging (fMRI) are both neuroimaging techniques that measure changes in brain blood oxygenation
-fNIRS is more portable and cost-effective than fMRI, but inferior spatial resolution and penetration depth
-Applications: studying brain function in naturalistic environments, developmental and clinical populations, infants and toddlers
-<div>
+<p>Functional near-infrared spectroscopy (fNIRS) and functional magnetic resonance imaging (fMRI) are both neuroimaging techniques that measure changes in brain blood oxygenation. fNIRS is more portable and cost-effective than fMRI, but inferior spatial resolution and penetration depth. Applications: studying brain function in naturalistic environments, developmental and clinical populations, infants and toddlers.</p>
+
         </section>
     </article>
 </div>
@@ -208,11 +144,47 @@ Applications: studying brain function in naturalistic environments, developmenta
             </div>
             <footer id="footer" class="footer">
     <div class="copyright">
-        <span>© Lingzhen Zhu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+        <span>© Lingzhen Zhu. All rights reserved.</span>
     </div>
 </footer>
 
     </div>
+
+    <!-- Accessibility floating button -->
+    <div id="a11y-panel" class="a11y-panel" role="complementary" aria-label="Accessibility options">
+        <button id="a11y-btn" class="a11y-btn" aria-label="Accessibility options" aria-expanded="false" aria-controls="a11y-menu">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="4" r="2"/>
+                <path d="M12 7c-2.76 0-5 2.24-5 5h2c0-1.65 1.35-3 3-3s3 1.35 3 3h2c0-2.76-2.24-5-5-5z"/>
+                <path d="M7.58 11.58L6 13l3 3v5h2v-4h2v4h2v-5l3-3-1.58-1.42C15.37 12.45 13.74 13 12 13s-3.37-.55-4.42-1.42z"/>
+            </svg>
+        </button>
+        <div id="a11y-menu" class="a11y-menu" role="menu" aria-hidden="true">
+            <div class="a11y-menu-title">Accessibility</div>
+            <button class="a11y-option" id="toggle-dark" role="menuitem">
+                <span class="a11y-icon">◐</span>
+                <span>Dark Mode</span>
+            </button>
+            <button class="a11y-option" id="toggle-font-size" role="menuitem">
+                <span class="a11y-icon">A↑</span>
+                <span>Larger Text</span>
+            </button>
+            <button class="a11y-option" id="toggle-contrast" role="menuitem">
+                <span class="a11y-icon">◑</span>
+                <span>High Contrast</span>
+            </button>
+            <button class="a11y-option" id="toggle-reduce-motion" role="menuitem">
+                <span class="a11y-icon">⏸</span>
+                <span>Reduce Motion</span>
+            </button>
+            <button class="a11y-option" id="reset-a11y" role="menuitem">
+                <span class="a11y-icon">↺</span>
+                <span>Reset</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="/js/a11y.js"></script>
 </body>
 
 </html>

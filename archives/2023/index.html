@@ -48,20 +48,17 @@
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body>
-    <script>
-        // this function is used to check current theme before page loaded.
+        <script>
+        // Check system preference first, then localStorage override
         (() => {
-            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
-            const isDark = currentTheme === 'dark';
-            const pagebody = document.getElementsByTagName('body')[0]
+            const stored = window.localStorage && window.localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = stored === 'dark' || (stored === null && prefersDark);
+            const pagebody = document.getElementsByTagName('body')[0];
             if (isDark) {
                 pagebody.classList.add('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
             } else {
                 pagebody.classList.remove('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· Light"
             }
         })();
     </script>
@@ -80,9 +77,6 @@
                     <a class="menu-item" href="/media">Media</a>
                 
                     <a class="menu-item" href="/archives">Blog</a>
-                
-                <input id="switch_default" type="checkbox" class="switch_default">
-                <label for="switch_default" class="toggleBtn"></label>
             </div>
         </div>
     </nav>
@@ -92,7 +86,7 @@
         <div class="container">
             <div class="navbar-header">
                 <div>
-                    <a href="/">Home</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    <a href="/">Home</a>
                 </div>
                 <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
             </div>
@@ -153,11 +147,47 @@
             </div>
             <footer id="footer" class="footer">
     <div class="copyright">
-        <span>© Lingzhen Zhu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+        <span>© Lingzhen Zhu. All rights reserved.</span>
     </div>
 </footer>
 
     </div>
+
+    <!-- Accessibility floating button -->
+    <div id="a11y-panel" class="a11y-panel" role="complementary" aria-label="Accessibility options">
+        <button id="a11y-btn" class="a11y-btn" aria-label="Accessibility options" aria-expanded="false" aria-controls="a11y-menu">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="4" r="2"/>
+                <path d="M12 7c-2.76 0-5 2.24-5 5h2c0-1.65 1.35-3 3-3s3 1.35 3 3h2c0-2.76-2.24-5-5-5z"/>
+                <path d="M7.58 11.58L6 13l3 3v5h2v-4h2v4h2v-5l3-3-1.58-1.42C15.37 12.45 13.74 13 12 13s-3.37-.55-4.42-1.42z"/>
+            </svg>
+        </button>
+        <div id="a11y-menu" class="a11y-menu" role="menu" aria-hidden="true">
+            <div class="a11y-menu-title">Accessibility</div>
+            <button class="a11y-option" id="toggle-dark" role="menuitem">
+                <span class="a11y-icon">◐</span>
+                <span>Dark Mode</span>
+            </button>
+            <button class="a11y-option" id="toggle-font-size" role="menuitem">
+                <span class="a11y-icon">A↑</span>
+                <span>Larger Text</span>
+            </button>
+            <button class="a11y-option" id="toggle-contrast" role="menuitem">
+                <span class="a11y-icon">◑</span>
+                <span>High Contrast</span>
+            </button>
+            <button class="a11y-option" id="toggle-reduce-motion" role="menuitem">
+                <span class="a11y-icon">⏸</span>
+                <span>Reduce Motion</span>
+            </button>
+            <button class="a11y-option" id="reset-a11y" role="menuitem">
+                <span class="a11y-icon">↺</span>
+                <span>Reset</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="/js/a11y.js"></script>
 </body>
 
 </html>
