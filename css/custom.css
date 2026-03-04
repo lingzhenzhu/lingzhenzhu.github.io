@@ -20,6 +20,12 @@ body {
   line-height: 1.9em;
   color: #1a1a1a;
   background-color: #fafaf8;
+  /* Narrow column layout — matches the retro feel of Research/Teaching pages.
+     The inline <style> in those pages sets body { max-width: 800px; margin: auto }
+     which constrains the entire .wrapper including navbar. We apply the same
+     rule globally so ALL pages (Home, Blog, etc.) look identical. */
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 body.dark-theme {
