@@ -1,6 +1,6 @@
 /**
  * Accessibility panel for lingzhenzhu.github.io
- * Features: dark mode (system-aware), larger text, high contrast, reduce motion
+ * Features: dark mode (system-aware), larger text, high contrast, read aloud
  */
 (function () {
     'use strict';
@@ -17,7 +17,7 @@
         dark: null,          // null = follow system, 'dark' | 'light' = manual
         fontSize: false,
         contrast: false,
-        reduceMotion: false,
+        speaking: false,     // TTS active
     };
 
     // ── Load persisted preferences ───────────────────────────────────────────
@@ -28,9 +28,8 @@
         }
         // null means follow system (already handled in inline script)
 
-        state.fontSize    = localStorage.getItem('a11y-fontSize')    === 'true';
-        state.contrast    = localStorage.getItem('a11y-contrast')    === 'true';
-        state.reduceMotion = localStorage.getItem('a11y-reduceMotion') === 'true';
+        state.fontSize = localStorage.getItem('a11y-fontSize') === 'true';
+        state.contrast = localStorage.getItem('a11y-contrast') === 'true';
     }
 
     // ── Apply all states to DOM ──────────────────────────────────────────────
@@ -46,9 +45,6 @@
         // High contrast
         body.classList.toggle('a11y-high-contrast', state.contrast);
 
-        // Reduce motion
-        body.classList.toggle('a11y-reduce-motion', state.reduceMotion);
-
         // Update button active states
         updateButtonStates();
     }
@@ -57,10 +53,10 @@
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const isDark = state.dark === 'dark' || (state.dark === null && prefersDark);
 
-        setActive('toggle-dark',         isDark);
-        setActive('toggle-font-size',    state.fontSize);
-        setActive('toggle-contrast',     state.contrast);
-        setActive('toggle-reduce-motion', state.reduceMotion);
+        setActive('toggle-dark',       isDark);
+        setActive('toggle-font-size',  state.fontSize);
+        setActive('toggle-contrast',   state.contrast);
+        setActive('toggle-read-aloud', state.speaking);
     }
 
     function setActive(id, active) {
@@ -121,21 +117,73 @@
         applyAll();
     });
 
-    document.getElementById('toggle-reduce-motion').addEventListener('click', function () {
-        state.reduceMotion = !state.reduceMotion;
-        localStorage.setItem('a11y-reduceMotion', state.reduceMotion);
-        applyAll();
-    });
+    // ── Feature: Read page aloud (Web Speech API) ────────────────────────────
+    const readBtn = document.getElementById('toggle-read-aloud');
+    if (readBtn) {
+        const speechSupported = 'speechSynthesis' in window;
+        if (!speechSupported) {
+            readBtn.style.opacity = '0.4';
+            readBtn.title = 'Text-to-speech is not supported in this browser';
+            readBtn.disabled = true;
+        } else {
+            readBtn.addEventListener('click', function () {
+                if (state.speaking) {
+                    window.speechSynthesis.cancel();
+                    state.speaking = false;
+                    updateButtonStates();
+                } else {
+                    const contentEl = document.querySelector('.post-content') ||
+                                      document.querySelector('article') ||
+                                      document.body;
+                    const rawText = (contentEl.innerText || contentEl.textContent || '').replace(/\s+/g, ' ').trim();
+                    if (!rawText) return;
+
+                    // Split into sentence-aware chunks
+                    const sentences = rawText.match(/[^.!?]+[.!?]*/g) || [rawText];
+                    const chunks = [];
+                    let current = '';
+                    for (const s of sentences) {
+                        if ((current + s).length > 220 && current.length > 0) {
+                            chunks.push(current.trim());
+                            current = s;
+                        } else {
+                            current += s;
+                        }
+                    }
+                    if (current.trim()) chunks.push(current.trim());
+
+                    state.speaking = true;
+                    updateButtonStates();
+
+                    let idx = 0;
+                    function speakNext() {
+                        if (!state.speaking || idx >= chunks.length) {
+                            state.speaking = false;
+                            updateButtonStates();
+                            return;
+                        }
+                        const utt = new SpeechSynthesisUtterance(chunks[idx]);
+                        utt.lang = document.documentElement.lang || 'en-US';
+                        utt.rate = 0.95;
+                        utt.pitch = 1;
+                        utt.onend = () => { idx++; speakNext(); };
+                        utt.onerror = () => { state.speaking = false; updateButtonStates(); };
+                        window.speechSynthesis.speak(utt);
+                    }
+                    speakNext();
+                }
+            });
+        }
+    }
 
     document.getElementById('reset-a11y').addEventListener('click', function () {
-        state.dark = null;
+        if (state.speaking) { window.speechSynthesis.cancel(); state.speaking = false; }
+        state.dark     = null;
         state.fontSize = false;
         state.contrast = false;
-        state.reduceMotion = false;
         localStorage.removeItem('theme');
         localStorage.removeItem('a11y-fontSize');
         localStorage.removeItem('a11y-contrast');
-        localStorage.removeItem('a11y-reduceMotion');
         applyAll();
     });
 

@@ -130,10 +130,18 @@
             <h2 id="Presentations"><strong>Presentations</strong></h2>
             <p>IEEE Systems and Information Engineering Design Symposium (SIEDS), 2024</p>
 
+            <!-- [修改4] News 滚动模块 -->
             <h2 id="News"><strong>News</strong></h2>
-            <p>I am glad to announce that I will join the Data Science Ph.D. program at UVA. I am excited to start this new journey in the fall of 2024.</p>
+            <div class="news-feed" id="news-feed" aria-label="News feed">
+                <ul class="news-list">
+                    <li class="news-item">
+                        <span class="news-text">I am glad to announce that I will join the Data Science Ph.D. program at UVA. I am excited to start this new journey in the fall of 2024.</span>
+                        <time class="news-date" datetime="2024-05-01">May 2024</time>
+                    </li>
+                </ul>
+            </div>
 
-            <!-- [修改5] How to Reach Me 独立模块 -->
+            <!-- [修改5] How to Reach Me 独立居中模块 -->
             <div class="contact-block">
                 <p class="contact-title">How to Reach Me</p>
                 <div class="links">
@@ -185,9 +193,9 @@
                 <span class="a11y-icon">◑</span>
                 <span>High Contrast</span>
             </button>
-            <button class="a11y-option" id="toggle-reduce-motion" role="menuitem">
-                <span class="a11y-icon">⏸</span>
-                <span>Reduce Motion</span>
+            <button class="a11y-option" id="toggle-read-aloud" role="menuitem">
+                <span class="a11y-icon">▶</span>
+                <span>Read Aloud</span>
             </button>
             <button class="a11y-option" id="reset-a11y" role="menuitem">
                 <span class="a11y-icon">↺</span>

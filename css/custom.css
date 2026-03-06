@@ -15,7 +15,7 @@ html {
 }
 
 body {
-  font-size: 10.5pt;
+  font-size: 11.5pt;
   line-height: 1.9em;
   color: #1a1a1a;
   background-color: #fafaf8;
@@ -206,14 +206,18 @@ article.post-wrap.page h2.post-title {
   font-size: 1.5em;
 }
 
-/* [修改5] "How to Reach Me" 独立模块样式 */
+/* [修改5] "How to Reach Me" 独立模块样式 — 居中、缩窄 */
 .contact-block {
   margin-top: 2.5rem;
-  padding: 1.6rem 1.8rem 1.4rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.4rem 2rem 1.2rem;
   background-color: rgba(139, 115, 85, 0.05);
   border: 1px solid rgba(139, 115, 85, 0.18);
   border-radius: 8px;
   position: relative;
+  max-width: 320px;
+  text-align: center;
 }
 
 .dark-theme .contact-block {
@@ -228,7 +232,8 @@ article.post-wrap.page h2.post-title {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #8b7355;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.8rem 0;
+  text-align: center;
 }
 
 .dark-theme .contact-block .contact-title {
@@ -237,6 +242,10 @@ article.post-wrap.page h2.post-title {
 
 .contact-block .links {
   margin-top: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 0.2em;
 }
 
 .contact-block .links a {
@@ -257,6 +266,78 @@ article.post-wrap.page h2.post-title {
 
 .dark-theme .contact-block .links .iconfont {
   color: #c8a97e;
+}
+
+/* ---------- News Feed (scrollable) ---------- */
+.news-feed {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid rgba(139, 115, 85, 0.15);
+  border-radius: 6px;
+  background-color: rgba(139, 115, 85, 0.025);
+  padding: 0;
+  margin-bottom: 0.5em;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 115, 85, 0.3) transparent;
+}
+
+.news-feed::-webkit-scrollbar {
+  width: 4px;
+}
+
+.news-feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.news-feed::-webkit-scrollbar-thumb {
+  background-color: rgba(139, 115, 85, 0.3);
+  border-radius: 4px;
+}
+
+.dark-theme .news-feed {
+  border-color: rgba(139, 115, 85, 0.2);
+  background-color: rgba(139, 115, 85, 0.04);
+}
+
+.news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.news-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem 1.1rem 0.75rem;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.1);
+  gap: 0.3em;
+}
+
+.news-item:last-child {
+  border-bottom: none;
+}
+
+.news-text {
+  font-size: 0.95em;
+  line-height: 1.7em;
+  color: #2a2a2a;
+}
+
+.dark-theme .news-text {
+  color: #b0b0a8;
+}
+
+.news-date {
+  font-size: 0.75em;
+  letter-spacing: 0.06em;
+  color: #bbb;
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.dark-theme .news-date {
+  color: #666;
 }
 
 /* ---------- Post Content ---------- */
@@ -563,11 +644,11 @@ a:hover {
 
 /* Larger text */
 body.a11y-large-text {
-  font-size: 12.5pt;
+  font-size: 13.5pt;
 }
 
 body.a11y-large-text .post-wrap .post-title {
-  font-size: 2.3em;
+  font-size: 2.4em;
 }
 
 /* High contrast */
@@ -601,12 +682,12 @@ body.a11y-high-contrast.dark-theme .post-wrap .post-title {
   color: #fff !important;
 }
 
-/* Reduce motion */
-body.a11y-reduce-motion *,
-body.a11y-reduce-motion *::before,
-body.a11y-reduce-motion *::after {
-  animation-duration: 0.001ms !important;
-  transition-duration: 0.001ms !important;
+/* Reduce motion — kept for prefers-reduced-motion media query support only */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 /* ============================================================
