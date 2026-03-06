@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 44" width="140" height="44">
+  <!-- Background: none (transparent) -->
+  
+  <!-- Decorative thin horizontal line left of Z -->
+  <line x1="2" y1="22" x2="12" y2="22" stroke="#8b7355" stroke-width="0.8" opacity="0.5"/>
+  
+  <!-- Large italic Z in serif style -->
+  <text x="14" y="32" 
+        font-family="'Cormorant Garamond', 'Georgia', serif" 
+        font-size="26" 
+        font-weight="300"
+        font-style="italic"
+        fill="#5c4a32"
+        letter-spacing="-0.01em">Z</text>
+  
+  <!-- Thin vertical separator -->
+  <line x1="38" y1="12" x2="38" y2="32" stroke="#8b7355" stroke-width="0.7" opacity="0.4"/>
+  
+  <!-- Name: two lines -->
+  <text x="44" y="20" 
+        font-family="'Cormorant Garamond', 'Georgia', serif" 
+        font-size="9.5" 
+        font-weight="400"
+        fill="#5c4a32"
+        letter-spacing="0.18em">LINGZHEN</text>
+  <text x="44" y="31" 
+        font-family="'Cormorant Garamond', 'Georgia', serif" 
+        font-size="9.5" 
+        font-weight="300"
+        fill="#8b7355"
+        letter-spacing="0.22em">ZHU</text>
+</svg>
