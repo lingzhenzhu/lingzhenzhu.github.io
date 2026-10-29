@@ -34,6 +34,7 @@ export function createPage(content: Content, article = false): Page {
   };
 }
 export function blockSummary(block: Block): string {
+  if (block.type === 'firebaseRewards') return block.hidden ? 'Hidden' : 'Visible';
   if (block.type === 'teaching') return block.institution + ' · ' + block.courses.length + ' courses';
   if (block.type === 'richText') {
     const text = (node: { text?: string; content?: unknown[] }): string =>

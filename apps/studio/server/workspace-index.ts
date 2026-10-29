@@ -15,13 +15,14 @@ type Metadata = {
   status: string | null;
   title: string | null;
   pageOrder: string | null;
+  managedCards: number;
 };
 /** Routine saves read identities, versions and byte counts; unrelated page bodies never enter the Worker. */
 export async function workspaceIndex(env: Env) {
   const result = await env.DB.batch([
     env.DB.prepare('SELECT revision FROM workspace WHERE id=1'),
     env.DB.prepare(
-      "SELECT key,revision,coalesce(length(CAST(document AS BLOB)),0) AS bytes,json_extract(document,'$.id') AS id,json_extract(document,'$.path') AS path,json_extract(document,'$.status') AS status,json_extract(document,'$.title') AS title,CASE WHEN key='pageOrder' THEN document ELSE NULL END AS pageOrder FROM content_resources",
+      "SELECT key,revision,coalesce(length(CAST(document AS BLOB)),0) AS bytes,json_extract(document,'$.id') AS id,json_extract(document,'$.path') AS path,json_extract(document,'$.status') AS status,json_extract(document,'$.title') AS title,CASE WHEN key='pageOrder' THEN document ELSE NULL END AS pageOrder,(SELECT count(*) FROM json_each(content_resources.document,'$.blocks') b WHERE json_extract(b.value,'$.type')='firebaseRewards') AS managedCards FROM content_resources",
     ),
   ]);
   const state = result[0].results[0] as { revision: number } | undefined;
@@ -56,9 +57,16 @@ export function validateWorkspaceChange(
       status: page?.status ?? null,
       title: page?.title ?? null,
       pageOrder: change.key === 'pageOrder' ? json : null,
+      managedCards: page?.blocks.filter((block) => block.type === 'firebaseRewards').length ?? 0,
     });
   }
   const pages = [...next.values()].filter((row) => row.key.startsWith('page:') && row.id !== null);
+  const beforeCards = index.rows.reduce((sum, row) => sum + row.managedCards, 0);
+  const afterCards = [...next.values()].reduce((sum, row) => sum + row.managedCards, 0);
+  if (afterCards > 1 || beforeCards !== afterCards)
+    throw new Error(
+      'The existing Firebase card can only be moved or hidden. Move it before deleting its page.',
+    );
   const order = JSON.parse(next.get('pageOrder')?.pageOrder || 'null') as string[] | null;
   const ids = new Set(pages.map((page) => page.id));
   if (!order || order.length !== pages.length || order.some((id) => !ids.has(id)))

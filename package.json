@@ -23,6 +23,7 @@
     "audit:output": "tsx scripts/audit-output.ts",
     "audit:performance": "node scripts/audit-performance.mjs",
     "backend:check": "tsx scripts/preflight.ts",
+    "deploy:studio": "tsx scripts/deploy-studio.ts",
     "backend:probe": "tsx scripts/backend-probe.ts",
     "backup:rehearse": "node scripts/restore-rehearsal.mjs",
     "migration:export": "tsx scripts/export-legacy-rewards.ts"

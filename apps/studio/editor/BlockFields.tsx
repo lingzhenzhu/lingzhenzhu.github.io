@@ -191,6 +191,21 @@ export const blockEditors = {
       <Button onClick={() => setSection('rewards')}>Manage requests & balance</Button>
     </>
   ),
+  firebaseRewards: ({ block, updateBlock }) => (
+    <>
+      <p className="field-help">
+        This card uses Firebase. Its balance and history are managed on the card page.
+      </p>
+      <label className="check">
+        <input
+          type="checkbox"
+          checked={!block.hidden}
+          onChange={(event) => updateBlock(block.id, { hidden: !event.target.checked })}
+        />
+        Show this card
+      </label>
+    </>
+  ),
 } satisfies ModuleAdapters<EditorContext, ReactNode>;
 
 export function BlockFields(props: Props) {

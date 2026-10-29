@@ -1,6 +1,6 @@
 import { Button, Pagination } from './controls';
 import { usePagination } from './usePagination';
-import { moduleDefinitions } from '@lzzhu/content';
+import { moduleDefinitions, moduleCapabilities } from '@lzzhu/content';
 import { SharedSourceNotice } from './SharedSourceNotice';
 import { useState } from 'react';
 import type { CollectionProps } from './types';
@@ -37,8 +37,13 @@ export function TransferSection({
     .find((page) => page.id === pageId)
     ?.blocks.find((block) => block.id === blockId);
   const source = block && moduleDefinitions[block.type].sharedSource;
+  const canCopy = !!block && moduleCapabilities(block.type).copy;
   return (
-    <Dialog title="Move or copy section" returnFocusTo={returnFocusTo} onClose={onClose}>
+    <Dialog
+      title={canCopy ? 'Move or copy section' : 'Move section'}
+      returnFocusTo={returnFocusTo}
+      onClose={onClose}
+    >
       <div className="writing-modes" aria-label="Transfer action">
         <Button
           data-dialog-focus
@@ -50,15 +55,17 @@ export function TransferSection({
         >
           <Icon name="move" /> Move
         </Button>
-        <Button
-          aria-pressed={mode === 'copy'}
-          onClick={() => {
-            setMode('copy');
-            setTargets([]);
-          }}
-        >
-          <Icon name="copy" /> Copy to pages
-        </Button>
+        {canCopy && (
+          <Button
+            aria-pressed={mode === 'copy'}
+            onClick={() => {
+              setMode('copy');
+              setTargets([]);
+            }}
+          >
+            <Icon name="copy" /> Copy to pages
+          </Button>
+        )}
       </div>
       <p>
         {mode === 'move'

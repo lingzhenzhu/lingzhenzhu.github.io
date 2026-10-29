@@ -1,5 +1,5 @@
 import type { Content } from './index';
-import { moduleDefinitions } from './module-contracts';
+import { moduleCapabilities, moduleDefinitions } from './module-contracts';
 
 /** Stable identifiers, not captured array positions, are the editing boundary. */
 export function reorder<T extends { id: string }>(items: T[], id: string, to: number): T[] {
@@ -42,6 +42,7 @@ export function copySection(content: Content, sourceId: string, blockId: string,
   if (!block || !targets.length) throw new Error('Choose at least one destination.');
   if (moduleDefinitions[block.type].allowedPath)
     throw new Error('This section must stay on its protected page.');
+  if (!moduleCapabilities(block.type).copy) throw new Error('This existing section cannot be copied.');
   const ids = new Set(targets);
   if (targets.some((id) => !content.pages.some((page) => page.id === id)))
     throw new Error('A destination page no longer exists.');

@@ -2321,12 +2321,8 @@
         {
           "id": "request-application",
           "version": 1,
-          "type": "rewards",
-          "title": "任意要求卡",
-          "issuer": "签发人：朱苓榛老公",
-          "recipient": "授予人：杜沐老婆",
-          "prompt": "尊敬的老婆大人，请输入你的具体要求：",
-          "submitLabel": "提交申请"
+          "type": "firebaseRewards",
+          "hidden": false
         }
       ],
       "revision": 0

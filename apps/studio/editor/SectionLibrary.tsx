@@ -1,13 +1,13 @@
 import { Button } from './controls';
 import { useState } from 'react';
-import { newBlock, moduleDefinitions, type Block, type BlockType } from '@lzzhu/content';
+import { newBlock, moduleDefinitions, moduleCapabilities, type Block, type BlockType } from '@lzzhu/content';
 import { blockNames } from './page-model';
 import { Dialog, Icon } from './ui';
 const catalog = [...new Set(Object.values(moduleDefinitions).map((definition) => definition.group))].map(
   (group) => ({
     group,
     items: (Object.keys(moduleDefinitions) as BlockType[])
-      .filter((type) => moduleDefinitions[type].group === group)
+      .filter((type) => moduleDefinitions[type].group === group && moduleCapabilities(type).add)
       .map((type) => ({ type, ...moduleDefinitions[type] })),
   }),
 );

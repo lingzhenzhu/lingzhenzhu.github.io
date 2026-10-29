@@ -142,10 +142,13 @@ export function PageSettings({
       <div className="danger-zone">
         <h3>Delete page</h3>
         <p>Remove this page from your draft and the next publication.</p>
+        {page.blocks.some((block) => block.type === 'firebaseRewards') && (
+          <p>Move the existing Firebase card to another page before deleting this page.</p>
+        )}
         <Button
           compactIcons="keep"
           className="danger"
-          disabled={home}
+          disabled={home || page.blocks.some((block) => block.type === 'firebaseRewards')}
           onClick={(event) => onDelete(event.currentTarget)}
         >
           Delete page

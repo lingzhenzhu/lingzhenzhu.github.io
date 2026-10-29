@@ -220,10 +220,10 @@ export const moduleDefinitions = {
     initial: () => ({ title: 'Podcast', url: 'https://embed.podcasts.apple.com/' }),
   },
   rewards: {
-    label: 'Request card',
+    label: 'Request card · Cloudflare',
     group: 'Feeds and links',
-    icon: 'pages',
-    description: 'Available only on the protected request page.',
+    icon: 'cloudflare',
+    description: 'A card protected by Cloudflare Access.',
     sharedSource: null,
     allowedPath: '/woaidumuyibeizi/',
     schema: z.object({
@@ -243,6 +243,22 @@ export const moduleDefinitions = {
       submitLabel: '提交申请',
     }),
   },
+  firebaseRewards: {
+    label: 'Request card · Firebase',
+    group: 'Feeds and links',
+    icon: 'firebase',
+    description: 'The existing Firebase card. Move or hide this section.',
+    sharedSource: null,
+    allowedPath: null,
+    managedInstance: true,
+    schema: z.object({
+      id: z.literal('request-application'),
+      version: z.literal(1).default(1),
+      type: z.literal('firebaseRewards'),
+      hidden: z.boolean().default(false),
+    }),
+    initial: () => ({ hidden: false }),
+  },
 } as const;
 export type BlockType = keyof typeof moduleDefinitions;
 const schemas = Object.values(moduleDefinitions).map((definition) => definition.schema);
@@ -256,5 +272,19 @@ export type ModuleAdapters<Props, Result> = {
 };
 export function newBlock(type: BlockType): Block {
   const definition = moduleDefinitions[type];
+  if (!moduleCapabilities(type).add) throw new Error('This existing section cannot be added or duplicated.');
   return definition.schema.parse({ id: crypto.randomUUID(), version: 1, type, ...definition.initial() });
+}
+
+export function moduleCapabilities(type: BlockType) {
+  const definition = moduleDefinitions[type];
+  const managed = 'managedInstance' in definition && definition.managedInstance;
+  return {
+    add: !managed,
+    copy: !managed && !definition.allowedPath,
+    remove: !managed,
+    edit: !managed,
+    move: !definition.allowedPath,
+    hide: managed,
+  };
 }

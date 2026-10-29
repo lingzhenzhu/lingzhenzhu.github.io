@@ -77,8 +77,9 @@ describe('Modular editorial operations', () => {
       b = result.pages.find((page) => page.id === 'media')!.blocks[0];
     expect(a.id).not.toBe(b.id);
     expect(a.id).not.toBe(block.id);
-    const card = content.pages.find((page) => page.blocks.some((block) => block.type === 'rewards'))!;
-    const reward = card.blocks.find((block) => block.type === 'rewards')!;
+    const card = content.pages.find((page) => page.id === 'request-card')!;
+    const reward = newBlock('rewards');
+    card.blocks = [reward];
     expect(() => moveSection(content, card.id, reward.id, 'home')).toThrow('protected');
     expect(() => copySection(content, card.id, reward.id, ['home'])).toThrow('protected');
     expect(() => moveSection(content, home.id, block.id, 'missing')).toThrow();

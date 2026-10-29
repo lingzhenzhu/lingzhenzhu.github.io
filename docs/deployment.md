@@ -1,6 +1,8 @@
 # 首次上线与运维
 
-本地代码已经具备构建和集成测试能力；下面涉及实际账户的配置不能由占位值代替。**当前未部署线上**。2026-10-24 检查时，本机 Cloudflare 登录令牌已经过期。
+本地代码已经具备构建和集成测试能力；下面涉及实际账户的配置不能由占位值代替。**当前未部署线上**。2026-10-24 检查时，本机 Cloudflare 登录令牌已经过期；实际部署前重新检查账户状态。
+
+2026-10-30 更新：网站后台、内容与图片存储、GitHub 发布流程见 [网站上线配置步骤](launch-setup.md)。旧申请卡接入改为现有 Firebase RTDB，公开查看、提交，管理员在卡片内输入密码；设置步骤见 [Firebase 申请卡](firebase-card-setup.md)。网站 `/admin/` 继续使用 Cloudflare Access。代码已准备，线上凭据、规则与切换仍需完成。
 
 ## 1. 固定边界
 
@@ -8,14 +10,14 @@
 | ----------------------------------------- | ---------------------------------------------- |
 | www.lzzhu.net 普通页面与 /assets/         | GitHub Pages，经 Cloudflare 代理               |
 | www.lzzhu.net/admin 与 /admin/ 下全部路径 | Cloudflare Access → Worker → 私有后台          |
-| www.lzzhu.net/api/*                       | 同一个 Worker；Medium 公开，申请卡需收件人认证 |
+| www.lzzhu.net/api/*                       | 同一个 Worker；Medium 和 Firebase 卡公开，Cloudflare 卡 API 需收件人认证 |
 | lzzhu.net 及其他子域名                    | 本项目不管理                                   |
 
 www 的 DNS 保持指向现有 GitHub Pages，启用代理。Worker 的路径路由要求该主机经过 Cloudflare。不要增加整个域名的 Worker Custom Domain，也不要把裸域名或其他子域名接入本应用。现有 /admin* 路由会截获 /admin 以及其后缀；未定义路径返回 404。
 
 Cloudflare Access 创建 self-hosted application，包含 www.lzzhu.net/admin 与 www.lzzhu.net/admin/*，白名单只允许管理者身份，并启用登录提供方的 MFA。构建服务使用单独的 Service Auth policy，不设置 Bypass。
 
-申请卡采用第二个独立 Access application，覆盖 `www.lzzhu.net/woaidumuyibeizi`、`www.lzzhu.net/woaidumuyibeizi/*`、`www.lzzhu.net/api/rewards`。只允许收件人及管理者邮箱；不允许构建服务。Worker 对余额与历史 GET、提交 POST 都验证此应用的独立 audience 和邮箱白名单。静态页面只包含界面模板，余额与历史始终来自受保护接口；GitHub Pages 源站上的模板不是秘密数据存储。
+旧卡以单例 `firebaseRewards` 模块保存，只能移动、隐藏和恢复显示；数据库保持 RTDB，不迁移余额至 D1。现有 Cloudflare/D1 卡实现保留为另一种模块。整站 Pages 发布会替换整个输出目录，旧卡的正式切换须按 Firebase 配置指南协调新接口、数据库规则和旧代理停用。
 
 ## 2. 资源与参数
 
@@ -28,9 +30,10 @@ Cloudflare Access 创建 self-hosted application，包含 www.lzzhu.net/admin �
 - ACCESS_AUD：此 Access application 的 audience。
 - ADMIN_EMAILS：管理者邮箱，逗号分隔。
 - BUILD_SERVICE_ID：构建服务 Access JWT 的 common_name，须与实际服务令牌身份一致。
-- SOURCE_COMMIT：已经审查、已经推送到 GitHub 的完整 40 位源码提交 SHA。
-- REWARDS_ACCESS_AUD：申请卡应用独立 audience，不能与管理员应用相同。
-- REWARDS_EMAILS：被授权收件人邮箱；管理者邮箱同时由 ADMIN_EMAILS 管理。
+
+`SOURCE_COMMIT` 由 `pnpm deploy:studio` 自动读取并注入，不再写入配置文件。命令核对 GitHub 默认分支的实际提交，拒绝未提交的源码和未合并的版本，再执行预检、校验、构建和输出检查；本地账户配置可以保留在 wrangler.jsonc。构建完成后再次核对代码与配置，防止构建期间发生变化。部署仍固定到完整提交 SHA，不使用随时变化的分支名作为发布版本。
+
+`REWARDS_ACCESS_AUD` 和 `REWARDS_EMAILS` 仅用于 Cloudflare 卡，可一起留空；若填写必须完整且与网站后台 audience 不同。生产发布包含 Cloudflare 卡时强制检查。Firebase 使用独立的 `FIREBASE_*` 配置及 Secret；包含可见 Firebase 卡的生产发布要求先启用它。`backend:probe` 将旧卡页面视为公开页面，仍检查 Cloudflare 卡 API 的认证边界。
 
 保留 `images.binding = IMAGES`，启用 Cloudflare Images binding 供上传时读取尺寸并实际解码。它不负责公开站图片分发；完整原图仍存私有 R2，公开响应式图片由发布构建生成。先在测试账户确认 Images 权限、额度和实际 JPEG/PNG/WebP 解码行为。[Cloudflare Images binding](https://developers.cloudflare.com/images/optimization/binding/)
 
@@ -46,9 +49,9 @@ workers.dev 与 preview URLs 已禁用，静态后台资源也必须先经过 Wo
 
 1. 保留当前线上部署。先把 GitHub Pages 的发布来源改为 GitHub Actions，避免源码分支中的旧根目录 HTML 删除时自动发布空站。
 2. 将审查后的重构源码推送并合入默认分支，让 repository_dispatch 能找到 publish.yml。不要使用旧的“根目录生成 HTML 就立即发布”工作流。
-3. 执行 pnpm install --frozen-lockfile、pnpm verify、pnpm audit:output 和浏览器测试。填好 SOURCE_COMMIT。
-4. 对新建的远端 D1 执行 migrations apply。初始内容采用经核对的当前本地草稿快照；`content/site.json` 只用于空白开发与测试库。首次初始化完成后，不再通过种子文件更新编辑内容。
-5. 构建后台，再部署 Worker。确认 /admin/ 会进入 Access 登录，未认证的 API 返回 401，缓存规则不会缓存 /admin* 或 /api/*。
+3. 执行 pnpm install --frozen-lockfile 和所需浏览器测试；提交并合并经过检查的代码。部署命令自动执行预检、pnpm verify 和 pnpm audit:output，并确定 SOURCE_COMMIT。
+4. 对新建的远端 D1 执行 migrations apply。初始内容采用经核对的当前本地草稿快照；`content/site.json` 只用于空白开发与测试库。另行迁移本地上传原图及 D1 素材元数据，逐项核对对象键和哈希。首次初始化完成后，不再通过种子文件更新编辑内容。
+5. 构建后台，再部署 Worker。部署会上传服务端与 Admin 静态文件，并应用 DB、PRIVATE、IMAGES、ASSETS 绑定；不会代替建表或数据迁移。确认 /admin/ 会进入 Access 登录，未认证的 API 返回 401，缓存规则不会缓存 /admin* 或 /api/*。
 6. 管理后台打开页面、预览、上传测试头像、保存草稿。检查全部导航和无障碍功能后，点击发布。
 7. GitHub Pages 部署成功后，检查 /_release.json 与后台 active 版本一致；核对所有原有公开页面。
 
@@ -58,15 +61,14 @@ workers.dev 与 preview URLs 已禁用，静态后台资源也必须先经过 Wo
 node scripts/tool.mjs wrangler login
 node scripts/tool.mjs wrangler whoami
 node scripts/tool.mjs wrangler d1 migrations apply website-content --remote --config apps/studio/wrangler.jsonc
-pnpm --filter @lzzhu/studio build
-pnpm --filter @lzzhu/studio deploy
+pnpm deploy:studio
 ```
 
-先从日常预览 `/admin/api/content` 只读导出当前草稿到被 Git 忽略的私有目录，再执行 `pnpm exec tsx scripts/seed-local.ts --snapshot .artifacts/scenario-audit/current.json --output .artifacts/scenario-audit/backend-seed.sql`，生成待核对的初始化 SQL。这个命令不会连接数据库。文件内每条 SQL 均分段限制长度；同一导入文件可在中断后重试，完成后关闭初始化入口，另一份种子不能覆盖或补写现有工作区。核对页面、私有内容、目标资源后，才在空白测试 D1 执行。不要上传本地测试数据库。
+先核对日常预览实际使用的本地数据库，再从 `/admin/api/content` 只读导出当前草稿到被 Git 忽略的私有目录。数据库 ID 改变后可能打开新的空库，不能以此覆盖原有草稿。核对内容结构后执行 `pnpm exec tsx scripts/seed-local.ts --snapshot .artifacts/private-deploy/current-content.json --output .artifacts/private-deploy/initial-content.sql`，生成待核对的初始化 SQL；这些文件需在实际迁移时重新生成，不能使用旧 scenario-audit 种子替代。这个命令不会连接数据库。文件内每条 SQL 均分段限制长度；同一导入文件可在中断后重试，完成后关闭初始化入口，另一份种子不能覆盖或补写现有工作区。核对页面、私有内容、目标资源后，才在空白测试 D1 执行。素材迁移不包含在内容 SQL 中，完整顺序和当前未完成事项见 [上线步骤第 9 节](launch-setup.md#9-初始化数据并上传真正的后台程序)。不要上传本地测试数据库。
 
 已有旧结构数据库升级时，先做一致性备份，再执行 `0003_resource_storage.sql`。该迁移保留当前草稿及旧修订记录，拆为页面/共享内容行后删除旧整站表；运行时没有两套读写逻辑。本地日常草稿已完成演练、迁移及逐项比较；远端测试库仍需独立验证。迁移失败时恢复备份，不手工拼接两套表。
 
-申请卡的旧状态必须单独处理：用户已经授权只读导出并准备迁移，但 2026-10-24 原服务 /get-state 返回 HTTP 500，尚未取得有效数据。不要把新数据库的初始 0 次当作原余额。切换该功能前恢复旧服务读取或取得可靠备份，再导入余额和记录；无法取得数据时先保持该功能的上线切换待办。完成迁移后，旧服务的管理接口是否停用，需要在它所属的账户中处理，本项目不会擅自修改其他服务。
+申请卡旧状态继续保存在 Firebase。2026-10-30 已直接只读导出 RTDB，余额及两条历史记录已保存到被 Git 忽略的 `.artifacts/private-migration/`，未修改远程数据或规则。切换前再备份最新状态。`0004_firebase_card.sql` 只迁移网站当前/历史页面的模块类型，不修改 Cloudflare/D1 或 Firebase 的余额和记录。
 
 ## 4. 验收与缓存
 

@@ -150,6 +150,15 @@ export const ContentSchema = z
     medium: z.array(MediumSchema).max(1000),
   })
   .superRefine((content, ctx) => {
+    if (
+      content.pages.flatMap((page) => page.blocks).filter((block) => block.type === 'firebaseRewards')
+        .length > 1
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['pages'],
+        message: 'The existing Firebase card can only appear once.',
+      });
     if (new TextEncoder().encode(JSON.stringify(content)).byteLength > WORKSPACE_BYTES)
       ctx.addIssue({
         code: 'custom',

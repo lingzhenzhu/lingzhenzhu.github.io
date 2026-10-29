@@ -15,20 +15,24 @@
   "vars": {
     "ENVIRONMENT": "production",
     "PUBLIC_ORIGIN": "https://www.lzzhu.net",
-    "ACCESS_ISSUER": "",
-    "ACCESS_AUD": "",
+    "ACCESS_ISSUER": "https://lzzhu.cloudflareaccess.com",
+    "ACCESS_AUD": "d39166553187530ef64f449dc99774fb2385eb98451329ed5c213f0f2c4f7b6f",
     "REWARDS_ACCESS_AUD": "",
     "REWARDS_EMAILS": "",
-    "ADMIN_EMAILS": "",
-    "BUILD_SERVICE_ID": "",
-    "GITHUB_REPOSITORY": "lingzhenzhu/lingzhenzhu.github.io",
-    "SOURCE_COMMIT": ""
+    "FIREBASE_CARD_ENABLED": "1",
+    "FIREBASE_PROJECT_ID": "card-84e16",
+    "FIREBASE_DATABASE_URL": "https://card-84e16-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "FIREBASE_ADMIN_EMAIL": "admin@lzzhu.net",
+    "FIREBASE_ADMIN_UID": "yBTVxrrCgQTXNVKlB95yV1LlX6U2",
+    "ADMIN_EMAILS": "admin@lzzhu.net",
+    "BUILD_SERVICE_ID": "fb23048735c8de1880b14803f5f8b33b.access",
+    "GITHUB_REPOSITORY": "lingzhenzhu/lingzhenzhu.github.io"
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "website-content",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "e6859c9a-ee46-4121-b9e3-3b1338c47a6a",
       "migrations_dir": "./migrations"
     }
   ],

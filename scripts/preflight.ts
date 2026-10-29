@@ -13,9 +13,10 @@ if (
   throw new Error(
     'Configure Access issuer, audience, administrator emails and build identity before deploying',
   );
-if (!/^[a-f0-9]{40}$/.test(vars.SOURCE_COMMIT))
-  throw new Error('SOURCE_COMMIT must be the reviewed source revision');
-if (!vars.REWARDS_ACCESS_AUD || vars.REWARDS_ACCESS_AUD === vars.ACCESS_AUD || !vars.REWARDS_EMAILS)
+if (
+  (vars.REWARDS_ACCESS_AUD || vars.REWARDS_EMAILS) &&
+  (!vars.REWARDS_ACCESS_AUD || vars.REWARDS_ACCESS_AUD === vars.ACCESS_AUD || !vars.REWARDS_EMAILS)
+)
   throw new Error('Configure a separate recipient Access application and recipient emails');
 if (!config.d1_databases[0].database_id || config.d1_databases[0].database_id.startsWith('00000000'))
   throw new Error('Replace the D1 database placeholder');

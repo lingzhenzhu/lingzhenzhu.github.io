@@ -2,6 +2,7 @@ import { Button } from './controls';
 import React, { useEffect, useState } from 'react';
 import { api, send } from './api';
 import { ConfirmDialog } from './controls';
+import { Icon } from './icons';
 type State = {
   remaining: number;
   revision: number;
@@ -26,7 +27,13 @@ export function Rewards() {
   }, []);
   return (
     <div className="collection">
-      <h1>Request card</h1>
+      <h1>
+        <Icon name="cloudflare" /> Request card
+      </h1>
+      <p>
+        Cloudflare · Manage the protected card here. The existing Firebase card has its own administrator
+        login on the card page.
+      </p>
       {error && <p role="alert">{error}</p>}
       <Button compactIcons="keep" onClick={() => run(() => api('/rewards'))}>
         Refresh

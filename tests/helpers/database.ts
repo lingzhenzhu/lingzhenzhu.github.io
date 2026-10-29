@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 export function testDatabase(legacy = false) {
   const sqlite = new DatabaseSync(':memory:');
   sqlite.exec(readFileSync('apps/studio/migrations/0001_initial.sql', 'utf8'));
+  sqlite.exec(readFileSync('apps/studio/migrations/0002_rewards.sql', 'utf8'));
   if (!legacy) sqlite.exec(readFileSync('apps/studio/migrations/0003_resource_storage.sql', 'utf8'));
   class Statement {
     constructor(

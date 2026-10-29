@@ -1,6 +1,6 @@
 import { ConfirmDialog, Button } from './controls';
 import { useEffect, useRef, useState } from 'react';
-import { type Block, type Page } from '@lzzhu/content';
+import { moduleCapabilities, moduleDefinitions, type Block, type Page } from '@lzzhu/content';
 import type { CollectionProps, RunTask } from './types';
 import { BlockFields } from './BlockFields';
 import { HomeOpening } from './HomeOpening';
@@ -221,7 +221,9 @@ export function PageEditor({
                       >
                         <span className="row-index">{String(index + 1).padStart(2, '0')}</span>
                         <span>
-                          <strong>{blockNames[block.type]}</strong>
+                          <strong>
+                            <Icon name={moduleDefinitions[block.type].icon} /> {blockNames[block.type]}
+                          </strong>
                           <small>{blockSummary(block)}</small>
                         </span>
                         <Icon name="arrow" />
@@ -257,7 +259,7 @@ export function PageEditor({
                             <Icon name="down" /> Move down
                           </Button>
                           <Button
-                            disabled={block.type === 'rewards'}
+                            disabled={!moduleCapabilities(block.type).move}
                             onClick={(event) => {
                               dialogTrigger.current = event.currentTarget;
                               setMoving(block.id);
@@ -265,15 +267,17 @@ export function PageEditor({
                           >
                             <Icon name="move" /> Move to page…
                           </Button>
-                          <Button
-                            className="danger"
-                            onClick={(event) => {
-                              dialogTrigger.current = event.currentTarget;
-                              setRemoveBlock(block.id);
-                            }}
-                          >
-                            <Icon name="trash" /> Remove section
-                          </Button>
+                          {moduleCapabilities(block.type).remove && (
+                            <Button
+                              className="danger"
+                              onClick={(event) => {
+                                dialogTrigger.current = event.currentTarget;
+                                setRemoveBlock(block.id);
+                              }}
+                            >
+                              <Icon name="trash" /> Remove section
+                            </Button>
+                          )}
                         </div>
                       </>
                     )}

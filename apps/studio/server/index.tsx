@@ -29,6 +29,7 @@ import {
 } from './releases';
 import { sha256, type AppEnv, type Env } from './types';
 import { rewards } from './rewards';
+import { firebaseCard } from './firebase/routes';
 import { assets } from './assets';
 import { health } from './health';
 import { artifactKey, storeReleaseArtifact } from './release-artifacts';
@@ -56,6 +57,7 @@ app.use('/admin/api/*', async (c, next) =>
 );
 app.use('/api/*', bodyLimit({ maxSize: 4096 }));
 app.route('/', rewards);
+app.route('/', firebaseCard);
 app.get('/api/medium', async (c) => {
   const state = await c.env.DB.prepare('SELECT active_id FROM site_state WHERE id=1').first<{
     active_id: string | null;

@@ -1,13 +1,17 @@
-type State = { remaining: number; requests: { text: string }[] };
+import { initFirebaseAdmin } from './firebase-admin';
+export type CardState = { remaining: number; revision: number; requests: { text: string }[] };
 export function initRewards(root: HTMLElement) {
   if (root.dataset.preview === 'true') return () => {};
   const abort = new AbortController();
+  const firebase = root.dataset.provider === 'firebase';
+  let current: CardState | undefined;
   const form = root.querySelector<HTMLFormElement>('form')!;
   const status = root.querySelector<HTMLElement>('[data-rewards-status]')!;
   const button = form.querySelector<HTMLButtonElement>('button')!;
   let requestId = crypto.randomUUID();
   let previous = '';
-  const show = (state: State) => {
+  const show = (state: CardState) => {
+    current = state;
     root.querySelector('[data-rewards-balance]')!.textContent = String(state.remaining);
     const history = root.querySelector('[data-rewards-history]')!;
     history.replaceChildren(
@@ -23,13 +27,17 @@ export function initRewards(root: HTMLElement) {
     status.textContent = message;
   };
   const request = async (init?: RequestInit) => {
-    const response = await fetch('/api/rewards', { ...init, signal: abort.signal, cache: 'no-store' });
+    const response = await fetch(firebase ? '/api/firebase-card' : '/api/rewards', {
+      ...init,
+      signal: abort.signal,
+      cache: 'no-store',
+    });
     if (
       [401, 403].includes(response.status) ||
       !response.headers.get('Content-Type')?.includes('application/json')
     )
-      throw new Error('请刷新页面，以指定收件人身份重新登录');
-    const body = (await response.json()) as State & { error?: string };
+      throw new Error(firebase ? '暂时无法连接申请卡，请稍后重试' : '请刷新页面，以指定收件人身份重新登录');
+    const body = (await response.json()) as CardState & { error?: string };
     if (!response.ok) throw new Error(body.error || '请求失败');
     show(body);
   };
@@ -67,5 +75,17 @@ export function initRewards(root: HTMLElement) {
     },
     { signal: abort.signal },
   );
-  return () => abort.abort();
+  const cleanupAdmin = firebase
+    ? initFirebaseAdmin(
+        root,
+        () => current,
+        show,
+        () => request(),
+        abort.signal,
+      )
+    : () => {};
+  return () => {
+    cleanupAdmin();
+    abort.abort();
+  };
 }

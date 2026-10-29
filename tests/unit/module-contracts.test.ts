@@ -7,6 +7,7 @@ import {
   BlockSchema,
   newBlock,
   moduleDefinitions,
+  moduleCapabilities,
   type BlockType,
 } from '../../packages/content/src/module-contracts';
 import seed from '../../content/site.json';
@@ -16,6 +17,10 @@ describe('module contract extraction', () => {
     const content = ContentSchema.parse(seed);
     expect(Object.keys(blockRenderers).sort()).toEqual(Object.keys(moduleDefinitions).sort());
     for (const type of Object.keys(moduleDefinitions) as BlockType[]) {
+      if (!moduleCapabilities(type).add) {
+        expect(() => newBlock(type)).toThrow('cannot be added');
+        continue;
+      }
       const before = newBlock(type),
         after = newBlock(type);
       expect(before.id).not.toBe(after.id);

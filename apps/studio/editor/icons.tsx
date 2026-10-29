@@ -1,6 +1,8 @@
 export function Icon({ name }: { name: string }) {
   const paths: Record<string, string> = {
     add: 'M12 5v14M5 12h14',
+    cloudflare: 'M2 16h13l1-3a5 5 0 0 0-9-4 3 3 0 0 0-4 3 3 3 0 0 0-1 4Zm15 0h5a4 4 0 0 0-5-5M2 19h20',
+    firebase: 'm4 18 2-15 5 9 3-7 6 13-8 4-8-4Zm0 0 7-6 9 6M6 3l6 10',
     link: 'm10 13 4-4M8 16l-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0M16 8l1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0',
     news: 'M4 4h13v17H4zM17 8h4v13h-4M7 8h7M7 12h7M7 16h5',
     medium: 'M3 6v12M3 6l5 8 5-8v12M18 6h3M18 18h3M19.5 6v12',

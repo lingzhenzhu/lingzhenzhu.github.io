@@ -40,6 +40,12 @@ test('every published page renders at desktop and phone widths without broken lo
   page.on('pageerror', (e) => errors.push(e.message));
   await page.route('**/api/medium', (route) => route.fulfill({ status: 503, json: {} }));
   await page.route('**/api/rewards', (route) => route.fulfill({ json: { remaining: 0, requests: [] } }));
+  await page.route('**/api/firebase-card', (route) =>
+    route.fulfill({ json: { remaining: 0, revision: 0, requests: [] } }),
+  );
+  await page.route('**/api/firebase-card/session', (route) =>
+    route.fulfill({ json: { authenticated: false } }),
+  );
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const item of content.pages.filter((p) => p.status === 'published')) {

@@ -9,6 +9,7 @@ for (const pathname of [
   '/admin/api/assets',
   '/woaidumuyibeizi/',
   '/api/rewards',
+  '/api/firebase-card',
   '/api/medium',
   '/_release.json',
 ]) {
@@ -18,7 +19,7 @@ for (const pathname of [
       signal: AbortSignal.timeout(15000),
     });
     const privateRoute =
-      pathname.startsWith('/admin') || ['/woaidumuyibeizi/', '/api/rewards'].includes(pathname);
+      pathname.startsWith('/admin') || pathname === '/api/rewards';
     const location = response.headers.get('location');
     const login = !!location && new URL(location, origin).hostname.endsWith('.cloudflareaccess.com');
     checks.push({

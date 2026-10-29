@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { RequestCard } from './RequestCard';
 import { type Content, type Block, type ModuleAdapters } from '@lzzhu/content';
 import { RichText } from './rich-text';
 import { Icon } from './icons';
@@ -168,37 +169,8 @@ export const blockRenderers = {
       allow="autoplay *; encrypted-media *; fullscreen *"
     />
   ),
-  rewards: ({ block, preview }) => (
-    <section className="rewards" aria-label={block.title} data-rewards data-preview={String(preview)}>
-      <p>
-        剩余次数：<span data-rewards-balance>–</span> 次
-      </p>
-      <p>{block.issuer}</p>
-      <p>{block.recipient}</p>
-      <div className="rewards-box">
-        <h2 data-heading-level="3" className="rewards-heading">
-          提交请求
-        </h2>
-        <form data-rewards-form>
-          <label htmlFor={'request-' + block.id}>{block.prompt}</label>
-          <br />
-          <input id={'request-' + block.id} name="request" required maxLength={500} />
-          <br />
-          <button type="submit">{block.submitLabel}</button>
-          <p role="status" data-rewards-status hidden />
-        </form>
-      </div>
-      <div className="rewards-box">
-        <h2 data-heading-level="3" className="rewards-heading">
-          申请记录
-        </h2>
-        <ul data-rewards-history />
-      </div>
-      <div className="rewards-login">
-        管理员：<a href="/admin/#rewards">登录</a>
-      </div>
-    </section>
-  ),
+  rewards: ({ block, preview }) => <RequestCard block={block} preview={preview} />,
+  firebaseRewards: ({ block, preview }) => <RequestCard block={block} preview={preview} />,
 } satisfies ModuleAdapters<RenderContext, ReactNode>;
 
 export function RenderBlock({

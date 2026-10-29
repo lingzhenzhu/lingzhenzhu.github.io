@@ -5,7 +5,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build && node ../../scripts/tool.mjs wrangler dev --local --ip 127.0.0.1 --port 8787 --host 127.0.0.1 --var ENVIRONMENT:local --var LOCAL_DEV_AUTH:1",
-    "deploy": "tsx ../../scripts/preflight.ts && node ../../scripts/tool.mjs wrangler deploy"
+    "deploy": "tsx ../../scripts/deploy-studio.ts"
   },
   "dependencies": {
     "@lzzhu/content": "workspace:*",

@@ -19,6 +19,13 @@ export interface Env {
   GITHUB_PRIVATE_KEY: string;
   SOURCE_COMMIT: string;
   TURNSTILE_SECRET?: string;
+  FIREBASE_CARD_ENABLED?: string;
+  FIREBASE_PROJECT_ID?: string;
+  FIREBASE_DATABASE_URL?: string;
+  FIREBASE_ADMIN_EMAIL?: string;
+  FIREBASE_ADMIN_UID?: string;
+  FIREBASE_WEB_API_KEY?: string;
+  FIREBASE_SERVICE_ACCOUNT?: string;
 }
 export type Identity = { id: string; role: 'editor' | 'build'; local: boolean };
 export type AppEnv = {

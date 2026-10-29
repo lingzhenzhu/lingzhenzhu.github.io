@@ -1,7 +1,8 @@
 import { importPKCS8, SignJWT } from 'jose';
 import { ContentSchema, publicSnapshot, type Content } from '@lzzhu/content';
 import { sha256, type Env, type Release } from './types';
-import { audit, Conflict } from './repository';
+import { audit, Conflict, InvalidContent } from './repository';
+import { firebaseConfig } from './firebase/config';
 
 export async function githubToken(env: Env): Promise<string> {
   if (!env.GITHUB_APP_ID || !env.GITHUB_INSTALLATION_ID || !env.GITHUB_PRIVATE_KEY)
@@ -47,6 +48,23 @@ export async function startRelease(
 ) {
   if (!/^[a-f0-9]{40}$/.test(env.SOURCE_COMMIT) && env.ENVIRONMENT !== 'local')
     throw new Error('SOURCE_COMMIT must identify the reviewed source commit');
+  if (env.ENVIRONMENT !== 'local') {
+    const blocks = publicSnapshot(input).pages.flatMap((page) => page.blocks);
+    if (blocks.some((block) => block.type === 'firebaseRewards' && !block.hidden)) {
+      try {
+        firebaseConfig(env);
+      } catch {
+        throw new InvalidContent(
+          'Connect and enable the existing Firebase card before publishing, or hide its section.',
+        );
+      }
+    }
+    if (
+      blocks.some((block) => block.type === 'rewards') &&
+      (!env.REWARDS_ACCESS_AUD || env.REWARDS_ACCESS_AUD === env.ACCESS_AUD || !env.REWARDS_EMAILS)
+    )
+      throw new Error('Configure the Cloudflare card recipient Access application before publishing it');
+  }
   const state = await env.DB.prepare('SELECT active_id,publishing_id FROM site_state WHERE id=1').first<{
     active_id: string | null;
     publishing_id: string | null;
