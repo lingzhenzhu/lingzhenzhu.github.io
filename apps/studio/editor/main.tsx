@@ -5,6 +5,7 @@ import { api, send } from './api';
 import { useDraft } from './useDraft';
 import { useSidebar } from './useSidebar';
 import { useWorkspaceNavigation } from './useWorkspaceNavigation';
+import { PageEditorLoading } from './PageWorkspaceHeader';
 const PageEditor = lazy(() => import('./PageEditor').then((module) => ({ default: module.PageEditor })));
 import { ArticlesPanel } from './ArticlesPanel';
 import { PagesOverview, SiteStructure } from './SiteStructure';
@@ -299,7 +300,7 @@ function App() {
         {content &&
           section === 'pages' &&
           (page ? (
-            <Suspense fallback={<p role="status">Opening page editor…</p>}>
+            <Suspense fallback={<PageEditorLoading page={page} go={go} />}>
               <PageEditor
                 key={page.id}
                 content={content}

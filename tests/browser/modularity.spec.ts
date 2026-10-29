@@ -223,6 +223,34 @@ test('MOD-03 gallery, cross-page feed, hidden Past page and keyboard slideshow u
   }
 });
 
+test('page editor starts split before its first resize notification', async ({ page }) => {
+  await page.addInitScript(() => {
+    // Resize notifications may arrive after the first paint. Keep other observers working.
+    const Observer = window.ResizeObserver;
+    window.ResizeObserver = class extends Observer {
+      constructor(callback: ResizeObserverCallback) {
+        super((entries, observer) => {
+          const delivered = entries.filter((entry) => !entry.target.matches('.resizable-workspace'));
+          if (delivered.length) callback(delivered, observer);
+        });
+      }
+    };
+  });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/admin/#pages/home');
+  await expect(page.getByRole('navigation', { name: 'Page sections' })).toBeVisible();
+  const divider = page.getByRole('separator', { name: 'Editor and preview width' });
+  await expect(divider).toBeVisible();
+  const workspace = (await page.locator('.resizable-workspace').boundingBox())!.width;
+  const editor = (await page.locator('.inspector').boundingBox())!.width;
+  expect(editor).toBeGreaterThanOrEqual(400);
+  expect(editor).toBeLessThan(workspace - 280);
+  await divider.press('ArrowRight');
+  await expect
+    .poll(async () => (await page.locator('.inspector').boundingBox())!.width)
+    .toBeGreaterThan(editor);
+});
+
 test('MOD-06 adjustable columns, one image entry, notebook scroll and canonical navigation', async ({
   page,
   request,
@@ -233,10 +261,13 @@ test('MOD-06 adjustable columns, one image entry, notebook scroll and canonical 
     await page.goto('/admin/');
     await page.getByRole('button', { name: 'Home', exact: true }).click();
     const divider = page.getByRole('separator', { name: 'Editor and preview width' });
+    await expect(divider).toBeVisible();
     const before = (await page.locator('.inspector').boundingBox())!.width;
     await divider.focus();
     await divider.press('ArrowRight');
-    expect((await page.locator('.inspector').boundingBox())!.width).toBeGreaterThan(before);
+    await expect
+      .poll(async () => (await page.locator('.inspector').boundingBox())!.width)
+      .toBeGreaterThan(before);
     const box = (await divider.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + 100);
     await page.mouse.down();

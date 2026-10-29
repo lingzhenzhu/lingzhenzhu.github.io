@@ -70,7 +70,33 @@ test('main editorial workflows pass automated accessibility checks', async ({ pa
   await audit(page, 'overview');
   for (const name of ['Home', 'Research', 'Articles', 'Review & publish']) {
     await page.getByRole('button', { name, exact: true }).click();
+    if (name === 'Home' || name === 'Research')
+      await expect(page.getByRole('navigation', { name: 'Page sections' })).toBeVisible();
     await audit(page, name);
+  }
+});
+
+test('page navigation keeps its heading while the editor loads', async ({ page }) => {
+  let releaseEditor!: () => void;
+  const pendingEditor = new Promise<void>((resolve) => {
+    releaseEditor = resolve;
+  });
+  await page.route(/\/admin\/assets\/PageEditor-[^/?]+\.js(?:\?.*)?$/, async (route) => {
+    await pendingEditor;
+    await route.continue();
+  });
+  try {
+    await page.goto('/admin/');
+    await page.getByRole('button', { name: 'Home', exact: true }).click();
+    await expect(page.getByRole('status').filter({ hasText: 'Opening page editor' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Home Public');
+    await audit(page, 'Home while loading');
+    releaseEditor();
+    await expect(page.getByRole('navigation', { name: 'Page sections' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+    await audit(page, 'Home after loading');
+  } finally {
+    releaseEditor();
   }
 });
 test('Chinese page and speech use the declared content language', async ({ page }) => {

@@ -9,6 +9,7 @@ import { NewsPanel } from './NewsPanel';
 import { MediumPanel } from './MediumPanel';
 import { Icon } from './ui';
 import { blockNames, blockSummary, pageName } from './page-model';
+import { PageWorkspaceHeader } from './PageWorkspaceHeader';
 import { SortableList } from './SortableList';
 import { TransferSection } from './TransferSection';
 import { SectionLibrary } from './SectionLibrary';
@@ -136,30 +137,12 @@ export function PageEditor({
   };
   return (
     <div className="page-workspace">
-      <header className="page-workspace-header">
-        <div>
-          <div className="breadcrumbs">
-            <Button
-              compactIcons="keep"
-              onClick={() => go(page.template === 'article' ? 'articles' : 'pages')}
-            >
-              {page.template === 'article' ? 'Articles' : 'Pages'}
-            </Button>
-            <span>/</span>
-            <span>{pageName(page)}</span>
-          </div>
-          <h1>
-            {pageName(page)}{' '}
-            <span className={'badge ' + (page.status === 'published' ? 'live' : '')}>
-              {page.status === 'published' ? 'Public' : 'Draft'}
-            </span>
-          </h1>
-        </div>
+      <PageWorkspaceHeader page={page} go={go}>
         <Button aria-pressed={preview} onClick={() => setPreview(!preview)}>
           <Icon name="preview" />
           {preview ? 'Hide preview' : 'Show preview'}
         </Button>
-      </header>
+      </PageWorkspaceHeader>
       <nav className="section-tabs" aria-label="Page sections">
         {tabs.map(([id, name]) => (
           <Button

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import './workspace-layout.css';
 
 /** One persisted split for every page editor; narrow windows retain full-width content. */
@@ -20,9 +20,13 @@ export function ResizableWorkspace({
       return 0.6;
     }
   });
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const element = root.current;
+    if (!element) return;
+    // Measure before the first paint; ResizeObserver delivers later and would flash a full-width editor.
+    setWidth(element.getBoundingClientRect().width);
     const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
-    if (root.current) observer.observe(root.current);
+    observer.observe(element);
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
