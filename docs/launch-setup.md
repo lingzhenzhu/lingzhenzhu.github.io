@@ -314,77 +314,150 @@ www.lzzhu.net/api/*
 2. 记下现在的发布来源和线上部署版本。
 3. 在 **Build and deployment → Source** 选择 **GitHub Actions**，避免把重构源码当作旧版根目录 HTML 直接发布。
 4. 保留 **Custom domain = www.lzzhu.net**，确认 HTTPS 状态正常。不填写 `admin.lzzhu.net`。
-5. 使用仓库已有 `.github/workflows/publish.yml`；不另外生成 Jekyll 模板或第二套自动发布流程。
+5. 选好 GitHub Actions 后，这个 Pages 设置页面无需再选工作流文件，也无需上传 YAML。如果下面显示 **GitHub Pages Jekyll / Static HTML** 等模板卡片，不点它们的 **Configure**。仓库已有 `.github/workflows/publish.yml`，随下一步合并源代码进入默认分支后，由 GitHub 识别。
 6. 将通过检查的重构分支合并到默认分支，然后把本地代码更新到合并后的版本。2026-10-30 核对时，开发分支是 `codex/modular-rebuild`，GitHub 默认分支是 `gh-pages`。后台通过 repository_dispatch 发起任务，发布工作流必须存在于默认分支；仅把代码推送到开发分支还不能完成发布接入。
 7. 核对 GitHub Actions 获准运行仓库已固定版本的 actions。工作流自身已经声明 Pages 写入和 OIDC 权限，不需要把整个仓库默认 Workflow permissions 改成全局读写。
 8. 确认本地代码已更新为默认分支上的同一提交，且应用源码没有未提交改动。`SOURCE_COMMIT` 由部署命令自动取得，不需要自己复制或维护。
 
-这些是 Worker 部署的前置步骤，必须在第 9 节之前完成。2026-10-30 本次文档核对时，重构分支仍有未提交源码；不能将它当作已经合并并可直接部署的版本。提交、审核、合并和本地更新由代码维护者完成，不要求配置账户的人自行猜测 Git 命令。若部署提示源码未提交或不等于默认分支版本，是这一条件未满足，不是 Secret 填错。
+“使用已有工作流”的核对方式：在仓库 **Code** 页面选择默认分支，依次打开 `.github → workflows → publish.yml`，文件顶部应为 `name: Publish reviewed content`。若默认分支尚无此文件，说明下一步的源码合并尚未完成，不要另建模板或仅复制这一份 YAML，因为构建还需要同一版本的项目代码与脚本。[GitHub Pages 已有工作流设置](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow)
+
+这份工作流由网站后台发送的 `repository_dispatch`（`publish-site`）触发；没有配置 `workflow_dispatch` 或 push 发布，所以没有 **Run workflow** 按钮、合并后没有立即发布都属于正常现象。第 9、10 节完成后，在网站 `/admin/` 保存内容，点击 **Review & publish → Publish website**，后台才通知 GitHub。随后到仓库 **Actions** 查看 **Publish reviewed content** 的运行进度和日志。`repository_dispatch` 要求工作流位于默认分支，GitHub App 安装权限和第 4 节的构建 Secret 也须已经配置。[GitHub 触发规则](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#repository_dispatch)
+
+这些是 Worker 部署的前置步骤，必须在第 9.3 节之前完成；第 9.1 节对新建空库的准备可以提前做。源码是否已提交、合并及同步，以实际 Git 状态与 PR 检查结果为准。提交、审核、合并和本地更新由代码维护者完成，不要求配置账户的人自行猜测 Git 命令。若部署提示源码未提交或不等于默认分支版本，是这一条件未满足，不是 Secret 填错。
 
 以上步骤不会执行新站发布工作流；公开站切换仍需第 10 节的验收与明确发布操作。改变 Pages 设置前保留现有部署记录和恢复方式。[GitHub Pages 发布来源](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
 
 ## 9 初始化数据并上传真正的后台程序
 
-这一节开始会写入线上资源。前提是第 2—8 节已经完成，代码检查和所需浏览器测试通过；确认操作的是新站的数据库、桶和 Worker。若目标已经有业务数据，应先备份并按升级处理，不能当作空库重复初始化。
+这一节分为四件事：**给数据库建表 → 搬入现有内容和图片 → 上传后台程序 → 打开后台检查**。数据库、图片桶和 Worker 是第 3、6 节创建的同一套资源，不重新创建一套。
 
-### 9.1 在 D1 创建网站数据表
+| 小节 | 通俗解释 | 现在能不能做 |
+| --- | --- | --- |
+| 9.1 建表 | 给空数据库准备存放内容的位置 | 新建、未被其他服务使用的空库可以先做，不必等 PR 合并 |
+| 9.2 搬数据和图片 | 把本地已经编辑好的网站搬进去 | 由代码维护者准备并核对迁移包，不能直接导入旧测试文件 |
+| 9.3 上传后台 | 把 Hello World 换成真正的 Website admin | 等 PR 检查通过、合并、本地代码同步及前面准备完成后再做 |
+| 9.4 检查 | 确认登录、数据库、图片桶都能工作 | 部署成功后做 |
+
+第 9.1 节是可以提前进行的空库准备；第 9.3 节仍严格要求第 2—8 节全部完成。若数据库已经有网站内容，按备份和升级流程处理，不采用下面的空库初始化流程。本节命令是操作说明，不表示已经替你执行线上操作。
+
+### 9.1 先给新建的空数据库建表
+
+**在哪里操作：你电脑上的 PowerShell。** 不在 Cloudflare 的 Edit code 页面输入，也不在 GitHub 中输入。
+
+**第一步：进入项目文件夹。** 复制这一行，按回车：
+
+```powershell
+Set-Location 'C:\Users\lzzhu\Documents\GitHub\lingzhenzhu.github.io'
+```
+
+**第二步：确认命令工具登录了正确的 Cloudflare 账户。**
+
+```powershell
+node scripts/tool.mjs wrangler whoami
+```
+
+它应显示持有 `lzzhu.net` 和新数据库的账户。如果提示未登录或登录已过期，再运行下面一条，在弹出的浏览器里登录并授权，然后重新执行 whoami：
+
+```powershell
+node scripts/tool.mjs wrangler login
+```
+
+**第三步：确认要操作的是刚创建的 `website-content`。**
+
+```powershell
+node scripts/tool.mjs wrangler d1 info website-content --config apps/studio/wrangler.jsonc
+```
+
+这条命令只查看数据库信息。打开 Cloudflare 控制台 → **Storage & databases → D1 SQL database → website-content**，核对 Database ID 与命令输出一致，并确认这是第 3 节刚建、还没有网站数据的库。如果已经出现 `content_resources`、`workspace`、`assets` 等网站表，先核对是否已经完成初始化，不要删库或删表重做。
+
+**第四步：让程序自动建表。** 仅在上述新建空库确认无误后执行：
 
 ```powershell
 node scripts/tool.mjs wrangler d1 migrations apply website-content --remote --config apps/studio/wrangler.jsonc
 ```
 
-此命令把 `apps/studio/migrations/` 中尚未执行的 SQL 迁移应用到远端 D1，建立内容、版本、素材记录等表。`--remote` 表示线上数据库。执行后 Cloudflare 的 D1 数据库详情中应能看到网站表；此时还没有当前本地草稿和上传图片。
+`--remote` 的意思是“修改 Cloudflare 上的数据库”。程序会按顺序执行仓库里的建表文件，你不用打开 SQL 文件逐行复制。如果出现确认提示，先核对目标确实是 `website-content`，再按提示输入 `y` 并回车。
 
-### 9.2 迁移当前草稿及上传图片
+**怎样算成功：** 当前仓库有 `0001_initial.sql`、`0002_rewards.sql`、`0003_resource_storage.sql`、`0004_firebase_card.sql` 四个文件；命令应显示迁移应用成功且没有失败项。刷新 Cloudflare 的数据库页面，应能看到 `workspace`、`content_resources`、`assets`、`releases` 等表。它们由程序管理，无需你手动填写。Wrangler 会记录已经执行的迁移文件。[Cloudflare 数据库迁移说明](https://developers.cloudflare.com/d1/reference/migrations/)
 
-**这一项目前还需要整理迁移包，尚未完成远端导入。不要执行旧指南中指向 `.artifacts/scenario-audit/backend-seed.sql` 的导入命令。** 旧文件可能早于后续编辑；`content/site.json` 是开发种子，也不能代替当前实际编辑的草稿。
+到这里就完成了 9.1。**数据库已经有表，但还没有搬入现有网站内容；网页没有发布，Firebase 和旧 KV 卡的数据也没有改变。** 如果出现报错，先保留错误信息，不继续后面的导入或部署。
 
-代码维护者按以下顺序完成一次迁移：
+2026-10-30 用户提供的实际终端日志已确认：目标为 `website-content`，建表前 `num_tables = 0`，上述四个迁移最终全部显示成功。当前这套数据库的 9.1 已完成，无需从头再做；下一步是准备 9.2 的内容及图片迁移。
 
-1. 核对日常使用的本地工作区，备份并导出最新页面、文章、News、设置和模块。数据库 ID 改变后，本地模拟器可能打开另一份空库，不能看到空库就重新播种覆盖原草稿。
-2. 核对当前内容结构及 Firebase 模块转换，将最新内容快照保存为被 Git 忽略的 `.artifacts/private-deploy/current-content.json`。
-3. 清点快照内所有 `/assets/uploads/` 引用、D1 `assets` 元数据和本地 R2 原图；为每张图保存原对象键、文件及校验值。
-4. 用下面的命令生成内容 SQL，核对页面及模块数量，再导入已经建表且尚未初始化的目标库。
-5. 将上传原图按原对象键迁入远端 R2，并迁入相应 D1 素材元数据，核对文件校验值和全部引用。只把文件拖进 bucket 不足以完成素材库迁移。
+### 9.2 搬入现有网站内容和图片——由代码维护者处理
 
-以下命令仅在上述新快照实际生成、核对完成后执行；文档本身没有替你生成这个文件：
+这一步的目标是：线上后台打开后，能看到本地已经编辑好的页面、文章、News、头像及照片，而不是一个空白网站。
+
+**当前迁移包还需要整理，尚未完成远端导入。这是代码接入工作，不是你漏填了哪个 Cloudflare 选项。** 先停在 9.1 完成的位置，不执行旧指南里的 `backend-seed.sql` 导入命令，也不自行把测试文件上传到数据库。
+
+代码维护者需要完成：
+
+1. 找到实际使用的本地草稿库并备份，导出最新页面、文章和设置，核对没有丢掉后续编辑。
+2. 找齐后台上传的原始图片及其素材库记录，保留文件原来的标识。
+3. 把文字、页面结构和素材记录放进 D1，把上传的原图放进 R2。
+4. 核对页面及模块数量、图片文件校验值和图片引用，确认完整后再进入 9.3。
+
+只导入文字会漏掉图片，只把图片拖进 bucket 又会漏掉素材记录。仓库自带的图片会随构建处理；后台后来上传的照片需要单独迁移。**旧卡的余额、记录另按 Firebase 接入指南核对，不混在网站内容搬迁里。**
+
+<details>
+<summary>供代码维护者使用的迁移细节；账户配置时不用执行</summary>
+
+数据库 ID 改变后，本地模拟器可能打开另一份空库，不能看到空库就重新播种覆盖原草稿。核对当前内容结构及 Firebase 模块转换后，将最新内容快照保存到被 Git 忽略的 `.artifacts/private-deploy/current-content.json`。`content/site.json` 是开发种子，旧 `.artifacts/scenario-audit/backend-seed.sql` 可能早于后续编辑，两者都不能代替最新草稿。
+
+清点所有 `/assets/uploads/` 引用、D1 `assets` 元数据和本地 R2 原图，保存原对象键及哈希。只有新快照确实生成、核对完成，目标库已经建表且尚未初始化时，才运行：
 
 ```powershell
-pnpm exec tsx scripts/seed-local.ts --snapshot .artifacts/private-deploy/current-content.json --output .artifacts/private-deploy/initial-content.sql
+pnpm.cmd exec tsx scripts/seed-local.ts --snapshot .artifacts/private-deploy/current-content.json --output .artifacts/private-deploy/initial-content.sql
 node scripts/tool.mjs wrangler d1 execute website-content --remote --config apps/studio/wrangler.jsonc --file .artifacts/private-deploy/initial-content.sql
 ```
 
-第一条仅生成本地 SQL；第二条才写入远端。初始化脚本只用于首次导入，不用于日后修改网站内容。素材导出、上传和元数据迁移尚未实现为可直接运行的一键命令，必须在实际接入时完成，不能因为内容 SQL 成功就宣称迁移完成。仓库 `assets/source` 中的内置素材随构建输出，不需要另外上传到 R2。
+第一条生成本地 SQL，第二条才写入远端。初始化脚本不用于日后编辑内容。素材导出、上传和元数据迁移尚未实现为可直接运行的一键命令；须保持对象键、元数据与引用一致，并验证远端文件哈希。仓库 `assets/source` 的内置素材随构建输出，不另传 R2。
 
-### 9.3 上传 Worker、Admin 文件和绑定
+</details>
 
-前面的代码、资源、数据与路由准备齐全后，在同一个仓库根目录执行：
+### 9.3 上传后台程序——等 PR 合并和数据搬迁完成后
+
+这一步会把控制台里的 **Hello World 示例换成真正的 Website admin**，同时连接数据库、图片桶和后台网址。
+
+开始前确认：PR 检查全部通过并已合并；本地代码已同步到默认分支最新提交；未提交的修改已经整理；第 2—8 节账户配置和 9.2 数据搬迁均完成。源码同步由代码维护者核对，不需要你手动填写 `SOURCE_COMMIT`。如果 PR 尚未合并或迁移包还没准备好，现在不运行下面的部署命令。
+
+准备完成后，在项目根目录的 PowerShell 中执行：
 
 ```powershell
-pnpm deploy:studio
+pnpm.cmd deploy:studio
 ```
 
-这条命令依次完成：
+等待命令结束。它会先检查和构建代码，再上传到 Cloudflare；中间不要关闭窗口。它自动完成以下事情：
 
-1. 核对源码已提交，并与 GitHub 默认分支的实际版本一致。
-2. 执行生产配置检查、类型检查、单元测试、构建和输出检查。
-3. 打包 Worker 服务端，构建 Admin 界面及预览所需文件。
-4. 将程序与静态资源上传到 `lzzhu-website-studio`，替换 Hello World。
-5. 应用 `DB`、`PRIVATE`、`IMAGES`、`ASSETS` 绑定、普通变量和两个 www 路由；自动注入 `SOURCE_COMMIT`，保留已有 Secrets。
+1. 检查代码版本和测试结果，生成后台需要的文件。
+2. 把服务端代码及 Admin 界面上传到 `lzzhu-website-studio`。
+3. 按本地配置连接 D1、R2、Images 和 Admin 静态文件。
+4. 应用 `/admin*`、`/api/*` 的 www 路由，自动填写源码版本，保留已经录入的 Secrets。
 
-终端应完成 Worker 上传并报告部署结果。若只出现构建成功、随后上传报错，则部署尚未完成。需要先演练时可用 `pnpm deploy:studio --dry-run`，它执行相同检查和打包，但不上传，也不建立线上绑定；仍要求源码满足第 8 节的条件。
+**怎样算成功：** 终端完成 Worker 上传并报告部署成功，没有后续错误。仅看到“构建成功”还不够，之后还需要上传成功。若报错，保留错误信息，不在控制台粘贴源码绕过。
 
-已在控制台设置 Secret 的情况不加 `--secrets-file`。不需要额外开启 Cloudflare 从 GitHub 自动构建，否则会多出另一条不受本项目部署检查管理的发布入口。
+`pnpm.cmd deploy:studio --dry-run` 仅检查和打包，不上传；它同样要求代码已经合并并同步。本项目不需要另开 Cloudflare 的 GitHub 自动构建。已经在控制台填好 Secrets，也不需要再准备 `worker-secrets.json`。
 
-### 9.4 在控制台核对部署结果
+这一步部署的是后台和接口。访客看到的新版主页，仍要在后续验收完成后，从 Admin 单独发布。
 
-1. **Workers & Pages → lzzhu-website-studio → Deployments**：确认新部署时间及版本，不能仍只有 Hello World 示例版本。
-2. **Bindings**：核对 `DB` 指向 `website-content`，`PRIVATE` 指向 `lzzhu-website-private`，并有 `IMAGES` 和 `ASSETS`。
-3. **Settings → Variables and Secrets**：核对普通变量及 Secret 名称，`SOURCE_COMMIT` 已由工具填写。不需要查看或重新录入 Secret 原值。
-4. **Settings → Domains & Routes**：核对第 7.2 节两个路径路由，workers.dev 和预览 URL 关闭。
-5. 通过 `https://www.lzzhu.net/admin/` 登录，继续第 10 节验收。不要用 Hello World 时代的 workers.dev 地址验收后台。
+### 9.4 打开后台，检查是否接通
 
-如果绑定缺失或指向错误资源，修正本地 wrangler.jsonc 后重新部署，避免只改控制台、下一次部署又被本地配置覆盖。
+**第一步：查看 Cloudflare。** 打开 **Workers & Pages → lzzhu-website-studio**，核对下表：
+
+| 点击位置 | 应该看到什么 |
+| --- | --- |
+| Deployments | 刚刚部署的新版本及时间，不再只有 Hello World 示例 |
+| Bindings | `DB → website-content`，`PRIVATE → lzzhu-website-private`，以及 `IMAGES`、`ASSETS` |
+| Settings → Variables and Secrets | 之前的 Secret 名称仍在，`SOURCE_COMMIT` 已自动填写 |
+| Settings → Domains & Routes | `www.lzzhu.net/admin*`、`www.lzzhu.net/api/*` 两条路由，workers.dev 和预览 URL 关闭 |
+
+**第二步：打开 `https://www.lzzhu.net/admin/`。** 应先出现 Cloudflare Access 登录，使用允许的管理员邮箱完成登录后，应看到 Website admin 和搬入的内容。不要使用以前的 workers.dev 示例地址。
+
+**第三步：登录后打开 `https://www.lzzhu.net/admin/api/health`。** 它会显示一页文字，这是检查结果，属于正常现象：`database`、`privateStorage`、`imageDecoder` 应为 `true`，`content` 后面应有内容信息，而不是 `null`。
+
+**第四步：实际试一次保存和上传。** 在后台修改一小段文字并 Save，刷新后检查还在；上传一张 JPEG 和一张 PNG，检查预览正常。测试内容验完再恢复。此时不点发布，公开站内容不会因此改变。继续第 10 节完成其余验收。
+
+如果 Cloudflare 绑定错误，应修正本地 wrangler.jsonc 后重新部署；不要只改控制台，避免下一次部署又被本地配置覆盖。
 
 ## 10 后台联调与验收
 
