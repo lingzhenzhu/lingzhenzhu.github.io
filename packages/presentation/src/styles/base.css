@@ -1,0 +1,241 @@
+:root {
+  --site-width: 800px;
+  --content-width: 760px;
+  --motion-fast: 180ms;
+  --motion-page: 220ms;
+  --accent: #796044;
+  --text-muted: #6b6b63;
+}
+html {
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  overflow-y: scroll;
+}
+html::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html::-webkit-scrollbar-thumb {
+  background: #eee;
+  border-radius: 16px;
+}
+body {
+  margin: 0;
+  font-weight: normal;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+button,
+input {
+  overflow: visible;
+}
+button {
+  text-transform: none;
+}
+a {
+  color: #161209;
+  text-decoration: none;
+  cursor: pointer;
+}
+.dark-theme a {
+  color: #a9a9b3;
+}
+img {
+  border-style: none;
+}
+strong,
+b {
+  font-weight: 700;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+.navbar {
+  width: 100%;
+}
+.navbar .container {
+  width: auto;
+  max-width: 1200px;
+  text-align: center;
+  padding-inline: 1em;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+.navbar .menu a {
+  padding-inline: 8px;
+}
+.navbar-header.header-logo a {
+  padding-inline: 8px;
+}
+.copyright {
+  font-size: 14px;
+}
+.avatar {
+  line-height: 0;
+}
+.avatar a {
+  display: inline-block;
+  border: 0;
+}
+.post-content li > p {
+  margin: 0;
+}
+.main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.footer {
+  width: 100%;
+  text-align: center;
+}
+.post-wrap {
+  position: relative;
+}
+.post-title {
+  margin: 0.83em 0 1.5em;
+}
+.post-content {
+  margin: 0;
+  text-align: justify;
+}
+.post-wrap p {
+  margin: 1em 0;
+}
+.post-content :where(h3:not([data-heading-level]), [data-heading-level='3']),
+.post-content :where(h4:not([data-heading-level]), [data-heading-level='4']),
+.post-content :where(h5:not([data-heading-level]), [data-heading-level='5']),
+.post-content :where(h6:not([data-heading-level]), [data-heading-level='6']) {
+  padding-top: 0.8em;
+  padding-bottom: 0.3em;
+}
+.post-content ul {
+  padding-left: 2em;
+}
+.post-content [data-heading-level='3'] {
+  margin-block: 1em;
+}
+.post-content [data-heading-level='4'] {
+  font-size: 1em;
+  margin-block: 1.33em;
+}
+.post-content [data-heading-level='5'] {
+  font-size: 0.83em;
+  margin-block: 1.67em;
+}
+.post-content [data-heading-level='6'] {
+  font-size: 0.67em;
+  margin-block: 2.33em;
+}
+.post-content img {
+  max-width: 100%;
+}
+.post-content blockquote {
+  margin: 1em 0;
+  padding: 0 15px;
+}
+.post-meta {
+  color: var(--text-muted);
+}
+.post-meta span {
+  margin-left: 1em;
+}
+.post-copyright {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  overflow-wrap: anywhere;
+}
+.archive-item-link {
+  display: inline-block;
+  text-decoration: none;
+}
+.archive-item-date {
+  float: right;
+  text-align: right;
+}
+.navbar-mobile {
+  display: none;
+}
+@media (max-width: 479px) {
+  .main {
+    padding-top: 40pt;
+  }
+  .navbar {
+    display: none;
+  }
+  .navbar-mobile {
+    display: block;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+  }
+  .navbar-mobile .container {
+    padding: 0;
+    margin: 0;
+    line-height: 5.5em;
+    background: #fff;
+  }
+  .navbar-mobile .navbar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 1em;
+    box-sizing: border-box;
+  }
+  .menu-toggle {
+    border: 0;
+    background: none;
+    color: inherit;
+    padding: 0;
+    line-height: 5.5em;
+  }
+  .navbar-mobile .site-logo {
+    height: 22px;
+    width: auto;
+  }
+  .navbar-mobile .menu {
+    display: none;
+    text-align: center;
+    background: #fff;
+    border-top: 1px solid #000;
+    padding-block: 1em;
+    box-shadow:
+      0 2px 4px #0001,
+      0 4px 8px #0001;
+  }
+  .navbar-mobile .menu.active {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    white-space: normal;
+  }
+  .navbar-mobile .menu a {
+    display: inline-block;
+    margin: 0 1em;
+    line-height: 2.5em;
+  }
+  .dark-theme .navbar-mobile .container,
+  .dark-theme .navbar-mobile .menu {
+    background: #292a2d;
+  }
+  .footer {
+    padding-top: 2em;
+  }
+}

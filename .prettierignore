@@ -1,0 +1,8 @@
+node_modules
+**/dist
+**/public
+.artifacts
+pnpm-lock.yaml
+content/site.json
+/assets
+packages/presentation/src/assets.json

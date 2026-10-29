@@ -1,0 +1,138 @@
+:root {
+  --control-height: 38px;
+  --control-radius: 8px;
+  --control-gap: 8px;
+  --control-border: #d9dcd9;
+  --control-focus: #8c7658;
+  --control-pressed: #e8e3da;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+}
+.studio-button {
+  min-height: var(--control-height);
+  gap: var(--control-gap);
+  border-radius: var(--control-radius);
+  border-color: var(--control-border);
+}
+.studio-button:focus-visible {
+  outline: 2px solid var(--control-focus);
+  outline-offset: 3px;
+}
+.studio-button:active:not(:disabled) {
+  background: var(--control-pressed);
+}
+.studio-button.primary:active:not(:disabled) {
+  background: #453722;
+}
+.studio-button.quiet {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.action-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--control-gap);
+  flex-wrap: wrap;
+}
+.button-progress {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: control-spin 900ms linear infinite;
+  flex: none;
+}
+@keyframes control-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.inline-error {
+  color: #923b31;
+}
+.shared-source {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0 0 18px;
+  border: 1px solid #dedbd2;
+  border-radius: 8px;
+  background: #f5f3ee;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #555b57;
+}
+.shared-source > .ui-icon {
+  flex: 0 0 18px;
+  margin-top: 2px;
+}
+.shared-source strong {
+  color: #564b3c;
+  font-weight: 600;
+}
+.shared-source p {
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+}
+.shared-source small {
+  color: #636961;
+}
+.inspector {
+  container: editor / inline-size;
+}
+@container editor (max-width: 460px) {
+  .studio-button[data-compact-icons='hide'] > .ui-icon {
+    display: none;
+  }
+  .block-actions {
+    gap: 6px;
+  }
+}
+.save-status[data-tone='error'] i {
+  background: #923b31;
+}
+.save-status[data-tone='busy'] i {
+  background: #92772c;
+}
+.list-pagination {
+  justify-content: space-between;
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 700px) {
+  .studio-button[data-compact-icons='hide'] > .ui-icon {
+    display: none;
+  }
+  .studio .studio-button {
+    min-height: 44px;
+  }
+  .studio .studio-button.icon-button {
+    min-width: 44px;
+  }
+  .studio-top {
+    row-gap: var(--space-2);
+  }
+  .studio .top-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+@media (pointer: coarse) {
+  .studio .studio-button {
+    min-height: 44px;
+  }
+  .studio .studio-button.icon-button {
+    min-width: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button-progress {
+    animation: none;
+  }
+}

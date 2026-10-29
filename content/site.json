@@ -1,0 +1,2349 @@
+{
+  "schemaVersion": 1,
+  "revision": 0,
+  "settings": {
+    "title": "Lingzhen Zhu's Website",
+    "author": "Lingzhen Zhu",
+    "footer": "© Lingzhen Zhu. All rights reserved.",
+    "description": "Lingzhen Zhu — research, teaching and writing.",
+    "logo": "/assets/logo.svg",
+    "contacts": [
+      {
+        "label": "Google Scholar",
+        "url": "https://scholar.google.com/citations?user=1OGUqkQAAAAJ&hl=en&oi=ao",
+        "icon": "scholar"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://linkedin.com/in/lingzhen-zhu",
+        "icon": "linkedin"
+      },
+      {
+        "label": "Github",
+        "url": "https://github.com/lingzhenzhu",
+        "icon": "github"
+      }
+    ]
+  },
+  "pages": [
+    {
+      "id": "home",
+      "path": "/",
+      "title": "Lingzhen Zhu",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "Biography",
+      "navOrder": 0,
+      "inNavigation": true,
+      "status": "published",
+      "template": "home",
+      "description": "",
+      "homeHero": {
+        "nameNote": "朱苓榛"
+      },
+      "blocks": [
+        {
+          "id": "block-1",
+          "version": 1,
+          "type": "profile",
+          "src": "/assets/avatar.jpg",
+          "alt": "Lingzhen Zhu"
+        },
+        {
+          "id": "block-2",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2,
+                  "id": "Education"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Education",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Ph.D. in Data Science, University of Virginia"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": " M.S. in Data Science, University of Virginia"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": " B.Eng. in Industrial Engineering, Sichuan University-Pittsburgh Institute"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2,
+                  "id": "Selected-Publications"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Selected Publications",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "n/a"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2,
+                  "id": "Presentations"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Presentations",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "IEEE Systems and Information Engineering Design Symposium (SIEDS), 2024"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "block-3",
+          "version": 1,
+          "type": "news",
+          "title": "News",
+          "autoplay": true,
+          "interval": 7000
+        },
+        {
+          "id": "block-4",
+          "version": 1,
+          "type": "contacts",
+          "title": "How to Reach Me"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "research",
+      "path": "/research/",
+      "title": "Research",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "Research",
+      "navOrder": 1,
+      "inNavigation": true,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-5",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 3,
+                  "id": "Interests-Areas"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Interests Areas"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": " "
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Health Care",
+                            "marks": [
+                              {
+                                "type": "bold"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " "
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ESG",
+                            "marks": [
+                              {
+                                "type": "bold"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " "
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Urban Planning",
+                            "marks": [
+                              {
+                                "type": "bold"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " "
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 3,
+                  "id": "Projects"
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Projects"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "research-ecg",
+          "version": 1,
+          "type": "research",
+          "title": "PINN for ECG Signal Denoising",
+          "parts": [
+            {
+              "id": "block-6",
+              "type": "image",
+              "src": "/assets/hsp.svg",
+              "alt": "PINN for ECG Signal Denoising",
+              "width": 500
+            },
+            {
+              "id": "ecg-text",
+              "type": "text",
+              "document": {
+                "type": "doc",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "In this study, we propose "
+                      },
+                      {
+                        "type": "text",
+                        "text": "EAND-ARN",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ", a novel "
+                      },
+                      {
+                        "type": "text",
+                        "text": "Electrophysiology-Aware Adaptive ResNet",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " enhanced by "
+                      },
+                      {
+                        "type": "text",
+                        "text": "numerical differentiation",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " to address the "
+                      },
+                      {
+                        "type": "text",
+                        "text": "inverse ECG problem",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "."
+                      },
+                      {
+                        "type": "hardBreak"
+                      },
+                      {
+                        "type": "text",
+                        "text": "ECG imaging (ECGI) aims to "
+                      },
+                      {
+                        "type": "text",
+                        "text": "non-invasively reconstruct heart surface potentials (HSP)",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " from body surface potentials (BSPM), but the ill-posed nature of the problem makes it "
+                      },
+                      {
+                        "type": "text",
+                        "text": "highly sensitive to measurement noise",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Our key contributions include:"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "bulletList",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": " "
+                      },
+                      {
+                        "type": "listItem",
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Numerical Differentiation for EP Constraints",
+                                "marks": [
+                                  {
+                                    "type": "bold"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "hardBreak"
+                              },
+                              {
+                                "type": "text",
+                                "text": " Unlike automatic differentiation (AD), our approach explicitly computes "
+                              },
+                              {
+                                "type": "text",
+                                "text": "spatial Laplacian and temporal derivatives",
+                                "marks": [
+                                  {
+                                    "type": "bold"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": ", effectively incorporating "
+                              },
+                              {
+                                "type": "text",
+                                "text": "electrophysiological (EP) priors",
+                                "marks": [
+                                  {
+                                    "type": "bold"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": " to improve stability and accuracy."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " "
+                      },
+                      {
+                        "type": "listItem",
+                        "content": [
+                          {
+                            "type": "paragraph",
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Adaptive Residual Network (ARN)",
+                                "marks": [
+                                  {
+                                    "type": "bold"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "hardBreak"
+                              },
+                              {
+                                "type": "text",
+                                "text": " We introduce "
+                              },
+                              {
+                                "type": "text",
+                                "text": "trainable residual connections",
+                                "marks": [
+                                  {
+                                    "type": "bold"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": " to optimize gradient flow, enabling "
+                              },
+                              {
+                                "type": "text",
+                                "text": "deeper networks",
+                                "marks": [
+                                  {
+                                    "type": "bold"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": " and "
+                              },
+                              {
+                                "type": "text",
+                                "text": "mitigating initialization issues",
+                                "marks": [
+                                  {
+                                    "type": "bold"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "text": "."
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " "
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Results & Impact:"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Extensive experiments show that "
+                      },
+                      {
+                        "type": "text",
+                        "text": "EAND-ARN outperforms traditional methods",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " (e.g., "
+                      },
+                      {
+                        "type": "text",
+                        "text": "Tikhonov regularization, STRE, and prior deep learning models",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ") across "
+                      },
+                      {
+                        "type": "text",
+                        "text": "multiple noise levels",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ". Our model achieves"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "✅ "
+                      },
+                      {
+                        "type": "text",
+                        "text": "Lower Relative Error (RE)",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "hardBreak"
+                      },
+                      {
+                        "type": "text",
+                        "text": "✅ "
+                      },
+                      {
+                        "type": "text",
+                        "text": "Lower Mean Squared Error (MSE)",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "hardBreak"
+                      },
+                      {
+                        "type": "text",
+                        "text": "✅ "
+                      },
+                      {
+                        "type": "text",
+                        "text": "Higher Correlation (CC)",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Particularly in "
+                      },
+                      {
+                        "type": "text",
+                        "text": "complex cardiac regions",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ", these findings "
+                      },
+                      {
+                        "type": "text",
+                        "text": "demonstrate the clinical potential of EAND-ARN",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ", offering a "
+                      },
+                      {
+                        "type": "text",
+                        "text": "more reliable computational tool",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " for "
+                      },
+                      {
+                        "type": "text",
+                        "text": "cardiac electrophysiology research and arrhythmia diagnosis",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "."
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "paperLabel": "Read paper"
+        },
+        {
+          "id": "research-fmri",
+          "version": 1,
+          "type": "research",
+          "title": "fMRI-fNIRS",
+          "parts": [
+            {
+              "id": "fmri-text",
+              "type": "text",
+              "document": {
+                "type": "doc",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Functional near-infrared spectroscopy (fNIRS) and functional magnetic resonance imaging (fMRI) are both neuroimaging techniques that measure changes in brain blood oxygenation. fNIRS is more portable and cost-effective than fMRI, but inferior spatial resolution and penetration depth. Applications: studying brain function in naturalistic environments, developmental and clinical populations, infants and toddlers."
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "paperLabel": "Read paper"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "teaching",
+      "path": "/teaching/",
+      "title": "Teaching",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "Teaching",
+      "navOrder": 2,
+      "inNavigation": true,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "teaching-uva",
+          "version": 1,
+          "type": "teaching",
+          "institution": "University of Virginia",
+          "logo": "/assets/uva.jpg",
+          "showName": false,
+          "courses": [
+            {
+              "id": "uva-2025-spring",
+              "year": 2025,
+              "term": "Spring",
+              "code": "DS 5111",
+              "title": "Software and Automation Skills",
+              "position": "Graduate Teaching Assistant",
+              "headingId": "2025-Spring"
+            },
+            {
+              "id": "uva-2024-fall",
+              "year": 2024,
+              "term": "Fall",
+              "code": "DS 6030",
+              "title": "Bayesian Machine Learning",
+              "position": "Graduate Teaching Assistant",
+              "headingId": "2024-Fall"
+            },
+            {
+              "id": "uva-2024-spring",
+              "year": 2024,
+              "term": "Spring",
+              "code": "DS 1002",
+              "title": "Programming for Data Science",
+              "position": "Graduate Teaching Assistant",
+              "headingId": "2024-Spring"
+            }
+          ]
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "media",
+      "path": "/media/",
+      "title": "Media",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "Media",
+      "navOrder": 3,
+      "inNavigation": true,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-10",
+          "version": 1,
+          "type": "podcast",
+          "title": "Apple Podcasts",
+          "url": "https://embed.podcasts.apple.com/us/podcast/uva-data-points/id1641538114?itscg=30200&itsct=podcast_box_player&ls=1&mttnsubad=1641538114&theme=auto"
+        },
+        {
+          "id": "block-11",
+          "version": 1,
+          "type": "medium",
+          "title": "Medium",
+          "limit": 10
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "blog",
+      "path": "/archives/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "Blog",
+      "navOrder": 4,
+      "inNavigation": true,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-12",
+          "version": 1,
+          "type": "archive"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "article-5",
+      "path": "/2018/11/12/Choice/",
+      "title": "Choice",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "article",
+      "description": "",
+      "date": "2018-11-12",
+      "articleDetails": {
+        "copyright": "Copyright (c) 2023",
+        "licenseLabel": "CC-BY-NC-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/"
+      },
+      "blocks": [
+        {
+          "id": "block-13",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "I am Majin, a normal person living at the bottom of the society with my distant cousin, XiaoXin. Like thousands of Chinese, I work in a small company with little salary. Burden of life forced me to borrow money from others. However, no matter how hard the life had been through, there are two things I would never forget, one is buying lotteries, another is thinking about Shanshan. Shanshan, who is my colleague, is like an angel from the heaven, and I always wish that there is one day that I can marry her. But my peaceful life suddenly came to change by a teambuilding activity of our company. In that journey, I understood the meaning of survival, I felt the strength of love and hope, I made the most important choice ever in life and, I am together with Shanshan."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "As a celebration of our company’s great performance, the boss arranges a teambuilding activity. We were going to a small island far from the land by a boat. I felt a bit bored until I open my phone. Guess what I have found? I won the lottery which is sixty million RMB in total!"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I haven’t had time to become crazy before the tremendous tidal wave occurred……"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I found myself woke up in a beach with all the other colleagues. Without any phone signal, we lost the connection with the outsides, and our only transport had been badly broken. All of us thought about the news people recently talk about that a huge meteorite which can destroy the Erath was flying towards us. We all guessed that the tidal wave was caused by it, and maybe the world had been destroyed. It came true when we saw a dead polar bear floating on the sea surface. As we thought we are the only survivors of the Erath, a huge fight for food happened among us. The human’s greed exposed completely. However, I didn’t believe the world was destroyed deeply in my mind, and I was in the hope of returning to the land and get my money back."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Meanwhile, our situation went worse. At the beginning, we selected Xiaowang, an ex-serviceman, to be our leader as he has many experiences of living outside and he is very strong. But he soon became violent and lazy, and punished the people who didn’t work as much as he required. Our boss can’t bear the heavy work, so he used his financial mind established a new group with some of people to against Xiaowang. The newly built group was the same as Xiaowang’s. The boss used some poker cards to be the official money of the group, and set a trade system. As he controls the amount of poker cards, he soon became the leader as the same as Xiaowang."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Both leaders are satisfied with their life here and neither of them agreed to unite us to find ways to go home, so I was hated by them. Can’t stand their bully, I and Xiaoxin quit their groups. We didn’t have anything to eat, and our life became more and more difficult. We didn’t have the ability to come back by ourselves, and it soon came to the deadline of my lottery. During that, I was engaged in disappointment and I was wondering why the god tease me times over times. Just then, a huge amount of fish dropped out from the sky. And what we could thought was becoming the leader!"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Soon we did it, we gave them hope and made a fake world for them, and the relationship between Shanshan and me became better. However, the things changed when Xiaoxin and me found a big ship traveling near our island. The world is still existing!"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Xiaoxin and I had an argue since I was hesitated whether to continue or not. Xiaoxin wanted to throw away the rest of people by leaving just two of us and take up other people’s wealth in the true world. But I can’t make up my mind. Then, Shanshan expressed to me that she loves me."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Everybody was exciting, they hang me up and down happily while I was suffering. I do not deserve Shanshan’s love, I have cheated her, cheated everybody. God, how can you treat me like this?"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Finally, I gave up. I made the most important choice I have ever made. I told the truth, and I know I’m going to lose Shanshan forever. To my astonishment, everybody except Shanshan thought I am mad and didn’t believe me as Xiaoxin told them at first. Shanshan felt something wrong, and she ran away sadly."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "But I didn’t give up, I burned all the things to send signal to the big ship, and the other people wanted to kill me until we got help."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Now, Shanshan is married with me, and I will never forget the things I got froma the journey, don’t lose hope and united when we meet problems "
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "article-6",
+      "path": "/2020/03/15/The%20Birth%20of%20Heroism%20under%20Brutality/",
+      "title": "The Birth of Heroism under Brutality",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "article",
+      "description": "",
+      "date": "2020-03-15",
+      "articleDetails": {
+        "copyright": "Copyright (c) 2023",
+        "licenseLabel": "CC-BY-NC-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/"
+      },
+      "blocks": [
+        {
+          "id": "block-14",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Schindler’s List is a 1993 American historical film directed by Steven Spielberg. Its story takes place when Nazi Germany occupied Poland. The film follows Oskar Schindler, a German businessman, who saved the lives of more than a thousand mostly Polish-Jewish refugees from the Holocaust by employing them in his factories during World War II. We can see a big change in Schindler in this film as he turned to saving the innocents rather than just making money for himself. This paper will closely focus on one of the most important scenes in the whole film that influenced the businessman and led to a conversion which produced heroism under brutality."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The film begins with a Jewish family who sit around a glowing candle singing their ballad together. Suddenly, the light is dying away and the Germans is coming. That night, Schindler walks into a party for SS officers and he soon become the best friend of these commanders using his talent in social intercourse. In fact, he is in hopes of using the abundant cheap labor force of Jews to manufacture enamelware for the German military. Finally, he gets the permission and starts his business with a Jewish accountant called Itzhak Stern. Meanwhile, the Jewish people are suffering a hard period. They must follow tons of laws and wear a specific armband. They are also forced to leave their own house and move to the Krakow Ghetto. The circumstance is getting worse after Amon Goth arrives to take charge of the city. The SS soon begin to shoot anyone who protests, is uncooperative, elderly, infirmed, or for no reason at all. Schindler watches the massacre from the hills overlooking the area, and when he notices a little girl with a red dress cross through the crowd full of killing, she is running through the panic people and she finally hide in a place that the German can’t find her. He is profoundly affected. After that, he and Itzhak Stern keep working on the factory to make money and save the Jewish workers’ lives. The scene starts when one day Schindler wants to return home and end with he make a deal with Amon Goth which allows him to take the people on his list."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "First of all, I want to talk about the cinematography and mise-en-scène in this scene. When it starts, we can see the Schindler walk out from his house and there are something falling from the sky and cover his car. We all think it must be the snow until the shot suddenly get closer when Schindler is sweeping it, and we see some thing like ash. And the shot just cut into the place the Germans burn the dead bodies of Jewish which tells us where the ash comes from. It really makes people feel sad. Schindler also see this scene while he is talking to the commander, Amon Goth. But he suddenly stops when he saw a girl. We can easily see that the tone of the whole movie’s shot is black and white. However, there is such a girl who wears a red dress in this film, which is the only color in it and now is just the second time the girl shows up in the screen. I think she is a symbol of the hope for the Jewish people keep on living. Whatever how hard it is for the Jewish people, there is still a little bit hope for them. But this time when the girl shows up, she is dead. So, it also means that the life of Jewish is getting harder and harder. If there is no action to take, the last hope will disappear. In my point of view, the only color in the whole shot is like an alert to the Schindler that if he does nothing at all, the Jewish last hope will go."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Secondly, there is another scene that is interesting, when Schindler come to tell his Jewish accountant Itzhak that he will come back to his hometown. This time, the shot is closer to the character so that we can see want they thought about through their face. The mise-en-scène here is also special. For the Schindler, he tells that he will go home, then he lit a cigarette and take a deep breath. After that, he even shivering in speaking. These kinds of actions we only do when something is hard to decide. We all can see Schindler’s irritation and we know he is in a fix about whether leaving along or taking action to bring his Jewish employees out. For Itzhak, when he heard Schindler says that he believes this is all going to end someday and they can drink together then, he just shakes his head. He doesn’t think that there is any chance that he can live until the thing is over. So, Itzhak makes an exception. This is the only time Itzhak has a drink if you watch the whole movie. Before that, every time Schindler wants to have a drink with him, he always says no. But this time, he takes the drink by himself. After they have a drink, there is a close-up sequence on him, and we can see that he is bursts into tears. Then, the shot cut to Schindler’s face, we can see the change show on his face. It’s Itzhak that push him to be determined and we know that Schindler is now ready to be a hero. So, we can see that the characters’ actions clearly show their feelings and have the power to make themselves a big change."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Then I want to talk about the sound. After a hard struggle deep in thought, Schindler make up his mind to save the Jewish people as much as he can. So, he starts his action to make his list. The film now highlights the efforts Schindler made to become a heroism warrior instead of a trader. To show this, the film maker uses the sound montage. The Schindler and Itzhak are making the list of the people they want to save, meanwhile, Schindler is trying to make a deal with the commander and he also try to convince other businessman to do the same thing as he does. All these things are going fast under the nondiegetic sound. It shows there are many actions Schindler had taken, and it also let everyone who watch the film feel that Schindler become kind and care people’s lives. And most importantly, it shows the process of making Schindler’s list, that is why the film called this way."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": " This article is talking about how the film shows the birth of heroism under brutality from cinematography, mise-en-scene, and sound. And we are now known that the director clearly shows the Schindler’s transfer by using these film technologies. I think the decision Schindler made was not only brief but also great. He used his own money to save lots of lives of Jewish and gave the people in the war a hope to start new journey. Even though he used out all he had earned and became poor again, he still spared no effort to complete the list with proud. I think he is a real hero. Like Itzhak said in the film, the Schindler’s list is life, all around its margins lies the gulf, Schindler, wish god bless you!"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "article-7",
+      "path": "/2021/05/21/Fraud%20Sex%20and%20Manipulation/",
+      "title": "Fraud, Sex and Manipulation",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "article",
+      "description": "",
+      "date": "2021-05-21",
+      "articleDetails": {
+        "copyright": "Copyright (c) 2023",
+        "licenseLabel": "CC-BY-NC-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/"
+      },
+      "blocks": [
+        {
+          "id": "block-15",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Fraud, Sex and Manipulation"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "——Talk to a victim of telecommunications fraud"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Getting acquainted with Xiaotian was entirely due to an embarrassing accident. Just a few days before the start of this semester, I received a text message from Myanmar. I opened it to see a photo of a person’s ID card and a video that seemed to be a porn. At this time, there was a glimmer of excitement in my heart to spy on other people’s secrets, and then endless curiosity and worry. I didn’t want to get into any trouble. A few minutes later, my phone rang, still from Myanmar. I took a deep breath, and after a few thoughts, I decided to answer the call."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Are you the owner of Kiki?” asked in Chinese on the other side of the phone."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I paused, Kiki? That’s the name my cat’s last owner gave him."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“What are you asking this for?” I suddenly became suspicious, as except for myself and the previous owner, no one knew the name at all."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“That’s right. Then you must know Tian Dahan? Did you see his video? Tell him to return my fucking money! And tell him I will let everyone see his small dick if he doesn’t response .” The man yelled angrily, and then hung up."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Out of curiosity, I had a glance at the video and started to recall that name—Tian Dahan, it seemed that it was indeed the name of my cat’s last owner. He is also a student from another university in this city. A year ago, I saw his message on the campus info-wall, hoping to find an owner for his ragdoll cat called KiKi. KiKi was so cute that I decided to take over it immediately and I went to his school to trade with him at that weekend. Since then, I never had any contact with him, so my memory of him stays in the past."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Thinking of this, I hurriedly opened my WeChat and searched Xiaotian in my contracts. After finding his WeChat, I began to think whether I should ask him what happened?"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "A few hours later, he came to me first."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Hello, did you receive some messages about me?”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I was sure about this, but only told him that someone asked him to pay back the money."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“I’m sorry to disturb you,” his polite manner made me wonder, and he didn’t look like someone who could do that kind of thing."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Do you have any trouble?” I asked"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“It’s okay, I was just conned by some boring people. I have already called the police. That’s it.” He ended the conversation quickly. I understood how he feel right now. After all, experiencing such a thing is quite embarrassing."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Although it’s been a while after this incident, since then, I have been following his WeChat Moment. Not long ago, he shared his May break vacation visited Sanxingdui. It felt like he was finally back to his normal life, I really felt happy to him."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I knew that I shouldn’t have hurt him by mentioning this incident to him again, but I was very curious and really wanted to know the whole story. At the same time, I was also interesting with this person. So, I found him from the WeChat contracts again, and carefully asked if I could talk to him about the last time he was defrauded."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I was ready to be scolded, but I didn’t expect that after waiting for a long time, he replied me two words very briefly, “OK” —he agreed!"
+                  }
+                ]
+              },
+              {
+                "type": "horizontalRule"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "We met at Starbucks nearby Xiaotia n’s school and he arrived earlier than me. It took me a lot of effort to catch him from the corner near the lavatory. This was the first time I had chance to carefully observed him. He wore a dark blue hat without any pattern. Also the same for his T-shirt and trousers, dark blue, with almost no patterns. Then he saw me and beckoned me to pass. After getting closer, I finally saw his face clearly. To be honest, he was like any of countless ordinary college students, a little shy, and shared no difference with normal people. Because of this, I became more curious about him and his awkward experience. Soon after I sat down, I went to the key point."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Is that video actually happening?” I decided to start directly with the hardest question, so that the embarrassing time for both of us is the shortest."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Yes” he replied."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Were you video chatting with someone at your home?” Speaking of the interview, I watched the video very seriously last night. The video was a screen record of a video chat software, with our main character—Tian Dahan in the center. He was masturbating in the toilet, and the small screen in the lower right corner can vaguely see that a girl opposite is doing the same thing. Well, to be honest, I feel the other side was just playing a porn video that kind of videos are easy to find on the Internet."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Yes.” He still refused to say more one word, and the atmosphere became more and more embarrassing. I realized that I might made a silly mistake."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“So, can you tell me the detailed of how you being deceived? I’m very curious about how such a scam happened? How did the scammer get your personal information?” I bit the bullet and kept on asking."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Xiaotian took a deep breath, as if he was making a decision. Next, he turned on his phone and showed me his chat history with the scammer. This was the first time I was so close to the scene of a fraud case. The anti-fraud propaganda that was advertised everywhere became clear in my brain."
+                  }
+                ]
+              },
+              {
+                "type": "horizontalRule"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "In recent years, there has been a thing in China that has gradually changed people’s social habits—Telecommunications Fraud, but has not been noticed by most people. The endless scams are unpredictable. Not only the elderly, children, but also highly educated college students may become victims of scams. Their pensions and tuitions are easily transferred to the scammer with a single phone call."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "In the beginning, the huge amount of fraud was always hot news of social concern, but now it has already become people’s after-dinner talk. Every year, the government decides to crack down on telecom fraud, including registering the ID card information of each person’s phone number in this country, but in fact these efforts have been very ineffective. Instead, people are accustomed to it, and gradually become extremely alert to strangers. Despite this, the scammer still seems to be smarter than you."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Among them, naked chat is a common method of fraud recently, and it is also the method which Tian Dahan be deceived. The scammer obtains the victim’s phone contracts information through the naked chat app , threatening them to pay a huge amount of money, otherwise they will spread the victim’s video to their friends. From the chat history that Xiaotian gave me, I could see the scammer first added Xiaotian through QQ. Under the scammer’s various sexual hints, Xiaotian couldn’t help the temptation and paid a small fee to have a naked chat with the scammer. At first, the video chat was conducted through QQ. The scammer began to induce Xiaotian to reveal his face and lower body. Then the scammer suddenly said that the QQ connection was unstable and there was a freeze and asked Xiaotian to download their special chat app to continue. Soon after installing the app, Xiaotian received his own video and phone address book list in QQ. In order to prevent the spread of his video, Xiaotian could only obey the instructions of the scammer, upload his bank card and ID card information to the scammer, and transfer the money as required. Later, the scammers asked for more and more money, and the amount of money turned out to be huge. If the money is not available for more than an hour, one of Xiaotian’s friends will receive his video. At this time, Xiaotian has spent all of his money, and under the guidance of the scammers, and also has used up a lot of the loan platform’s quota. In desperation, Xiaotian could only choose to tell his parents and call the police."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Xiaotian said that he was defrauded a total of 6,500 yuan, which is considered to be the smaller amount compared with similar scams. Some people were defrauded by nearly 100,000 yuan. The police told him that such scams are very common recently, but it is very difficult to catch the criminals. Naked chat gangs posing as beautiful women are generally men with low education level and lurking in nearby Southeast Asian countries by years."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“I regret doing such a stupid thing. I have wanted to beat myself countless times. The leaked video made me ashamed in front of my family, relatives and friends.” At this point, Xiaotian buried his head in his palm, motionless, and was silent for a long time. . ."
+                  }
+                ]
+              },
+              {
+                "type": "horizontalRule"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "I sympathized with him, this incident must have hurt him a lot, so I don’t want to go further anymore, and I asked him the second doubt in my heart. “Why did you do such a thing at the time?” I know that sometimes people have this kind of impulse, but I can hardly imagine a college student actually taking action and turning a blind eye to this obvious trap."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“There are too many temptations in daily life, revealing girls are everywhere in TikTok” Xiaotian was a little excited."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“You think these recommendations are tempting you”? I asked."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Yes, not only TikTok, all kinds of social media apps are the same.” He said. “I have never had a girlfriend, and seeing these posts every day has deepened my fantasy of sex”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Then the push of these software is also the reason why you were deceived?” I seem to have caught the key point."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“I don’t deny that I have some problems, but the current social apps are also problematic. They are promoting an inappropriate trend,” Xiaotian argued. He believes that the mistake is not entirely on himself, and he is also very angry that the mobile phone cannot protect personal privacy very well. “The address book was taken away form me, but I know nothing about it. This is very absurd.”"
+                  }
+                ]
+              },
+              {
+                "type": "horizontalRule"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "So far, my conversation with Xiaotian was basically over. This was a somewhat awkward conversation, but Xiaotian’s last words caused me deeply agree . I thought of the Netflix documentary social dilemma. Today’s Internet giants treat users’ privacy as a resource that can be sold. They rely on advertising to make money, and they need to keep users in their app as long as possible. Therefore, user information is used to analyze for pushing messages and attracting user’s attention, and actually we are all precisely manipulated by big data algorithms. In front of the technology giants, all our privacy is exposed, and we continue to indulge in it and fall into their well-designed trap ."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Just like Xiaotian, he received too many sexually suggestive messages when using his mobile phone. Behind these are the tools that technology companies want to keep his attention. However, too much sexual cues made Xiao Tian, who was already restless, committed a mistake. It is not only sexual suggestion, but the Internet push algorithm allows people to only see what they like, which has exacerbated social polarization . Countless pornography, violence and hatred are being amplified everyday by the Internet community."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The original intention of science and technology should make people’s lives better, but this business model with advertising as the core makes it more and more difficult for people to control themselves and have no way of thinking. This is something everyone should be worried ."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "article-8",
+      "path": "/2022/12/12/Overseas%20Tracking/",
+      "title": "Overseas Tracking",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "article",
+      "description": "",
+      "date": "2022-12-12",
+      "articleDetails": {
+        "copyright": "Copyright (c) 2023",
+        "licenseLabel": "CC-BY-NC-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/"
+      },
+      "blocks": [
+        {
+          "id": "block-16",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "I have always been a beach lover, not because of water sports which I’m pretty scared of, but for beach being the only place where I can escape from the mess of life I’m always wresting with. But sometimes things go wrong, and sometimes I have to do what I have to do even on the beach. Two years have elapsed since I entered the university, but I still can’t forget the first summer vacation I spent on beaches—doing oversea tracking."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The story happened in my freshman year. Seeing me trying hard adjusting to college learning, stuffed with homework and stressed out about meeting new, weird people every day and night, my parents took me out abroad to Sydney, to enjoy the beaches and put aside my to-dos, together with my cousin and my grandpa. I was extremely excited about it."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Taking off from Sydney, it took less than two hours to reach the Gold Coast. Everything there is more perfect than I ever expected, the fresh breezes smelt of salt, the rolling waves sparkled in sunshine, and the soft, wet sand felt like cotton candy, joy of joys! No wonder people call it Surfers Paradise. My heart was beating loudly in my chest. I could hardly stop expressing how excited I was. As soon as we reached hotel, I rushed upstairs, put down my luggage, got dressed and raced out straight to the paradise. I quickly lay myself flat, got saturated in the bright sunshine. I closed my eyes, satisfied. Everything went smoothly as we planned."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "However, things went wrong in less than an hour. As the first one got on the beach among my family, I experienced far more serious sunburn. I can’t help but question my sanity when I first found myself exposed to the midday UVB rays so bravely, with nearly no protections and awareness of consequence. So I was forced off my well-loved beach, and continued on our way, to buy some sunscreen and protective clothing with ultraviolet protection factor. Even on the beach I felt somehow boxed in, I hate being told what I can’t do."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "In the pharmacy later on, I was reluctantly delegated by my family to talk to the shop assistant and buy some articles called “Australia’s lanolin” and “papaya cream”. Being the most suitable person to do the task as it seemed, I have no choice but bite the bullet. You know how Chinese student talks with poor obscure language, awkward as hell. I hate being asked to do what I can’t do."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "So back we went. When I was gladly heading for my well-loved beach again, things went wrong——my grandpa was gone. I realized that I have to forget my well-loved beach at least for a while, to do what I have to do. And there was no time for complain."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“You came down last, didn’t you tell our dad to wait for us to pick him up for dinner”? My mother looked at my dad anxiously."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“How could this happen? I absolutely told him to stay in the room before I left”! My dad also felt surprised."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Then where will your grandfather go, we can’t lose him here abroad”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Our dad should be familiar with the environment around him. He himself should know that he has gone too far.”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Then let’s wait for him in the room first”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Should we go find Grandpa? What if he goes outside to wait for us?” I was a little worried at this time. I thought that Grandpa didn’t understand English and didn’t like to communicate with people. It would be better if he just arrived in a strange place. Easy to get lost. My cousin and cousin felt that my parents didn’t understand English and it would be more troublesome for everyone to find it. In the end we decided to wait in the room for Grandpa to come back."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "My grandfather, an old man in his 80s, had been kind and entertaining in my old memory. But since the death of my grandma ten years ago, he lived alone and become taciturn ever since. When I was in middle school, my parents were very busy with work, so we rarely visited grandpa. Fortunately, the old man has always been in good health on his own. After I entered university, my parents moved to live near him and often went for travel with him, but my grandfather still seldom talked. As the year progressed, his got forgetful . It was not the first time that he got lost."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "In his time, there were very few college students, and my grandfather was a civil engineering student at Chongqing University. When he was young, his grandfather was a well-known engineer in the design institute, but you can hardly imagine that he could not use a smartphone when he was old, and he was so forgetful that he could not even remember what year it was now. My wife has also passed away, and my children can’t be with me anytime. I feel sorry for my grandfather when I think of this."
+                  }
+                ]
+              },
+              {
+                "type": "horizontalRule"
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "At noon, the sun became more vicious, and there were fewer people on the beach in the distance. I checked the time and it was almost one o’clock in the afternoon. I was even more anxious. “Now I have to go to grandpa. It’s troublesome to find”, so our group started the operation of tracing people overseas . Because my parents don’t speak English, we are divided into three teams. I am a single pair , and my cousin and my parents are paired with each other, respectively, looking for grandpa in the hotel separately. Elevator, restaurant, lobby, gym, in the next hour, we ran almost all corners of the hotel, and did not find my grandfather. Now we were all anxious."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "We decided to expand our search to the swimming pools and beaches around the hotel. As time passed by, the sun began to set, and the beach went from lively to deserted again. There was noisy singing from the bar next to me, and my feet were as heavy as a discus wrapped around them. At this time, I was hungry again. Tired again, but I forced myself to quicken my pace, because it was about to get dark."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "At this time, a middle-aged woman walked by my side took the initiative to ask me “Is there anything I can help?” Perhaps seeing my anxiety, she realized that something urgent was happening. Due to the separate search, there is no one else around me at the moment. I can’t care too much. I told her what happened. She is very enthusiastic. She thinks there are many hotels around this resort and the beaches are interconnected. “These buildings are very similar, I myself also get lost one.” She said. “Try to find grandpa in the hotel nearby. Then she helped me contact the staff, I went to find photos of my grandfather for them. The entire hotel staff began to help us pay attention to my grandpa’s location. Finally, when we were looking for the location of my grandpa in a golf cart arranged by the hotel, we received a call from the front desk saying that the staff of the hotel next door found my grandpa. Relieved."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Later, I learned that Grandpa had forgotten his way when he went out for a walk and went to another hotel. On the way back, we asked Grandpa, only to find that Grandpa’s memory was not as good as before. A few minutes ago, he told him the location of the hotel and the room, he forgot in a blink of an eye, and we all felt ashamed. I usually spend too little time with my grandpa, and I haven’t realized that grandpa is really old. I used to ignore these interpersonal relationships and thought it was unnecessary to maintain them. But this incident made me realize that I care about Grandpa and I need to express my emotions. While deciding to take good care of grandpa in the future, I am also happy because I can get enthusiastic help from many strangers abroad. Sitting on the golf cart back to the hotel, looking at the endless deep ocean, my heart got peace. "
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "article-9",
+      "path": "/2023/10/13/Shadow%20City/",
+      "title": "Shadow City",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "article",
+      "description": "",
+      "date": "2023-10-13",
+      "articleDetails": {
+        "copyright": "Copyright (c) 2023",
+        "licenseLabel": "CC-BY-NC-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/"
+      },
+      "blocks": [
+        {
+          "id": "block-17",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "“I feel we are forgotten, to speak clearly, the whole north city is left behind” This is what I heard people say most in north Chengdu."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "As a local who grew up in Chengdu, this is the first time I have come to the north part of the city, which is not surprising to many Chengdu people. For a long time, we have always felt the north part is the other side of our city, an unfamiliar side, and a side rarely appears. North Chengdu, which has an area of 100 km2, is actually a huge urban village across Cheng-Hua and Jin-Niu districts, the economic level is backward here, and also the urban environment. Therefore, you could hardly see the north part in any city promo films, and for most people, there is no necessary thing to be done here."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Fifteen years ago, Chengdu, a major city in western China, launched its ambitious north old urban form and productivity layout renewal plan, which is the “Bei-Gai” project. This project appeared on the agenda of every term of municipal government and it continues until these days. Unfortunately, Bei-Gai has hardly yielded any results. And people seem to start to forget about the project. The urban village, and the whole north city is gradually disappearing in the process of urban development. This is very rare in such a fast-growing Chinese city. The project itself is now being treated as a joke by the citizens. To find out why Bei-Gai failed, I embarked on an investigation."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“South to the South Pole, North to Wei-Jia-Nian”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The subway can drive the economic development along the line. For a modern big city, starting from its subway is a good way to study it. If you take the subway to North Chengdu, then you should get off at Wei-Jia-Nian. It is located in the urban village and is the northern terminal station of Chengdu Metro Line 1. The subway station is decorated by the phoenix, a sacred beast in Chinese mythology. The introduction explains that this is to symbolize the renewal of the north city, just like the rebirth of the phoenix in the myth. Ironically, 21 new stations belong to the extension project of Line 1, 20 of them are in the south of the city, Wei-Jia-Nian is the only one in the north. This station has therefore become the focus. People jokingly said that even if the city expands to the South Pole, its north border will still be Wei-Jia-Nian."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "As soon as I left the well-decorated subway station, the first thing that greeted me was a mountain of broken shared bicycles. When I looked around, I could hardly see any tall buildings. There was abandoned land all around, and the bare soil nearby was covered by green nets. Walking through the bare soil, I saw grasses growing, garbage and construction debris piled up together here. Despite the garbage, here was also full of spring breath. You will see fields of rapeseed flowers, and occasionally peach blossoms. The air is filled with a special fragrance, but this is not a scenic spot for flower viewing. No matter how vibrant it is, it still can’t cover up the debris among the flowers. I was shocked by the surrounding here and couldn’t believe it was in Chengdu. For me, who is accustomed to city life, the environment here makes me feel insecure. I chose a slightly normal shared bicycle with great effort and left here difficultly, hoping to find someone who lives nearby."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I don’t think I will ride a shared bicycle again in my life. I felt like my brain was shaking out when I bump on the broken concrete road. Finally, I found a residential area. Many of the houses here are unfinished buildings that have been demolished and suspended, and you can almost see the lives of the people in the houses from the outside without obstruction. Aunt Wang is one of the residents here. I probably know that she should be a sanitation worker nearby from the work clothes hanging outside her home. I thought she should have a good understanding of this area, so I asked her to take me to look around. She was surprised by my thoughts, as probably nobody would want to have a tour here, but she happily agreed. “I just rented a house here a year ago, the rent here is cheap” Aunt Wang introduced. I was originally thought to learn more about Wei-Jia-Nian from the locals, but I don’t know that the people living nearby are almost all tenants. “Many locals have moved out, but as the houses have not been demolished, they rent these houses to our outsiders at low prices” Aunt Wang rented a very large house here, with a living room and two bedrooms, for only $60 a month. “Don’t think the rent is cheap. I only have 2000 RMB ($300) a month’s salary. Those who live around me are all poor, we have no choice but choose to stay here.” aunt Wang said."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "About ten minutes later, we walked to a crowded place where a group of farmers were selling their vegetables. Aunt Wang introduced me to them, when they heard that I was here to learn about “Bei-Gai”, everyone gathered around."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“There are no local people here, why the government hasn’t demolished it?” I asked them."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“There are always people who disagree and feel that the compensation is too small,” said a farmer."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“They keep a bad house, and they have collected a lot of rent for so many years,” Aunt Wang interrupted. She always felt that the rent was still too expensive."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Agree or disagree, their locals have all moved away, who cares about this place?” Someone said, “Even if a few people didn’t move, it’s because they are as poor as we are.”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Have you ever thought about what you will do if you demolish here one day?” I realized that their rent may not be guaranteed by law. If their house owner signs a relocation contract, once the house here is demolished, these people will have no place to live."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“No, the North Railway Station hasn’t been demolished yet. It’s not our turn.” Everyone shook their heads and smiled."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The enthusiasm of them is beyond my imagination as if there are endless complaints to tell. “If the military airport near here is not demolished for one day, the north will not be able to develop,” a farmer said suddenly. “Yes, the south is full of tall buildings. Look at us? Nothing.” Another person echoed. “I heard that if it hadn’t been for the lack of funding of the subway extension project, we would not have set up a station here at all, and Line 1 would directly extend to the satellite city.” Everyone talked about some unproven news and dissatisfaction with this place. I felt I couldn’t intervene, so after chatted for a few words, I left silently."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The appearance here has been maintained for more than 10 years. A car passing by is full of dust, which is more terrifying than heavy air pollution. On the way back, I met a wanderer. The folds on his face were full of dirt. He said that he is also part of this community. “Here is also life.” Dragging a snakeskin pocket several times bigger than himself, the man sighed and just left with one word. Perhaps, for others, the squeezed garbage shows the decline of this community, but for him, it is the whole life, the life which not so decent, not so glamorous."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Back at the Wei-Jia-Nian subway station, it was already dusk. I was glad that I didn’t come back too late because I found that there was no street lamp on the road. The people living here have accumulated too much anxiety and resentment. But I don’t think they have given up hope for this land. When I left, they were still looking forward to the latest TOD project here proposed by a state-owned enterprise. After today’s conversation, I hope the unhappiness in their hearts will be relieved."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“North Railway Station, Never Say Goodbye”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The first railway of Communist China, the Chengdu-Chongqing Railway was officially opened to traffic in 1952. Opening together with this line was the Chengdu North Railway Station—the next destination I interviewed. In the 70 years since the station was put into operation, although there have been some repairs, it is still much worse than today’s railway station in China. As one of the highest-level railway stations in Southwest China, it cannot stop the new high-speed trains and accommodate the huge passenger flow that matches the population of this city. After the “Bei-Gai” project was launched, the city government closed the station in 2009 and prepared to rebuild it. Today, 11 years later, this railway station still has no trace of construction. During this period, the groundbreaking ceremony was held alone 5 times, and each time was immediately postponed due to various reasons. Occasionally, when there had insufficient capacity in other railway stations, the north station even re-opened to passengers for temporary rides. “I was when it started to be transformed, and now I have a child” “It is more stable than a relationship. it will never say goodbye.” Like the Wei-Jia-Nian station, this place is also an example of “Bei-Gai” being targeted."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "From Wei-Jian-Nian to direction of down tone city, it took about 20 minutes by car to reach the North Railway Station. It’s obviously livelier here, and the complete and dense buildings surrounding finally feel like a county town. The entire community around the railway station is full of old buildings with a large population living here, and you can easily find the empty square in front of the railway station. Trying to walk inside, I saw a security guard in a temporary tent set up for temperature measurement at the entrance of the station. The station was closed today, and Uncle Liu, the security guard of the railway station, was also a little bored, so he chatted with me."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Uncle Liu has worked here for almost 20 years and has witnessed the change of the station from crowded to deserted. “When you were young, this was the first stop for almost everyone come to Chengdu. Every year during the Spring Festival, most areas of this square outside the gate was changed into a waiting room for passengers. The same things happened when the school semester began every year. The college students came out carrying big bags, and every university will hold with a board at the gate, they have a special bus to pick up these students.” Uncle Liu was very proud, “There were too many people used to work there, and a lot of people surround you every day, but my work is done very well without any problems. I persisted till the end, and my career will also end with the completion of this railway station reconstruction “."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "When we talked about the renovation of the railway station, Uncle Liu said that his feelings about it were very complicated. “At least the situation is getting better. The latest news is that construction will start as soon as possible. It will be completed in 2025 with the opening of a newly-built 400km/h Chengdu-Chongqing high-speed railway”."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I wondered what the North Railway Station in the past was like, and Uncle Liu told me the story of that year."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "In the past, when coming to Chengdu North Railway Station, almost nine out of ten people would have their wallets stolen. Although China’s railway stations used to have poor public security, Chengdu North Railway Station was especially chaotic. In addition to theft, some gangsters buy and sell guns and drugs, some fight and fight, and some low-cost hotels provide pornographic services to defraud. Such things are happening every day, causing great trouble to tourists and the surrounding residents."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Simple crime can be rectified, but it will be hard if law enforcement officials to participate,” Wang Shu said. It turned out that the police at the North Railway Station in the past colluded with criminals, which led to serious public security problems here. The pickpockets who have been stealing for a long time at the Chengdu Railway Station are mostly underworld groups such as the “Renshou Bang”, the “Suining Bang”, and the “Yibin Bang”. Their internal work is clear, and even the time period for entering the station to commit crimes is very strict. “If a thief wants to enter the waiting hall and steal, he must pay entry fee ranging from several hundred yuan to the railway police on duty in that section. After paying the fee, the thief can move around freely in the waiting hall and give play to his own free will. The fitting technique. If the thief is found and caught by a passenger, the thief will not worry at all. The police who have collected the admission fee’ will naturally think of various ways to protect him. It is often in front of the person concerned that the thief will be treated Caught back to the police station for questioning. Once the passenger got in the car and left, the thief was released and went to the buy place again to steal.” Uncle Liu explained."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The normal monthly salary of the police in those days was only about 2,000 yuan, but there were still quite a few people who did everything possible to get into the North Station Police Station by taking the lead or even relying on money and bribes. It is because, in the station police station, you can make a lot of ill-gotten wealth. “I heard that the property of individual police officers in the police station is even as high as one million yuan, and the main source of their income is the monthly contribution of the thieves.” Some police officers even have special credit cards in banks, which are paid by thieves every month. Send money on time. “Uncle Liu felt very shocked even now when he recalled."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Even senior officials from Beijing were stolen. The Ministry of Public Security and the Ministry of Railways was furious at the time. Two-thirds of the police here were transferred away.” However, the real improvement in public security at the North Railway Station was due to “Bei- The “Gai” project closed the entire train station. This is what Uncle Liu is happy about. He no longer had to face troubled passengers."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I asked Uncle Liu what he thought of the fact that the renovation of the railway station has not yet started, and he said that he was not quite clear about it either. “I feel that the top management has the power to stop this.” He approached me and whispered, “Straightforward, that is, no one wants to pay.” Uncle Liu said that he and the people around him viewed it this way. In fact, they felt that the entire “Bei-Gai” project was due to lack of money. “This is not an old city. If the government can, they will close their eyes and say the North city is not Chengdu.” Uncle Liu felt very helpless. The people in the north of the city were too quiet to be taken seriously by the government."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "When I left the train station, Uncle Liu suggested that I have time to visit Cao-Jia Alley. This is the place where the reconstruction project started first. “You will know that the whole project is a scam where no one pays any money at all.”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“I regret I didn’t leave Cao-Jia Alley”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Because of participating in the Fourteenth Five-Year Plan of Chen-Hua District, I was able to get to know a government official living in the north of the city. Although his home is not in the “Bei-Gai” area, but it is very close to Cao-Jia alley, he agreed to accompany me to see there. Fortunately, in Cao-Jia alley, I seem to be exposed to the reason for the failure of “Bei-Gai”."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "On the way, the official suddenly pointed to a park and introduced to me that it was built by the newly appointed county executive. The new leader hopes to turn the entire Cheng-Hua district into a tourist hot spot. The officials mockingly said, “Who would travel here? Even he didn’t want to go.” He stated the reason why he believes that “Bei-Gai” failed, “Everything is about housing prices. The entire north of the city lacks industrial planning, housing prices are cheap, and no developers are willing to invest. Our government relies on selling land to make money. Without money, who will Is there any motivation to transform”?"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "As soon as we arrived near Cao-Jia alley, I could feel that this place is different from where I went before. There were some fancy residences under construction here, and the roads are much cleaner. This government official took me to an old community that has not been relocated, and it still looks better."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "At the gate of the neighborhood, a group of elderly people are playing mahjong. They are the few people in Cao-Jia alley who haven’t moved. According to government officials, due to the high rate of relocation here, people who stay here still enjoy the benefits of “Bei-Gai”. It is the improvement of the surrounding living environment that they can now play mahjong leisurely at the gate. The living environment of Cao-Jia alley in the past was very poor. The house could not withstand a strong earthquake, and the roof would leak under heavy rain. The most uncomfortable thing is that each resident does not have an independent bathroom and kitchen, and daily needs can only be solved in the public area. The government has also carried out house repairs and even installed elevators for those who choose to stay."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "“Many of them are regretting that they did not agree to move out at the time,” the official said, “They totally missed the best opportunity. Now the housing prices in the whole city are rising, except for the north of the city. The compensation they can get now is even worse than ten years ago.”"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The old man playing mahjong next to us seemed to heard our conversation and told us that they were indeed very regretful, but there was no other way. “With old friends and a familiar environment, we didn’t lose any joy”. It seems that the optimism of Sichuanese is well-deserved."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I took the opportunity to ask why they refused to move back then, but they seemed a little vague. Government officials told me that they thought they could get higher compensation by refusing to move, but they obviously failed. “The transformation of Cao-Jia alley has been highly praised by the higher-level government. It was once regarded as a model of democratic decision-making by the government.” Government officials mentioned that “Xinwen-Lianbo” of CCTV even took a week to report. “The government will not give people who want to break the rules a chance to take advantage, nor will they have any conflicts with them, so these people who have not moved now can only regret themselves, but they cannot blame the government”."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "The conversation was not over yet, but the official suddenly received a phone call and left in a hurry. I found a place to sit down alone, recalling the conversations with different people these days. Housing prices, policies, planning, I feel I know something, but it is not clear enough. The government officials gave me a good direction for the investigation. I think I use Cao-Jia alley as a clue to find out the “Bei-Gai” policy of the year."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "I found the report mentioned by government officials. It turned out that “Bei-Gai” was indeed praised as a model many years ago in the country. The core principle of this project is democracy in the process. In this project, the government only proposes planning, basic investment, and coordination of the relocation of large markets. The state-owned municipal company is responsible for infrastructure construction, and the residents themselves are responsible for the renovation of residential buildings that really concern everyone’s lives. Taking Cao-Jia alley as an example, 2885 households voted to elect a 13-member Autonomous Reconstruction Committee. The committee is all residents living here. They negotiate with developers and construction companies on behalf of the entire community. They started from the very beginning, public opinion surveys, signing of agreements, until the organization of final relocation were all their responsibility."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Different from the previous government’s policy of compulsory demolition, “Bei-Gai” allows residents to reach an agreement on their own, which means that the government will no longer provide subsidies. In the beginning, this demolition policy progressed relatively smoothly, and communities like Cao-Jia alley completed a large number of relocations. But with the deepening of the renovation, more and more people hope to get higher compensation for their houses. They repeatedly tore up the treaty and refuse to move, but they don’t know that the government will not subsidize them this time. As more and more people refused to relocate, “Beigai” progressed very slowly in 2013. However, even in the most difficult times, the government still publishes articles in the newspapers, demanding that the Autonomous Committee not allow a few people to take advantage and not allow the compensation to be distributed according to the most trouble people."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "In this way, the north of the city, which had missed the best opportunity, became a shadow city. Next to it is one of the most prosperous cities in China today, full of tall buildings, but this place is gradually forgotten. China has long since passed the golden age, and there is no benefit, and perhaps no one will take “Bei-Gai” seriously again. But maybe it’s always good to have hope? Bless the people here, see you in the north of the city!"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "article-10",
+      "path": "/2023/11/04/Bong%20Joon%20Ho's%20Memories/",
+      "title": "Bong Joon Ho's Memories",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "article",
+      "description": "",
+      "date": "2023-11-04",
+      "articleDetails": {
+        "copyright": "Copyright (c) 2023",
+        "licenseLabel": "CC-BY-NC-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/"
+      },
+      "blocks": [
+        {
+          "id": "block-18",
+          "version": 1,
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Ⅰ. Introduction"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Bong Joon Ho is an internationally acclaimed director, he defines his profession as a Cinematic Sociologist, and I think he has positioned himself very accurately. In his series of works, I can always feel his concern and critique of society, and his ability to “cinematize” social issues makes his films have a strong sense of realism."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "After watched three of his films in this semester, I decided to use his film Memories of Murder as an example to analyze how director Bong reflects reality and criticizes politics through his films."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Ⅱ. Analysis"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Is this a murder mystery or a social criticism film?"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "This movie is about a serial murder case target on woman and there is no doubt that it is a suspension movie. But it is also a social critique movie, as the film gives us a vivid picture of Korean society at that time, although there are only a few direct scenes of social conflict."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Background: 1980s Korea"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "This film is set in the 1980s Korea. According to Wikipedia, on the day of May 18 in 1980, the democratization movement Gwangju Uprising was forcefully suppressed by soldier Chun Doo-hwan, who then overthrew the current government and established a military government and continued to suppress domestic opposition during his seven-years’ govern. Meanwhile, the country’s relationship with DPRK remains very tense and always need to worry about being invade. In this circumstance, the serial murders took place."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Director Bong’s ability to “cinematize” social issues"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Although the process of tracking the killer is certainly fascinating, but let’s get back to how director Bong expressing his political ideas using his film. The key point is the large number of details."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "For example, curfew scenes often appear in the film. Curfew is a way to maintain social stability, but it also helps the killer to commit the crime. When night is coming, the alarm went off, people will rush home and turn off the lights, making streets empty. In the absence of witnesses and poor lighting conditions, it is a good choice to commit crimes. In the film, the last victim that middle school student is caught by the killer, and at the same time, the curfew begins, all the families begin to close their doors. The desperation in the girl’s eyes at this point is breathtaking through the camera."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Similar details include the second time before the crime, the police could have been set up in advance to prevent the crime from happening, however, the radio station was unwilling to cooperate with the police and refuse to tell them the name of the person who ordered the song. Also, the army were sent to suppress the protesting crowd and could not be deployed, which in turn led to the death of the woman."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Another technique that director Bong used is to create Distinct contrast. Officer Park and Officer Su represent the struggling Korean society that wait to change. Officer Park used to think that Korea was small, and he could handle cases by walk on his feet when, but later on he started to rethink on his way of deciding cases. Officer Su starts out relying on logical deduction and rational analysis, and hopes to rely on American DNA technology, but when he fails over and over again, he starts thinking he might as well shoot the suspect he thinks he has. In a way, this alludes to the struggle between the two forces in Korea at that time. They both believe they can make the country more prosperous, while in the process of struggle and debate, they both become confused and no longer stick to their original intention and compromise with reality. At the end of the movie, Officer Park becomes a big businessman and lives a rich life, which symbolizes the future of Korea is getting better."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Officer Joe in the movie, he is good at torturing criminals, the character is violent but also has his decent side, such as his dedication to his work, which are actually a good aspect of the military government rule. However, just like his right leg that needed to be cut off, when his existence no longer fit the real world, it had to be cut off in order to continue surviving. This means Korea needs to abolish military rule in order to continue to develop better. It is worth noticing that the surgery for Officer Joe to have his right leg removed coincided with the time 1987, when June Struggle broke out in the country, a successful democracy movement that ended military rule and put Korea on the road to democracy."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Ⅲ. Summary"
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "As director Bong says he wants to cinematize the social issues, by using all these techniques, his movie soon get success all over the world. It is surprised that Bong’s stories always resonate with people all over the world, even these stories were taking place in Korea."
+                  },
+                  {
+                    "type": "hardBreak"
+                  },
+                  {
+                    "type": "text",
+                    "text": "Recently, Bong’s Parasite was a huge success, becoming the first non-English language film to win the Academy Award for Best Picture. As he said in the interview, I just want to put into the film what we suffer from living in a capitalist world."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2018-11",
+      "path": "/archives/2018/11/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-19",
+          "version": 1,
+          "type": "archive",
+          "year": "2018",
+          "month": "11"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2018",
+      "path": "/archives/2018/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-20",
+          "version": 1,
+          "type": "archive",
+          "year": "2018"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2020-03",
+      "path": "/archives/2020/03/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-21",
+          "version": 1,
+          "type": "archive",
+          "year": "2020",
+          "month": "03"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2020",
+      "path": "/archives/2020/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-22",
+          "version": 1,
+          "type": "archive",
+          "year": "2020"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2021-05",
+      "path": "/archives/2021/05/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-23",
+          "version": 1,
+          "type": "archive",
+          "year": "2021",
+          "month": "05"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2021",
+      "path": "/archives/2021/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-24",
+          "version": 1,
+          "type": "archive",
+          "year": "2021"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2022-12",
+      "path": "/archives/2022/12/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-25",
+          "version": 1,
+          "type": "archive",
+          "year": "2022",
+          "month": "12"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2022",
+      "path": "/archives/2022/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-26",
+          "version": 1,
+          "type": "archive",
+          "year": "2022"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2023-10",
+      "path": "/archives/2023/10/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-27",
+          "version": 1,
+          "type": "archive",
+          "year": "2023",
+          "month": "10"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2023-11",
+      "path": "/archives/2023/11/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-28",
+          "version": 1,
+          "type": "archive",
+          "year": "2023",
+          "month": "11"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "archive-2023",
+      "path": "/archives/2023/",
+      "title": "Blog",
+      "language": "en",
+      "showTitle": true,
+      "indexable": true,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "block-29",
+          "version": 1,
+          "type": "archive",
+          "year": "2023"
+        }
+      ],
+      "revision": 0
+    },
+    {
+      "id": "request-card",
+      "path": "/woaidumuyibeizi/",
+      "title": "任意要求卡",
+      "language": "zh-Hans",
+      "showTitle": false,
+      "indexable": false,
+      "navLabel": "",
+      "navOrder": 0,
+      "inNavigation": false,
+      "status": "published",
+      "template": "page",
+      "description": "",
+      "blocks": [
+        {
+          "id": "request-image",
+          "version": 1,
+          "type": "image",
+          "src": "/assets/card.jpg",
+          "alt": "任意要求卡",
+          "width": 200,
+          "align": "left",
+          "rounded": true
+        },
+        {
+          "id": "request-application",
+          "version": 1,
+          "type": "firebaseRewards",
+          "hidden": false
+        }
+      ],
+      "revision": 0
+    }
+  ],
+  "news": [
+    {
+      "id": "news-0",
+      "text": "I am glad to announce that I will join the Data Science Ph.D. program at UVA. I am excited to start this new journey in the fall of 2024.",
+      "date": "2024-05-01",
+      "label": "May 2024",
+      "published": true
+    }
+  ],
+  "medium": [
+    {
+      "id": "dd325bd178a6",
+      "title": "My First Blog",
+      "publishedAt": "2024-04-12T05:50:49.000Z",
+      "url": "https://medium.com/@lzzhu718/my-first-blog-dd325bd178a6",
+      "hidden": false
+    }
+  ]
+}
