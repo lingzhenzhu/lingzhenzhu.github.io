@@ -41,8 +41,12 @@ test('Firebase card preserves public submission and password-only administration
   await page.locator('[data-rewards-form] button').click();
   await expect(page.locator('[data-rewards-balance]')).toHaveText('1');
   await expect(page.locator('[data-rewards-history]')).toContainText('A public request');
-  await page.locator('[data-card-login]').click();
-  await expect(page.locator('[name="password"]')).toBeFocused();
+  await expect(page.locator('[data-card-password]')).toBeVisible();
+  await expect(page.locator('[data-card-password-dialog]')).toHaveCount(0);
+  await expect(page.locator('[data-card-login]')).toHaveCSS('background-color', 'rgb(255, 152, 0)');
+  await expect(page.locator('[data-card-login]')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('[data-rewards-form] button')).toHaveCSS('background-color', 'rgb(27, 94, 32)');
+  await expect(page.locator('[data-rewards-form] button')).toHaveCSS('line-height', '18.4px');
   await page.locator('[name="password"]').fill('wrong');
   await page.locator('[data-card-password] button[type="submit"]').click();
   await expect(page.locator('[data-card-login-status]')).toContainText('密码不正确');
@@ -50,25 +54,47 @@ test('Firebase card preserves public submission and password-only administration
   await page.locator('[name="password"]').fill('test-password');
   await page.locator('[data-card-password] button[type="submit"]').click();
   await expect(page.locator('[data-card-admin]')).toBeVisible();
-  await page.locator('[name="remaining"]').fill('5');
-  await page.locator('[data-card-balance] button').click();
-  await expect(page.locator('[data-rewards-balance]')).toHaveText('5');
+  await expect(page.locator('[data-card-password]')).toBeHidden();
+  await expect(page.locator('[data-card-action="increase"]')).toBeFocused();
+  await page.locator('[data-card-action="increase"]').click();
+  await expect(page.locator('[data-rewards-balance]')).toHaveText('2');
+  await page.locator('[data-card-action="decrease"]').click();
+  await expect(page.locator('[data-rewards-balance]')).toHaveText('1');
+  await page.locator('[data-card-action="reset"]').click();
+  await expect(page.locator('[data-rewards-balance]')).toHaveText('2');
+  for (const [selector, color] of [
+    ['[data-card-action="increase"]', 'rgb(56, 142, 60)'],
+    ['[data-card-action="decrease"]', 'rgb(211, 47, 47)'],
+    ['[data-card-action="reset"]', 'rgb(25, 118, 210)'],
+    ['[data-card-clear]', 'rgb(97, 97, 97)'],
+  ])
+    await expect(page.locator(selector)).toHaveCSS('background-color', color);
   await page.locator('[data-card-clear]').click();
   await page.locator('[data-card-clear-dialog] [data-card-cancel]').click();
   await expect(page.locator('[data-rewards-history] li')).toHaveCount(2);
   await page.locator('[data-card-clear]').click();
   await page.locator('[data-card-confirm-clear]').click();
   await expect(page.locator('[data-rewards-history] li')).toHaveCount(0);
-  await expect(page.locator('[data-rewards-balance]')).toHaveText('5');
+  await expect(page.locator('[data-card-clear]')).toBeFocused();
+  await expect(page.locator('[data-rewards-balance]')).toHaveText('2');
   await page.locator('[data-card-logout]').click();
   await expect(page.locator('[data-card-admin]')).toBeHidden();
   await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator('[name="password"]')).toBeFocused();
+  await page.locator('[name="password"]').fill('test-password');
   await page.locator('[data-card-login]').click();
-  const box = await page.locator('[data-card-password-dialog]').boundingBox();
+  await page.locator('[data-card-clear]').click();
+  const box = await page.locator('[data-card-clear-dialog]').boundingBox();
   expect(box!.x).toBeGreaterThanOrEqual(0);
   expect(box!.x + box!.width).toBeLessThanOrEqual(390);
   await page.keyboard.press('Escape');
-  await expect(page.locator('[data-card-login]')).toBeFocused();
+  await expect(page.locator('[data-card-clear]')).toBeFocused();
+  await page.locator('[data-card-logout]').click();
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(page.locator('[data-card-password]')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  }
 });
 
 test('Admin can hide and restore the single Firebase card but cannot add, copy or remove it', async ({
@@ -97,6 +123,10 @@ test('Admin can hide and restore the single Firebase card but cannot add, copy o
   await expect(
     page.frameLocator('iframe[title="Page preview"]').locator('[data-provider="firebase"]'),
   ).toBeVisible();
+  const previewLogin = page.frameLocator('iframe[title="Page preview"]').locator('[data-card-login]');
+  await expect(previewLogin).toBeDisabled();
+  await expect(previewLogin).toHaveCSS('opacity', '1');
+  await expect(previewLogin).toHaveCSS('background-color', 'rgb(255, 152, 0)');
   await editor.locator('..').getByRole('button', { name: 'Move to page…' }).click();
   await expect(page.getByRole('dialog').getByRole('button', { name: 'Copy to pages' })).toHaveCount(0);
   await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click();

@@ -3,6 +3,7 @@ import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { load } from 'cheerio';
 import { ContentSchema, publicSnapshot } from '@lzzhu/content';
+import { requestCardCopy } from '../packages/presentation/src/request-card-copy';
 const directory = path.join(process.cwd(), 'apps/site/dist');
 const content = publicSnapshot(
   ContentSchema.parse(
@@ -20,6 +21,15 @@ async function files(folder: string): Promise<string[]> {
 }
 const all = await files(directory);
 const failures: string[] = [];
+const fontsCss = await fs.readFile(path.join(directory, 'assets/fonts.css'), 'utf8');
+const cardGlyphs = new Set(
+  [...fontsCss.matchAll(/font-family:lanting;[^}]*unicode-range:([^}]+)/g)].flatMap((match) =>
+    match[1].split(',').map((code) => Number.parseInt(code.slice(2), 16)),
+  ),
+);
+for (const glyph of new Set(JSON.stringify(requestCardCopy).match(/[\u3400-\u9fff]/g))) {
+  if (!cardGlyphs.has(glyph.codePointAt(0)!)) failures.push('Missing request card font glyph: ' + glyph);
+}
 let maxScript = 0;
 let internalLinks = 0;
 const anchorCache = new Map<string, Set<string>>();

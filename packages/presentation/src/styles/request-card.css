@@ -1,0 +1,217 @@
+.rewards-box {
+  background: #f5f5f5;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 8px;
+}
+.rewards-box .rewards-heading {
+  border-bottom: 2px solid #666;
+  padding-bottom: 5px;
+  color: #333;
+}
+.rewards input {
+  width: 85%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+.rewards button {
+  background: #1b5e20;
+  color: #fff;
+  border: 0;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+.rewards-box ul {
+  list-style: none;
+  padding: 0;
+}
+.rewards-box li {
+  background: #d9d9d9;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+.rewards-login {
+  text-align: center;
+  margin-top: 20px;
+}
+.post-content .rewards-login a,
+.rewards-login button,
+.post-content .rewards-login a:hover {
+  background: #a65e00;
+  color: #fff;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 5px;
+}
+.rewards-login button {
+  font-weight: inherit;
+  margin-top: 0;
+}
+.rewards-dialog {
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 40px));
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid var(--line, #ccc);
+  border-radius: 12px;
+  color: inherit;
+  background: var(--paper, #fff);
+}
+.rewards-dialog::backdrop {
+  background: rgb(0 0 0 / 35%);
+}
+.dark-theme .rewards-dialog {
+  background: #292a2d;
+}
+.rewards button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.rewards[data-preview='true'] button:disabled {
+  opacity: 1;
+  cursor: default;
+}
+.rewards[data-preview='true'] input:disabled {
+  opacity: 1;
+  color: #000;
+  -webkit-text-fill-color: #000;
+  background: #fff;
+}
+.dark-theme .rewards-box {
+  background: #292a2d;
+}
+.dark-theme .rewards-box .rewards-heading {
+  color: #ddd;
+}
+.dark-theme .rewards-box li {
+  background: #333;
+}
+
+/* The existing Firebase card is a separately art-directed component.
+   Its original orange/white login is an explicit owner-approved contrast exception. */
+.rewards[data-provider='firebase'] {
+  --card-text-font: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  --card-heading-font: 'Cormorant Garamond', 'lanting', serif;
+  font-family: var(--card-text-font);
+  font-weight: 400;
+  line-height: 1.9em;
+  letter-spacing: 0.01rem;
+}
+.rewards[data-provider='firebase'] :is(button, input) {
+  font-family: var(--card-text-font);
+  line-height: 1.15;
+  letter-spacing: normal;
+}
+.rewards[data-provider='firebase'] .rewards-box {
+  background: #f5f5f5;
+  color: #2a2a2a;
+}
+.rewards[data-provider='firebase'] .rewards-heading {
+  display: block;
+  font-family: var(--card-heading-font);
+  font-size: 1.15em;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  line-height: inherit;
+  text-align: justify;
+  color: #333;
+  margin: 1em 0;
+  padding: 0.8em 0 5px;
+}
+.rewards[data-provider='firebase'] .rewards-heading::before,
+.rewards[data-provider='firebase'] .rewards-heading::after {
+  content: none;
+}
+.rewards[data-provider='firebase'] .rewards-box li {
+  background: #d9d9d9;
+  margin: 5px 0;
+}
+.rewards[data-provider='firebase'] [name='password'] {
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  padding: 8px;
+  margin: 0;
+  border-color: #aaa;
+  font-size: 1em;
+}
+.rewards[data-provider='firebase'] [data-card-login] {
+  background: #ff9800;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 400;
+  padding: 8px 12px;
+  margin: 0;
+}
+.rewards-admin {
+  margin-top: 20px;
+  padding: 15px;
+  background: #ddd;
+  color: #2a2a2a;
+  border-radius: 8px;
+}
+.rewards[data-provider='firebase'] .rewards-admin .rewards-heading {
+  color: #222;
+  border: 0;
+  padding-bottom: 0.3em;
+}
+.rewards[data-provider='firebase'] :where(.rewards-admin-actions) button {
+  font-size: 1em;
+  font-weight: 400;
+  color: #000;
+  background: #efefef;
+  margin: 0;
+  padding: 1px 6px;
+  border: 2px outset #000;
+  border-radius: 0;
+}
+.rewards[data-provider='firebase'] [data-card-action='increase'] {
+  background: #388e3c;
+}
+.rewards[data-provider='firebase'] [data-card-action='decrease'] {
+  background: #d32f2f;
+}
+.rewards[data-provider='firebase'] [data-card-action='reset'] {
+  background: #1976d2;
+}
+.rewards[data-provider='firebase'] [data-card-clear] {
+  background: #616161;
+}
+.rewards[data-provider='firebase'] .rewards-dialog {
+  background: #fff;
+  color: #2a2a2a;
+  font-family: var(--card-text-font);
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding: 20px;
+}
+.rewards[data-provider='firebase'] [role='status']:empty {
+  margin: 0;
+}
+.a11y-high-contrast .rewards[data-provider='firebase'] {
+  --card-contrast-paper: #fff;
+  --card-contrast-ink: #000;
+}
+.a11y-high-contrast.dark-theme .rewards[data-provider='firebase'] {
+  --card-contrast-paper: #000;
+  --card-contrast-ink: #fff;
+}
+.a11y-high-contrast
+  .rewards[data-provider='firebase']
+  :is(.rewards-box, .rewards-box li, .rewards-admin, .rewards-dialog) {
+  background: var(--card-contrast-paper);
+  color: var(--card-contrast-ink);
+}
+.a11y-high-contrast .rewards[data-provider='firebase'] .rewards-heading {
+  color: var(--card-contrast-ink);
+}
