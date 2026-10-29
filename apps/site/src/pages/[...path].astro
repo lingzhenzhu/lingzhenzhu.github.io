@@ -1,0 +1,50 @@
+---
+import { createHash } from 'node:crypto';
+import { preferencesBootstrap } from '../../../../packages/presentation/src/behavior/bootstrap';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { ContentSchema, publicSnapshot, PUBLIC_ORIGIN } from '@lzzhu/content';
+import { SiteShell } from '@lzzhu/presentation';
+import '@lzzhu/presentation/styles.css';
+import '../../public/assets/fonts.css';
+export async function getStaticPaths() {
+  const input = process.env.SITE_SNAPSHOT || resolve(process.cwd(), '../../content/site.json');
+  const content = publicSnapshot(ContentSchema.parse(JSON.parse(await readFile(input, 'utf8'))));
+  return content.pages.map((page) => ({ params: { path: decodeURI(page.path.slice(1).replace(/\/$/, '')) || undefined }, props: { content, page } }));
+}
+const { content, page } = Astro.props;
+const title = page.path === '/' ? content.settings.title : page.title + ' | ' + content.settings.author;
+const description = page.description || content.settings.description;
+const fontCss = await readFile(resolve(process.cwd(), 'public/assets/fonts.css'), 'utf8');
+const titleFont = fontCss.match(new RegExp('/assets/fonts/' + (page.template === 'home' ? 'librecaslondisplay' : 'lora') + '-[\\w-]+\\.woff2'))?.[0];
+const speculationRules = JSON.stringify({ prerender: [{ where: { and: [{ href_matches: '/*' }, { not: { href_matches: ['/admin*', '/api/*', '/assets/*', '/woaidumuyibeizi/*'] } }, { not: { selector_matches: '[target=_blank], [download]' } }] }, eagerness: 'moderate' }] });
+for (const script of [preferencesBootstrap, speculationRules]) Astro.csp.insertScriptHash('sha256-' + createHash('sha256').update(script).digest('base64'));
+---
+<!doctype html>
+<html lang={page.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content={content.settings.author} />
+    <meta name="description" content={description} />
+    {!page.indexable && <meta name="robots" content="noindex, nofollow" />}
+    <title>{title}</title>
+    <link rel="canonical" href={PUBLIC_ORIGIN + page.path} />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="icon" sizes="32x32" href="/assets/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    {titleFont && <link rel="preload" as="font" href={titleFont} type="font/woff2" crossorigin="anonymous" />}
+    <meta property="og:type" content={page.template === 'article' ? 'article' : 'website'} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={PUBLIC_ORIGIN + page.path} />
+    <meta property="og:image" content={PUBLIC_ORIGIN + '/assets/og/' + page.id + '.png'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline set:html={preferencesBootstrap}></script>
+    <script is:inline type="speculationrules" set:html={speculationRules} />
+  </head>
+  <body>
+    <SiteShell content={content} page={page} />
+    <script>import '@lzzhu/presentation/runtime';</script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "@lzzhu/studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build && node ../../scripts/tool.mjs wrangler dev --local --ip 127.0.0.1 --port 8787 --host 127.0.0.1 --var ENVIRONMENT:local --var LOCAL_DEV_AUTH:1",
+    "deploy": "tsx ../../scripts/preflight.ts && node ../../scripts/tool.mjs wrangler deploy"
+  },
+  "dependencies": {
+    "@lzzhu/content": "workspace:*",
+    "@lzzhu/presentation": "workspace:*",
+    "@tiptap/core": "3.32.0",
+    "@tiptap/extension-image": "3.32.0",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/react": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0",
+    "fast-xml-parser": "5.11.2",
+    "hono": "4.13.13",
+    "jose": "6.2.13",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  }
+}

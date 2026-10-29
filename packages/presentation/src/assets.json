@@ -1,0 +1,41 @@
+{
+  "/assets/avatar.jpg": {
+    "width": 1344,
+    "height": 1334,
+    "srcset": "/assets/avatar-220.webp 220w, /assets/avatar-330.webp 330w, /assets/avatar-500.webp 500w, /assets/avatar-1000.webp 1000w, /assets/avatar-1344.webp 1344w"
+  },
+  "/assets/card.jpg": {
+    "width": 1520,
+    "height": 1519,
+    "srcset": "/assets/card-110.webp 110w, /assets/card-220.webp 220w, /assets/card-330.webp 330w, /assets/card-500.webp 500w, /assets/card-1000.webp 1000w, /assets/card-1500.webp 1500w, /assets/card-1520.webp 1520w"
+  },
+  "/assets/favicon.svg": {
+    "width": 68,
+    "height": 52
+  },
+  "/assets/hsp.svg": {
+    "width": 1243,
+    "height": 528
+  },
+  "/assets/logo.svg": {
+    "width": 68,
+    "height": 52
+  },
+  "/assets/medium-fallback.svg": {
+    "width": 900,
+    "height": 600
+  },
+  "/assets/medium-wordmark-black.svg": {
+    "width": 1000,
+    "height": 220
+  },
+  "/assets/medium-wordmark-white.svg": {
+    "width": 1000,
+    "height": 220
+  },
+  "/assets/uva.jpg": {
+    "width": 200,
+    "height": 200,
+    "srcset": "/assets/uva-110.webp 110w, /assets/uva-200.webp 200w"
+  }
+}

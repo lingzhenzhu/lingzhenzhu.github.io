@@ -1,0 +1,3 @@
+# Local development only. Do not put production credentials in Git.
+ENVIRONMENT=local
+LOCAL_DEV_AUTH=1

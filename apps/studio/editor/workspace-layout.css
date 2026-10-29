@@ -1,0 +1,46 @@
+.resizable-workspace {
+  display: block;
+}
+.resizable-workspace.split {
+  display: grid;
+}
+.resizable-workspace .inspector {
+  max-width: none;
+}
+.resizable-workspace:not(.split) .preview-panel {
+  position: static;
+}
+.workspace-divider {
+  cursor: col-resize;
+  touch-action: none;
+  position: relative;
+  background: #ecece7;
+  border-inline: 5px solid #fff;
+  outline-offset: -3px;
+}
+.workspace-divider span {
+  position: sticky;
+  display: block;
+  top: 45vh;
+  height: 40px;
+  width: 4px;
+  margin-left: -1px;
+  border-radius: 4px;
+  background: #c1b6a6;
+}
+.workspace-divider:hover span,
+.workspace-divider:focus-visible span {
+  background: var(--accent);
+}
+.resizing {
+  user-select: none;
+  cursor: col-resize;
+}
+.resizing iframe {
+  pointer-events: none;
+}
+.page-view-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

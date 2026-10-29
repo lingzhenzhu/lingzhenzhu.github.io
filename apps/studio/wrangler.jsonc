@@ -1,0 +1,38 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "lzzhu-website-studio",
+  "main": "server/index.tsx",
+  "compatibility_date": "2026-10-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "images": { "binding": "IMAGES" },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": true },
+  "routes": [
+    { "pattern": "www.lzzhu.net/admin*", "zone_name": "lzzhu.net" },
+    { "pattern": "www.lzzhu.net/api/*", "zone_name": "lzzhu.net" }
+  ],
+  "vars": {
+    "ENVIRONMENT": "production",
+    "PUBLIC_ORIGIN": "https://www.lzzhu.net",
+    "ACCESS_ISSUER": "",
+    "ACCESS_AUD": "",
+    "REWARDS_ACCESS_AUD": "",
+    "REWARDS_EMAILS": "",
+    "ADMIN_EMAILS": "",
+    "BUILD_SERVICE_ID": "",
+    "GITHUB_REPOSITORY": "lingzhenzhu/lingzhenzhu.github.io",
+    "SOURCE_COMMIT": ""
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "website-content",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "./migrations"
+    }
+  ],
+  "r2_buckets": [{ "binding": "PRIVATE", "bucket_name": "lzzhu-website-private" }],
+  "triggers": { "crons": ["17 * * * *"] },
+  "observability": { "enabled": true }
+}

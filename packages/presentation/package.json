@@ -1,0 +1,15 @@
+{
+  "name": "@lzzhu/presentation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./styles.css": "./src/styles/index.css",
+    "./runtime": "./src/behavior/index.ts"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "@lzzhu/content": "workspace:*"
+  }
+}
