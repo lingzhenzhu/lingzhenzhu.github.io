@@ -1,14 +1,30 @@
 .resizable-workspace {
-  display: block;
+  container: workspace / inline-size;
 }
-.resizable-workspace.split {
+.workspace-panels {
+  display: block;
+  min-height: inherit;
+}
+.workspace-panels.split {
   display: grid;
+  grid-template-columns:
+    clamp(400px, calc((100% - 12px) * var(--editor-ratio)), calc(100% - 292px))
+    12px minmax(0, 1fr);
 }
 .resizable-workspace .inspector {
   max-width: none;
 }
-.resizable-workspace:not(.split) .preview-panel {
-  position: static;
+/* Reflow in the same layout pass, even while ResizeObserver callbacks are pending. */
+@container workspace (width < 740px) {
+  .workspace-panels.split {
+    display: block;
+  }
+  .workspace-divider {
+    display: none;
+  }
+  .preview-panel {
+    position: static;
+  }
 }
 .workspace-divider {
   cursor: col-resize;

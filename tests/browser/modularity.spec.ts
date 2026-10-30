@@ -223,7 +223,7 @@ test('MOD-03 gallery, cross-page feed, hidden Past page and keyboard slideshow u
   }
 });
 
-test('page editor starts split before its first resize notification', async ({ page }) => {
+test('page editor reflows without waiting for resize notifications', async ({ page }) => {
   await page.addInitScript(() => {
     // Resize notifications may arrive after the first paint. Keep other observers working.
     const Observer = window.ResizeObserver;
@@ -249,6 +249,27 @@ test('page editor starts split before its first resize notification', async ({ p
   await expect
     .poll(async () => (await page.locator('.inspector').boundingBox())!.width)
     .toBeGreaterThan(editor);
+  // Freeze workspace notifications throughout resizing: responsive layout must not depend on them.
+  for (const width of [390, 320, 1024, 768, 900, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const geometry = await page.evaluate(() => ({
+      viewport: innerWidth,
+      document: document.documentElement.scrollWidth,
+      workspace: document.querySelector('.resizable-workspace')!.getBoundingClientRect().width,
+      editor: document.querySelector('.inspector')!.getBoundingClientRect().width,
+      preview: document.querySelector('.preview-panel')!.getBoundingClientRect().width,
+    }));
+    expect(geometry.document, JSON.stringify(geometry)).toBeLessThanOrEqual(width);
+    if (geometry.workspace >= 740) {
+      await expect(divider).toBeVisible();
+      expect(geometry.editor).toBeGreaterThanOrEqual(400);
+      expect(geometry.preview).toBeGreaterThanOrEqual(280);
+    } else {
+      await expect(divider).toBeHidden();
+      expect(geometry.editor).toBeCloseTo(geometry.workspace, 0);
+      expect(geometry.preview).toBeCloseTo(geometry.workspace, 0);
+    }
+  }
 });
 
 test('MOD-06 adjustable columns, one image entry, notebook scroll and canonical navigation', async ({
@@ -318,7 +339,7 @@ test('MOD-06 adjustable columns, one image entry, notebook scroll and canonical 
     await page.goForward();
     await expect(page).toHaveURL(articleUrl);
     await page.setViewportSize({ width: 390, height: 844 });
-    await expect(divider).toHaveCount(0);
+    await expect(divider).toBeHidden();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   } finally {
     await state.restore();

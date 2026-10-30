@@ -11,6 +11,7 @@ import { optimizeEmbeddedImages } from './assets/svg';
 import { buildUploadedImages } from './assets/uploads';
 import { preferencesBootstrap } from '../packages/presentation/src/behavior/bootstrap';
 import { ContentSchema, publicSnapshot } from '@lzzhu/content';
+import { requestCardCopy } from '../packages/presentation/src/request-card-copy';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const publicDir = path.join(root, 'apps/site/public');
@@ -36,7 +37,12 @@ const content = publicSnapshot(
   ),
 );
 const snapshotJson = JSON.stringify(content);
-const { chinese, previewCss } = await buildFonts(root, publicDir, snapshotJson);
+// Fixed interface headings need their Chinese glyphs too; they do not live in the content snapshot.
+const { chinese, previewCss } = await buildFonts(
+  root,
+  publicDir,
+  snapshotJson + JSON.stringify(requestCardCopy),
+);
 await write('assets/medium-public.json', JSON.stringify(content.medium));
 await write('assets/preferences.js', preferencesBootstrap);
 const imageManifest: Record<string, { width: number; height: number; srcset?: string }> = {};

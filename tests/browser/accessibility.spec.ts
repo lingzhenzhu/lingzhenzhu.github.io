@@ -13,19 +13,46 @@ async function audit(page: Page, label: string) {
   });
   await page.evaluate(() => document.fonts.ready);
   await page.addScriptTag({ content: axe.source });
-  const violations = await page.evaluate(async () =>
-    (
-      await window.axe.run(document, {
-        // The embedded third-party player is tested separately; this gate covers our document.
-        iframes: false,
-        runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'best-practice'] },
-      })
-    ).violations.map(({ id, nodes }) => ({
+  const report = await page.evaluate(async () => {
+    const result = await window.axe.run(document, {
+      // The embedded third-party player is tested separately; this gate covers our document.
+      iframes: false,
+      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'best-practice'] },
+    });
+    const raw = result.violations.map(({ id, nodes }) => ({
       id,
-      nodes: nodes.map(({ target, failureSummary }) => ({ target, failureSummary })),
-    })),
-  );
-  expect(violations, label).toEqual([]);
+      nodes: nodes.map(({ target, failureSummary }) => {
+        const element =
+          target.length === 1 && typeof target[0] === 'string' ? document.querySelector(target[0]) : null;
+        const style = element && getComputedStyle(element);
+        // Explicit owner decision, 2026-10-30: keep the original orange/white login.
+        // Only this exact element and palette are excepted; its other rules still run.
+        const acceptedContrast =
+          id === 'color-contrast' &&
+          element?.matches('[data-provider="firebase"] [data-card-login]') &&
+          style?.backgroundColor === 'rgb(255, 152, 0)' &&
+          style.color === 'rgb(255, 255, 255)';
+        return { target, failureSummary, acceptedContrast: !!acceptedContrast };
+      }),
+    }));
+    return {
+      raw,
+      violations: raw
+        .map((violation) => ({
+          ...violation,
+          nodes: violation.nodes.filter((node) => !node.acceptedContrast),
+        }))
+        .filter((violation) => violation.nodes.length),
+      accepted: raw.flatMap((violation) => violation.nodes.filter((node) => node.acceptedContrast)),
+    };
+  });
+  if (report.accepted.length) {
+    await test.info().attach('Owner-approved card contrast — ' + label, {
+      body: JSON.stringify({ label, ...report }, null, 2),
+      contentType: 'application/json',
+    });
+  }
+  expect(report.violations, label).toEqual([]);
 }
 test.use({ bypassCSP: true }); // Only injects the testing engine; runtime/CSP tests use normal browser contexts.
 test('published pages pass automated accessibility checks', async ({ page }) => {

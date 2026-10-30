@@ -1,0 +1,22 @@
+/** Fixed wording of the original private card, also included in public font subsets. */
+export const requestCardCopy = {
+  title: '任意要求卡',
+  issuer: '签发人：朱苓榛老公',
+  recipient: '授予人：杜沐老婆',
+  prompt: '尊敬的老婆大人，请输入你的具体要求：',
+  submitLabel: '提交申请',
+  submitHeading: '提交请求',
+  historyHeading: '申请记录',
+  passwordLabel: '管理员密码：',
+  login: '登录',
+  adminHeading: '管理员操作',
+  increase: '增加次数',
+  decrease: '减少次数',
+  reset: '重置次数',
+  clear: '清除申请记录',
+  logout: '退出登录',
+  clearTitle: '清空申请记录？',
+  clearDescription: '所有申请记录将被删除，剩余次数保持不变。',
+  cancel: '取消',
+  confirmClear: '清空记录',
+};
