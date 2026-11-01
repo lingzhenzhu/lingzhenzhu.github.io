@@ -1,20 +1,26 @@
+import { Select } from './Select';
 import { Button } from './controls';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { editorExtensions } from './editor-extensions';
 import { FormatPicker, NotebookTools, NoteIcon } from './NotebookChrome';
+import { useNotebookRuling } from './useNotebookRuling';
 import './notebook.css';
 import { safeUrl, type RichNode } from '@lzzhu/content';
 import { Dialog } from './ui';
 import { ImagePicker } from './ImagePicker';
 import { markdownDocument } from './markdown-document';
 import type { ImageTools } from './ImageField';
+import { FormulaDialog, type FormulaDraft } from './FormulaDialog';
+import { formulaMarkdown } from './editor-mathematics';
+import { codeLanguages, codeLanguageLabel } from '@lzzhu/presentation/code-languages';
+import 'katex/dist/katex.min.css';
+import '@lzzhu/presentation/styles/technical-text.css';
 
 export function RichEditor({
   document,
   id,
   onChange,
-  run,
   upload,
 }: {
   document: RichNode;
@@ -26,9 +32,12 @@ export function RichEditor({
     [source, setSource] = useState(''),
     [sourceNotice, setSourceNotice] = useState('');
   const [picking, setPicking] = useState(false);
+  const [formula, setFormula] = useState<FormulaDraft>();
+  const formulaTrigger = useRef<HTMLElement | null>(null);
   const imageTrigger = useRef<HTMLButtonElement>(null);
   const linkTrigger = useRef<HTMLButtonElement>(null);
   const markdownInput = useRef<HTMLTextAreaElement>(null);
+  const paper = useRef<HTMLDivElement>(null);
   const latestChange = useRef(onChange),
     emittedDocument = useRef<RichNode | undefined>(undefined);
   latestChange.current = onChange;
@@ -53,7 +62,10 @@ export function RichEditor({
   }, [mode, source]);
   const editor = useEditor(
     {
-      extensions: editorExtensions(id),
+      extensions: editorExtensions(id, (value) => {
+        formulaTrigger.current = window.document.activeElement as HTMLElement;
+        setFormula(value);
+      }),
       content: document,
       immediatelyRender: false,
       shouldRerenderOnTransaction: true,
@@ -80,6 +92,7 @@ export function RichEditor({
       setSource(editor.getMarkdown());
     }
   }, [document, editor]);
+  useNotebookRuling(paper, editor, mode);
   if (!editor) return null;
   const updateMarkdown = (value: string) => {
     setSource(value);
@@ -89,20 +102,18 @@ export function RichEditor({
       );
       setSourceNotice('');
     } catch {
-      editor.commands.setContent({
-        type: 'doc',
-        content: [{ type: 'paragraph', content: value ? [{ type: 'text', text: value }] : [] }],
-      });
+      // Keep the last valid document; flattening it would autosave an article without its formatting.
       setSourceNotice(
-        'An unsupported link or image was kept as plain text. Correct its address to restore formatting.',
+        'This Markdown has an unsupported link or image address. Correct it to apply your changes.',
       );
     }
   };
   return (
-    <div className="rich-editor-wrap writing-paper">
+    <div className="rich-editor-wrap writing-paper" ref={paper} data-mode={mode}>
       <div className="note-topbar">
         <div className="note-history">
           <Button
+            variant="quiet"
             compactIcons="keep"
             type="button"
             aria-label="Undo"
@@ -116,6 +127,7 @@ export function RichEditor({
             <NoteIcon name="undo" />
           </Button>
           <Button
+            variant="quiet"
             compactIcons="keep"
             type="button"
             aria-label="Redo"
@@ -130,6 +142,7 @@ export function RichEditor({
           </Button>
         </div>
         <Button
+          variant="quiet"
           compactIcons="keep"
           type="button"
           aria-label="Image"
@@ -142,9 +155,34 @@ export function RichEditor({
       </div>
       <div className="note-metadata">
         <span>{editor.getText().trim().length.toLocaleString()} characters</span>
+        {mode === 'rich' && editor.isActive('codeBlock') && (
+          <label className="code-language">
+            Language
+            <Select
+              aria-label="Code language"
+              value={editor.getAttributes('codeBlock').language || 'plaintext'}
+              onChange={(e) =>
+                editor.chain().focus().updateAttributes('codeBlock', { language: e.target.value }).run()
+              }
+            >
+              {codeLanguages.map((language) => (
+                <option key={language} value={language}>
+                  {codeLanguageLabel(language)}
+                </option>
+              ))}
+              {!codeLanguages.includes(editor.getAttributes('codeBlock').language || 'plaintext') && (
+                <option value={editor.getAttributes('codeBlock').language}>
+                  {editor.getAttributes('codeBlock').language}
+                </option>
+              )}
+            </Select>
+          </label>
+        )}
         <FormatPicker
           mode={mode}
           onChange={(next) => {
+            // Unapplied Markdown would be discarded by switching views.
+            if (next === 'rich' && sourceNotice) return markdownInput.current?.focus();
             if (next === 'markdown') setSource(editor.getMarkdown());
             setMode(next);
             setSourceNotice('');
@@ -178,6 +216,15 @@ export function RichEditor({
         mode={mode}
         linkRef={linkTrigger}
         onLink={() => setLinkUrl(editor.getAttributes('link').href || 'https://')}
+        onFormula={(trigger) => {
+          formulaTrigger.current = trigger;
+          const field = markdownInput.current;
+          const selected =
+            mode === 'markdown' && field
+              ? source.slice(field.selectionStart, field.selectionEnd)
+              : editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to);
+          setFormula({ latex: selected || 'E = mc^2', block: false });
+        }}
         insertMarkdown={(before, after = '') => {
           const field = markdownInput.current;
           if (!field) return;
@@ -192,6 +239,40 @@ export function RichEditor({
           });
         }}
       />
+      <div className="notebook-footer">{mode === 'rich' ? 'Rich text' : 'Markdown'}</div>
+      {formula && (
+        <FormulaDialog
+          value={formula}
+          trigger={formulaTrigger.current}
+          onClose={() => setFormula(undefined)}
+          onApply={(value) => {
+            if (mode === 'markdown') {
+              const field = markdownInput.current;
+              const start = field?.selectionStart ?? source.length,
+                end = field?.selectionEnd ?? start;
+              const after = source.slice(end);
+              const markup = value.block
+                ? '\n\n' + formulaMarkdown(value.latex, true) + '\n\n'
+                : formulaMarkdown(value.latex, false, after);
+              updateMarkdown(source.slice(0, start) + markup + after);
+            } else if (value.pos !== undefined) {
+              if (value.block)
+                editor.chain().focus().updateBlockMath({ latex: value.latex, pos: value.pos }).run();
+              else editor.chain().focus().updateInlineMath({ latex: value.latex, pos: value.pos }).run();
+            } else {
+              editor
+                .chain()
+                .focus()
+                .insertContent({
+                  type: value.block ? 'blockMath' : 'inlineMath',
+                  attrs: { latex: value.latex },
+                })
+                .run();
+            }
+            setFormula(undefined);
+          }}
+        />
+      )}
       {picking && (
         <ImagePicker
           upload={upload}
@@ -243,7 +324,12 @@ export function RichEditor({
               <Button compactIcons="keep" type="button" onClick={() => setLinkUrl(undefined)}>
                 Cancel
               </Button>
-              <Button compactIcons="keep" className="primary" disabled={!!linkUrl && !safeUrl(linkUrl)}>
+              <Button
+                compactIcons="keep"
+                className="primary"
+                type="submit"
+                disabled={!!linkUrl && !safeUrl(linkUrl)}
+              >
                 Apply link
               </Button>
             </div>

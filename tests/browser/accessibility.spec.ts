@@ -62,7 +62,7 @@ test('published pages pass automated accessibility checks', async ({ page }) => 
     await page.goto(item.path, { waitUntil: 'domcontentloaded' });
     await audit(page, item.path);
     for (const theme of ['dark-theme', 'a11y-high-contrast', 'dark-theme a11y-high-contrast']) {
-      await page.locator('body').evaluate((body, classes) => {
+      await page.locator('html').evaluate((body, classes) => {
         body.setAttribute('class', classes);
       }, theme);
       await audit(page, item.path + ' · ' + theme);

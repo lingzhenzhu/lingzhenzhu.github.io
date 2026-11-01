@@ -1,10 +1,4 @@
 :root {
-  --control-height: 38px;
-  --control-radius: 8px;
-  --control-gap: 8px;
-  --control-border: #d9dcd9;
-  --control-focus: #8c7658;
-  --control-pressed: #e8e3da;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -12,10 +6,43 @@
   --space-6: 24px;
 }
 .studio-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: var(--control-height);
   gap: var(--control-gap);
   border-radius: var(--control-radius);
-  border-color: var(--control-border);
+  border: 1px solid var(--control-border);
+  padding: 9px 17px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.studio-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.studio-button:not(.quiet):hover:not(:disabled) {
+  box-shadow:
+    inset 0 1px 3px #ffffff80,
+    0 7px 22px #65523519;
+}
+.studio-button.icon-button {
+  min-width: 42px;
+  padding: 8px;
+}
+.studio-button.danger {
+  color: #963a31;
+}
+.studio-button.danger.primary {
+  background: #90382fe8;
+  color: #fff;
 }
 .studio-button:focus-visible {
   outline: 2px solid var(--control-focus);
@@ -25,7 +52,7 @@
   background: var(--control-pressed);
 }
 .studio-button.primary:active:not(:disabled) {
-  background: #453722;
+  background: #705131;
 }
 .studio-button.quiet {
   background: transparent;
@@ -37,6 +64,62 @@
   align-items: center;
   gap: var(--control-gap);
   flex-wrap: wrap;
+}
+.studio-switch {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 28px;
+}
+.studio-switch input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 46px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border-radius: 18px;
+  border: 1px solid #94806440;
+  background: #a89e8d45;
+  box-shadow: inset 0 1px 3px #604a2b16;
+  cursor: pointer;
+}
+.studio-switch input:checked {
+  background: linear-gradient(130deg, #ad9979b3, #8a7251d6);
+}
+.studio-switch > span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 1px solid #ffffff99;
+  background: linear-gradient(140deg, #fffef8e8, #fff9e6ad);
+  box-shadow:
+    0 1px 4px #5c482b29,
+    inset 0 1px 2px #fff;
+  transition: transform 0.38s cubic-bezier(0.24, 1.45, 0.3, 1);
+}
+.studio-switch input:checked + span {
+  transform: translateX(18px);
+}
+.studio-switch input:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.studio-switch input:disabled + span {
+  opacity: 0.45;
+}
+@media (forced-colors: active) {
+  .studio-switch input:checked {
+    background: Highlight;
+  }
+  .studio-switch > span {
+    background: ButtonText;
+  }
 }
 .button-progress {
   width: 16px;
@@ -89,9 +172,6 @@
   .studio-button[data-compact-icons='hide'] > .ui-icon {
     display: none;
   }
-  .block-actions {
-    gap: 6px;
-  }
 }
 .save-status[data-tone='error'] i {
   background: #923b31;
@@ -113,14 +193,7 @@
     min-height: 44px;
   }
   .studio .studio-button.icon-button {
-    min-width: 44px;
-  }
-  .studio-top {
-    row-gap: var(--space-2);
-  }
-  .studio .top-actions {
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    min-width: var(--icon-min-width, 44px);
   }
 }
 @media (pointer: coarse) {
@@ -128,11 +201,6 @@
     min-height: 44px;
   }
   .studio .studio-button.icon-button {
-    min-width: 44px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .button-progress {
-    animation: none;
+    min-width: var(--icon-min-width, 44px);
   }
 }

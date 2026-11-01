@@ -1,7 +1,8 @@
+import { Select } from './Select';
 import { Button } from './controls';
 import { useState } from 'react';
 import type { CollectionProps } from './types';
-import { isArchiveView, pageName, sitePages } from './page-model';
+import { isArchiveView, listedArticleCount, pageName, sitePages } from './page-model';
 import { EmptyState, Icon } from './ui';
 export function SiteStructure({
   content,
@@ -33,7 +34,7 @@ export function SiteStructure({
         <div>
           <p className="eyebrow">Website</p>
           <h1>Site structure</h1>
-          <p>Arrange the pages and labels in your website navigation.</p>
+          <p>Arrange navigation links and edit their labels.</p>
         </div>
         <Button compactIcons="keep" onClick={addPage}>
           Add page
@@ -42,7 +43,6 @@ export function SiteStructure({
       <section className="surface">
         <div className="section-heading">
           <h2>Main navigation</h2>
-          <span className="muted">Desktop & mobile</span>
         </div>
         <div className="structure-list">
           {nav.map((p, i) => (
@@ -108,7 +108,7 @@ export function SiteStructure({
         <p className="muted">These pages have their own address and are not in the main navigation.</p>
         {other.map((p) => (
           <div className="item-row" key={p.id}>
-            <Button compactIcons="keep" className="row-link" onClick={() => openPage(p.id)}>
+            <Button variant="quiet" compactIcons="keep" className="row-link" onClick={() => openPage(p.id)}>
               <span>
                 <strong>{pageName(p)}</strong>
                 <small>{p.path}</small>
@@ -141,7 +141,7 @@ export function PagesOverview({
 }: {
   content: CollectionProps['content'];
   openPage: (id: string) => void;
-  addPage: () => void;
+  addPage: (template: 'page' | 'archive') => void;
 }) {
   const [query, setQuery] = useState(''),
     [kind, setKind] = useState('pages');
@@ -156,7 +156,11 @@ export function PagesOverview({
           <h1>Pages</h1>
           <p>Edit page content and settings.</p>
         </div>
-        <Button compactIcons="keep" className="primary" onClick={addPage}>
+        <Button
+          compactIcons="keep"
+          className="primary"
+          onClick={() => addPage(kind === 'archives' ? 'archive' : 'page')}
+        >
           Add page
         </Button>
       </div>
@@ -169,14 +173,20 @@ export function PagesOverview({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <select aria-label="Page type" value={kind} onChange={(e) => setKind(e.target.value)}>
+        <Select aria-label="Page type" value={kind} onChange={(e) => setKind(e.target.value)}>
           <option value="pages">Website pages</option>
           <option value="archives">Archive pages</option>
-        </select>
+        </Select>
       </div>
       <div className="page-grid">
         {pages.map((p) => (
-          <Button compactIcons="keep" className="page-card" key={p.id} onClick={() => openPage(p.id)}>
+          <Button
+            variant="quiet"
+            compactIcons="keep"
+            className="page-card"
+            key={p.id}
+            onClick={() => openPage(p.id)}
+          >
             <Icon name={p.template === 'home' ? 'home' : 'pages'} />
             <span className={'badge ' + (p.status === 'published' ? 'live' : '')}>
               {p.status === 'published' ? 'Public' : 'Draft'}
@@ -185,7 +195,7 @@ export function PagesOverview({
             <p>{p.path}</p>
             <small>
               {p.blocks.some((b) => b.type === 'archive')
-                ? content.pages.filter((x) => x.template === 'article').length + ' articles'
+                ? listedArticleCount(content, p) + ' articles'
                 : p.blocks.length + ' content sections'}{' '}
               <span>↗</span>
             </small>

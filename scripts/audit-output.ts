@@ -3,7 +3,7 @@ import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { load } from 'cheerio';
 import { ContentSchema, publicSnapshot } from '@lzzhu/content';
-import { requestCardCopy } from '../packages/presentation/src/request-card-copy';
+import { requestCardCopy } from '@lzzhu/presentation/request-card-copy';
 const directory = path.join(process.cwd(), 'apps/site/dist');
 const content = publicSnapshot(
   ContentSchema.parse(
@@ -89,7 +89,7 @@ for (const file of all) {
       failures.push('External script: ' + src);
       continue;
     }
-    const data = await fs.readFile(path.join(directory, src));
+    const data = await fs.readFile(path.join(directory, src.split('?')[0]));
     maxScript = Math.max(maxScript, gzipSync(data).length);
   }
   for (const element of $('[src^="/"],link[rel=stylesheet][href^="/"]').toArray()) {

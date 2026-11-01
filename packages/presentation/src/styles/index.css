@@ -1,7 +1,13 @@
+@import './foundations.css';
 @import './base.css';
 @import './design.css';
 @import './accessibility.css';
 @import './components.css';
 @import './titles.css';
+@import './navigation.css';
 @import './editorial.css';
 @import './request-card.css';
+@import './articles.css';
+@import './article-search.css';
+@import './filter-select.css';
+@import './technical-text.css';

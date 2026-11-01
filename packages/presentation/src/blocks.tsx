@@ -4,8 +4,11 @@ import { type Content, type Block, type ModuleAdapters } from '@lzzhu/content';
 import { RichText } from './rich-text';
 import { Icon } from './icons';
 import { MediumBrand } from './medium-brand';
+import { ExternalArrow } from './external-arrow-icon';
+import { SectionHeading } from './section-heading';
 import { Teaching, Research, Gallery } from './editorial-blocks';
 import { Archive } from './archive';
+import { ArticleSearch } from './article-search';
 import { displayDate } from './date';
 import { useAssetUrl, responsiveImage } from './asset-context';
 type RenderContext = {
@@ -77,7 +80,7 @@ export const blockRenderers = {
       data-autoplay={String(block.autoplay)}
       data-interval={block.interval}
     >
-      <h2 id={'news-' + block.id}>
+      <SectionHeading id={'news-' + block.id}>
         <button
           className="news-toggle"
           aria-label={block.title + ': pause automatic scrolling'}
@@ -86,7 +89,7 @@ export const blockRenderers = {
         >
           <strong>{block.title}</strong>
         </button>
-      </h2>
+      </SectionHeading>
       <span className="news-hint" id={'news-hint-' + block.id}>
         Select News to pause or resume
       </span>
@@ -136,7 +139,9 @@ export const blockRenderers = {
               <div>
                 <h3>{entry.title}</h3>
                 <time dateTime={entry.publishedAt}>{displayDate(entry.publishedAt)}</time>
-                <span className="medium-read">Read on Medium ↗</span>
+                <span className="medium-read">
+                  Read on Medium <ExternalArrow />
+                </span>
               </div>
               <img
                 src={assetUrl(entry.coverOverride || entry.cover || '/assets/medium-fallback.svg')}
@@ -152,11 +157,15 @@ export const blockRenderers = {
           ))}
       </div>
       <p data-medium-empty hidden={content.medium.some((entry) => !entry.hidden)}>
-        New writing will appear here. <a href="https://medium.com/@lzzhu718">Visit Medium ↗</a>
+        New writing will appear here.{' '}
+        <a href="https://medium.com/@lzzhu718">
+          Visit Medium <ExternalArrow />
+        </a>
       </p>
     </section>
   ),
   archive: ({ block, content }) => <Archive block={block} content={content} />,
+  articleSearch: ({ block, content, preview }) => <ArticleSearch block={block} content={content} preview={preview} />,
   podcast: ({ block }) => (
     <iframe
       className="podcast-frame"

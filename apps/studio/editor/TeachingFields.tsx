@@ -1,8 +1,10 @@
+import { Select } from './Select';
 import { Button } from './controls';
+import { FormSection } from './FormSection';
 import { useRecordSelection } from './useRecordSelection';
 import { useRef, useState } from 'react';
 import type { Block } from '@lzzhu/content';
-import { reorder } from '../../../packages/content/src/operations';
+import { reorder } from '@lzzhu/content/operations';
 import { ImageField, type ImageTools } from './ImageField';
 import { SortableList } from './SortableList';
 import { Dialog, EmptyState, Icon } from './ui';
@@ -74,6 +76,7 @@ export function TeachingFields({
           <div className="item-row record-row">
             {handle}
             <Button
+              variant="quiet"
               compactIcons="keep"
               ref={rowRef(item.id)}
               className="row-link"
@@ -102,12 +105,11 @@ export function TeachingFields({
       </SortableList>
       {!block.courses.length && <EmptyState title="No courses yet" />}
       {course && (
-        <fieldset className="record-detail">
-          <legend>Edit course</legend>
+        <FormSection title="Edit course" className="record-detail" compact>
           <div className="field-pair">
             <label>
               Year
-              <select value={course.year} onChange={(e) => edit({ year: Number(e.target.value) })}>
+              <Select value={course.year} onChange={(e) => edit({ year: Number(e.target.value) })}>
                 {Array.from(
                   new Set([
                     course.year,
@@ -118,18 +120,18 @@ export function TeachingFields({
                   .map((year) => (
                     <option key={year}>{year}</option>
                   ))}
-              </select>
+              </Select>
             </label>
             <label>
               Term
-              <select
+              <Select
                 value={course.term}
                 onChange={(e) => edit({ term: e.target.value as typeof course.term })}
               >
                 {['Spring', 'Summer', 'Fall', 'Winter', 'Full year'].map((term) => (
                   <option key={term}>{term}</option>
                 ))}
-              </select>
+              </Select>
             </label>
           </div>
           <label>
@@ -165,7 +167,7 @@ export function TeachingFields({
           <Button onClick={() => select('')}>
             <Icon name="check" /> Done
           </Button>
-        </fieldset>
+        </FormSection>
       )}
       {removing && (
         <Dialog title="Delete this course?" returnFocusTo={trigger.current} onClose={() => remove('')}>

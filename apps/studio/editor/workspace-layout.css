@@ -30,8 +30,8 @@
   cursor: col-resize;
   touch-action: none;
   position: relative;
-  background: #ecece7;
-  border-inline: 5px solid #fff;
+  background: transparent;
+  border-inline: 5px solid transparent;
   outline-offset: -3px;
 }
 .workspace-divider span {

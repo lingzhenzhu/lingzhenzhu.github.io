@@ -21,7 +21,7 @@ export function SharedSourceNotice({
         <strong>{names[source]} · shared content</strong>
         <p>
           {pages.length
-            ? 'Content changes appear on ' +
+            ? 'Used on ' +
               pages
                 .slice(0, 3)
                 .map((page) => (page.template === 'home' ? 'Home' : page.title))
@@ -39,7 +39,7 @@ export function SharedSourceNotice({
             </ul>
           </details>
         )}
-        {settings && <small>Heading and display options below apply only to this section.</small>}
+        {settings && <small>Display settings apply to this section only.</small>}
       </div>
     </aside>
   );

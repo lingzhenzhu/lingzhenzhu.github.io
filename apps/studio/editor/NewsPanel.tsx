@@ -1,3 +1,4 @@
+import { Select } from './Select';
 import { ConfirmDialog, Button, Pagination } from './controls';
 import { usePagination } from './usePagination';
 import { useRef, useState } from 'react';
@@ -38,7 +39,12 @@ export function NewsPanel({ content, change }: CollectionProps) {
       {entry ? (
         <>
           <div className="section-heading">
-            <Button compactIcons="keep" className="back-button" onClick={() => setActive(undefined)}>
+            <Button
+              variant="quiet"
+              compactIcons="keep"
+              className="back-button"
+              onClick={() => setActive(undefined)}
+            >
               <Icon name="back" />
               All news
             </Button>
@@ -133,11 +139,11 @@ export function NewsPanel({ content, change }: CollectionProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <select aria-label="Filter news" value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <Select aria-label="Filter news" value={filter} onChange={(e) => setFilter(e.target.value)}>
               <option value="all">All updates</option>
               <option value="published">Visible</option>
               <option value="draft">Drafts</option>
-            </select>
+            </Select>
           </div>
           {rows.length > 0 && (
             <div className="selection-bar">
@@ -187,7 +193,12 @@ export function NewsPanel({ content, change }: CollectionProps) {
                   checked={selection.includes(n.id)}
                   onChange={() => select(n.id)}
                 />
-                <Button compactIcons="keep" className="row-link" onClick={() => setActive(n.id)}>
+                <Button
+                  variant="quiet"
+                  compactIcons="keep"
+                  className="row-link"
+                  onClick={() => setActive(n.id)}
+                >
                   <span>
                     <strong>{n.text}</strong>
                     <small>
@@ -205,7 +216,7 @@ export function NewsPanel({ content, change }: CollectionProps) {
           <Pagination {...pagination} />
           {!rows.length && (
             <EmptyState title={content.news.length ? 'No matching news' : 'No news yet'}>
-              <p>Add a news item to your homepage.</p>
+              <p>Add the first news item.</p>
             </EmptyState>
           )}
         </>
@@ -219,9 +230,7 @@ export function NewsPanel({ content, change }: CollectionProps) {
           confirmLabel={'Delete ' + (deleting.length === 1 ? 'update' : 'updates')}
           onConfirm={remove}
         >
-          <p>
-            This changes your draft. The live website changes when you publish. You can undo this deletion.
-          </p>
+          <p>The selected updates will be removed from the draft. You can undo this change.</p>
         </ConfirmDialog>
       )}
     </section>

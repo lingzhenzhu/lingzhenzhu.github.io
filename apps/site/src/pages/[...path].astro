@@ -1,10 +1,10 @@
 ---
 import { createHash } from 'node:crypto';
-import { preferencesBootstrap } from '../../../../packages/presentation/src/behavior/bootstrap';
+import { preferencesBootstrap } from '@lzzhu/presentation/bootstrap';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { ContentSchema, publicSnapshot, PUBLIC_ORIGIN } from '@lzzhu/content';
-import { SiteShell } from '@lzzhu/presentation';
+import { SiteShell, pageStylesheets, pageScripts } from '@lzzhu/presentation';
 import '@lzzhu/presentation/styles.css';
 import '../../public/assets/fonts.css';
 export async function getStaticPaths() {
@@ -17,6 +17,8 @@ const title = page.path === '/' ? content.settings.title : page.title + ' | ' + 
 const description = page.description || content.settings.description;
 const fontCss = await readFile(resolve(process.cwd(), 'public/assets/fonts.css'), 'utf8');
 const titleFont = fontCss.match(new RegExp('/assets/fonts/' + (page.template === 'home' ? 'librecaslondisplay' : 'lora') + '-[\\w-]+\\.woff2'))?.[0];
+const nameFont = page.template === 'home' && page.showTitle && page.homeHero?.nameNote
+  ? fontCss.match(/\/assets\/fonts\/lanting-name-[\w-]+\.woff2/)?.[0] : undefined;
 const speculationRules = JSON.stringify({ prerender: [{ where: { and: [{ href_matches: '/*' }, { not: { href_matches: ['/admin*', '/api/*', '/assets/*', '/woaidumuyibeizi/*'] } }, { not: { selector_matches: '[target=_blank], [download]' } }] }, eagerness: 'moderate' }] });
 for (const script of [preferencesBootstrap, speculationRules]) Astro.csp.insertScriptHash('sha256-' + createHash('sha256').update(script).digest('base64'));
 ---
@@ -33,7 +35,9 @@ for (const script of [preferencesBootstrap, speculationRules]) Astro.csp.insertS
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="icon" sizes="32x32" href="/assets/favicon-32.png" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    {pageStylesheets(page).map(href => <link rel="stylesheet" href={href} />)}
     {titleFont && <link rel="preload" as="font" href={titleFont} type="font/woff2" crossorigin="anonymous" />}
+    {nameFont && <link rel="preload" as="font" href={nameFont} type="font/woff2" crossorigin="anonymous" />}
     <meta property="og:type" content={page.template === 'article' ? 'article' : 'website'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -45,6 +49,7 @@ for (const script of [preferencesBootstrap, speculationRules]) Astro.csp.insertS
   </head>
   <body>
     <SiteShell content={content} page={page} />
+    {pageScripts(page).map(src => <script is:inline type="module" src={src}></script>)}
     <script>import '@lzzhu/presentation/runtime';</script>
   </body>
 </html>

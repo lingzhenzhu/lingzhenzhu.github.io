@@ -1,9 +1,11 @@
+import { Switch } from './Switch';
+import { FormSection } from './FormSection';
 import { Button } from './controls';
 import { Icon } from './ui';
 import { useRecordSelection } from './useRecordSelection';
 import { useRef, useState } from 'react';
 import type { Block } from '@lzzhu/content';
-import { reorder } from '../../../packages/content/src/operations';
+import { reorder } from '@lzzhu/content/operations';
 import { ImageField, type ImageTools } from './ImageField';
 import { ImagePicker } from './ImagePicker';
 import { ImagePreview } from './image-preview';
@@ -33,6 +35,7 @@ export function GalleryFields({
           <div className="item-row record-row">
             {handle}
             <Button
+              variant="quiet"
               compactIcons="keep"
               ref={rowRef(item.id)}
               className="row-link"
@@ -77,8 +80,7 @@ export function GalleryFields({
         />
       )}
       {photo && (
-        <fieldset className="record-detail" key={photo.id}>
-          <legend>Edit photo</legend>
+        <FormSection title="Edit photo" className="record-detail" compact key={photo.id}>
           <ImageField
             {...tools}
             src={photo.src}
@@ -114,16 +116,11 @@ export function GalleryFields({
           <Button onClick={() => select('')}>
             <Icon name="check" /> Done
           </Button>
-        </fieldset>
+        </FormSection>
       )}
-      <fieldset className="gallery-playback">
-        <legend>Playback</legend>
+      <FormSection title="Playback" className="gallery-playback" compact>
         <label className="check">
-          <input
-            type="checkbox"
-            checked={block.autoplay}
-            onChange={(e) => update({ autoplay: e.target.checked })}
-          />
+          <Switch checked={block.autoplay} onChange={(e) => update({ autoplay: e.target.checked })} />
           Automatic slideshow
         </label>
         <label>
@@ -140,7 +137,7 @@ export function GalleryFields({
         <p className="field-help">
           Visitors can pause at any time. Reduced-motion preferences disable automatic playback.
         </p>
-      </fieldset>
+      </FormSection>
     </>
   );
 }

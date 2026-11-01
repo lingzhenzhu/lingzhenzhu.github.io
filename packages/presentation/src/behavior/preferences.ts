@@ -6,7 +6,7 @@ export interface Preferences {
 export const preferenceKey = 'lzzhu.preferences.v1';
 export function readPreferences(): Preferences {
   try {
-    const input = JSON.parse(localStorage.getItem(preferenceKey) || '{}');
+    const input = JSON.parse(localStorage.getItem('lzzhu.preferences.v1') || '{}');
     return {
       theme: ['dark', 'light'].includes(input.theme) ? input.theme : 'system',
       largeText: input.largeText === true,
@@ -20,9 +20,11 @@ export function applyPreferences(prefs: Preferences) {
   const dark =
     prefs.theme === 'dark' ||
     (prefs.theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.body.classList.toggle('dark-theme', dark);
-  document.body.classList.toggle('a11y-large-text', prefs.largeText);
-  document.body.classList.toggle('a11y-high-contrast', prefs.contrast);
+  const root = document.documentElement;
+  root.classList.toggle('dark-theme', dark);
+  root.style.colorScheme = dark ? 'dark' : 'light';
+  root.classList.toggle('a11y-large-text', prefs.largeText);
+  root.classList.toggle('a11y-high-contrast', prefs.contrast);
   return dark;
 }
 export function savePreferences(prefs: Preferences) {

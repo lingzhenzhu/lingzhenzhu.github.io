@@ -1,0 +1,36 @@
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/latin-700.css';
+@import '../../../packages/presentation/src/styles/foundations.css';
+
+/* This entry is imported only by the Admin bundle, never by SiteShell. */
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  --type-caption: 13px;
+  --type-label: 14px;
+  --type-body: 16px;
+  --ink: #302e2b;
+  --muted: #69655d;
+  --accent: #70583d;
+  --line: #a99b7d30;
+  --surface: #fffdfaaf;
+  --field-surface: color-mix(in srgb, #806746 2%, #ffffffb3);
+  --radius: 20px;
+  --control-height: 42px;
+  --control-radius: 24px;
+  --control-border: #ffffff45;
+  --control-focus: #806746;
+  --control-gap: 8px;
+  --control-pressed: #dfd4be5c;
+  --scene:
+    radial-gradient(ellipse 430px 640px at -160px 470px, #a8ae9b99, transparent 73%),
+    radial-gradient(ellipse 450px 500px at 115px 980px, #c5a7848c, transparent 75%),
+    radial-gradient(ellipse 680px 210px at 1180px -40px, #c8b58c77, transparent 72%),
+    linear-gradient(117deg, #e9e4d9, #f8f7f1 51%, #ece7dc);
+  color: var(--ink);
+  background: #efede7;
+}

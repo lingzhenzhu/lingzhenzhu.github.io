@@ -1,3 +1,4 @@
+import { selectOption } from './select-control';
 import { test, expect, type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
@@ -49,10 +50,18 @@ test('mobile sidebar confines keyboard navigation and restores focus when dismis
   await page.goto('/admin/');
   const toggle = page.getByRole('button', { name: 'Toggle sidebar' });
   await toggle.click();
-  await expect(page.getByRole('button', { name: 'Site structure', exact: true })).toBeFocused();
+  await expect(
+    page.locator('.sidebar').getByRole('button', { name: 'Close sidebar', exact: true }),
+  ).toBeFocused();
   expect(await page.locator('.editor-main').evaluate((element) => (element as HTMLElement).inert)).toBe(true);
   await page.keyboard.press('Shift+Tab');
-  await expect(page.getByRole('link', { name: /View website/ })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Account', exact: true })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog', { name: 'Account options' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog', { name: 'Account options' })).toHaveCount(0);
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('button', { name: 'Account', exact: true })).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(toggle).toBeFocused();
   expect(await page.locator('.editor-main').evaluate((element) => (element as HTMLElement).inert)).toBe(
@@ -84,7 +93,7 @@ test('page restoration restarts accessibility and navigation once on every retur
     await page.locator('#a11y-btn').click();
     await expect(page.locator('#a11y-btn')).toHaveAttribute('aria-expanded', 'true');
     await page.locator('#toggle-font-size').click();
-    await expect(page.locator('body')).toHaveClass(/a11y-large-text/);
+    await expect(page.locator('html')).toHaveClass(/a11y-large-text/);
     await page.locator('#reset-a11y').click();
     await page.keyboard.press('Escape');
   }
@@ -117,7 +126,7 @@ test('opening upload preserves later text edits and respects a later image choic
     await page.goto('/admin/');
     await page.getByRole('button', { name: 'Home', exact: true }).click();
     await page.getByRole('button', { name: 'Opening', exact: true }).click();
-    await page.getByLabel('Opening image', { exact: true }).selectOption('custom');
+    await selectOption(page.getByRole('combobox', { name: 'Opening image', exact: true }), 'custom');
     await page.getByLabel('Upload opening portrait').setInputFiles(path.resolve('assets/source/card.jpg'));
     await expect.poll(() => received).toBe(true);
     await page.getByLabel('Chinese name', { exact: true }).fill('Supporting name edited during upload');
@@ -135,7 +144,7 @@ test('opening upload preserves later text edits and respects a later image choic
     received = false;
     await page.getByLabel('Upload opening portrait').setInputFiles(path.resolve('assets/source/avatar.jpg'));
     await expect.poll(() => received).toBe(true);
-    await page.getByLabel('Opening image', { exact: true }).selectOption('none');
+    await selectOption(page.getByRole('combobox', { name: 'Opening image', exact: true }), 'none');
     const refreshedAssets = page.waitForResponse(
       (response) => response.url().endsWith('/admin/api/assets') && response.request().method() === 'GET',
     );
@@ -143,7 +152,7 @@ test('opening upload preserves later text edits and respects a later image choic
     await refreshedAssets;
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.getByText('All changes saved', { exact: true })).toBeVisible();
-    await expect(page.getByLabel('Opening image', { exact: true })).toHaveValue('none');
+    await expect(page.getByRole('combobox', { name: 'Opening image', exact: true })).toHaveText('No image');
   } finally {
     release();
     await restore();
@@ -206,7 +215,7 @@ test('preview device choices use the actual device viewport width', async ({ pag
     ['Tablet', 768, 1024],
     ['Phone', 390, 844],
   ] as const) {
-    await page.getByLabel('Preview size').selectOption({ label });
+    await selectOption(page.getByRole('combobox', { name: 'Preview size', exact: true }), { label });
     await expect.poll(() => frame.locator('html').evaluate(() => window.innerWidth)).toBe(expected);
     await expect.poll(() => frame.locator('html').evaluate(() => window.innerHeight)).toBe(height);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

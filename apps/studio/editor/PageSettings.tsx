@@ -1,11 +1,17 @@
+import { Select } from './Select';
+import { Switch } from './Switch';
 import { Button } from './controls';
+import { ArticleSettings } from './ArticleSettings';
+import { FormSection } from './FormSection';
 import type { Page } from '@lzzhu/content';
 export function PageSettings({
   page,
+  author,
   update,
   onDelete,
 }: {
   page: Page;
+  author: string;
   update: (patch: Partial<Page>) => void;
   onDelete: (trigger: HTMLButtonElement) => void;
 }) {
@@ -13,19 +19,30 @@ export function PageSettings({
   return (
     <>
       <h2>Page settings</h2>
-      <fieldset>
-        <legend>Address & visibility</legend>
+      <FormSection title="Address & visibility">
         <label>
           Content language
-          <select
+          <Select
             value={page.language}
             onChange={(e) => update({ language: e.target.value as Page['language'] })}
           >
             <option value="en">English</option>
             <option value="zh-Hans">Chinese · Simplified</option>
             <option value="zh-Hant">Chinese · Traditional</option>
-          </select>
+          </Select>
         </label>
+        {(page.template === 'page' || page.template === 'archive') && (
+          <label>
+            Page type
+            <Select
+              value={page.template}
+              onChange={(e) => update({ template: e.target.value as 'page' | 'archive' })}
+            >
+              <option value="page">Website page</option>
+              <option value="archive">Archive page</option>
+            </Select>
+          </label>
+        )}
         <label>
           Page address
           <input
@@ -36,112 +53,34 @@ export function PageSettings({
         </label>
         <label>
           Visibility
-          <select
+          <Select
             value={page.status}
             disabled={home}
             onChange={(e) => update({ status: e.target.value as Page['status'] })}
           >
-            <option value="draft">Draft · excluded from publication</option>
-            <option value="published">Public · include when publishing</option>
-          </select>
+            <option value="draft">Draft</option>
+            <option value="published">Public</option>
+          </Select>
         </label>
         <label className="check">
-          <input
-            type="checkbox"
-            checked={page.showTitle}
-            onChange={(e) => update({ showTitle: e.target.checked })}
-          />
+          <Switch checked={page.showTitle} onChange={(e) => update({ showTitle: e.target.checked })} />
           Show page title
         </label>
-        {page.template === 'article' && (
-          <label>
-            Article date
-            <input
-              type="date"
-              value={page.date || ''}
-              onChange={(e) => update({ date: e.target.value || undefined })}
-            />
-          </label>
-        )}
-      </fieldset>
-      {page.template === 'article' && (
-        <fieldset>
-          <legend>Article details</legend>
-          <label>
-            Publication time (optional)
-            <input
-              type="time"
-              value={page.articleDetails?.time || ''}
-              onChange={(e) =>
-                update({
-                  articleDetails: {
-                    copyright: '',
-                    licenseLabel: '',
-                    ...page.articleDetails,
-                    time: e.target.value || undefined,
-                  },
-                })
-              }
-            />
-          </label>
-          <label>
-            Copyright statement
-            <input
-              value={page.articleDetails?.copyright || ''}
-              onChange={(e) =>
-                update({
-                  articleDetails: { licenseLabel: '', ...page.articleDetails, copyright: e.target.value },
-                })
-              }
-            />
-          </label>
-          <label>
-            License name
-            <input
-              value={page.articleDetails?.licenseLabel || ''}
-              onChange={(e) =>
-                update({
-                  articleDetails: { copyright: '', ...page.articleDetails, licenseLabel: e.target.value },
-                })
-              }
-            />
-          </label>
-          <label>
-            License address
-            <input
-              value={page.articleDetails?.licenseUrl || ''}
-              onChange={(e) =>
-                update({
-                  articleDetails: {
-                    copyright: '',
-                    licenseLabel: '',
-                    ...page.articleDetails,
-                    licenseUrl: e.target.value || undefined,
-                  },
-                })
-              }
-            />
-          </label>
-        </fieldset>
-      )}
-      <fieldset>
-        <legend>Search & sharing</legend>
+      </FormSection>
+      {page.template === 'article' && <ArticleSettings page={page} author={author} update={update} />}
+      <FormSection title="Search & sharing">
         <label>
           Description
           <textarea value={page.description} onChange={(e) => update({ description: e.target.value })} />
         </label>
         <label className="check">
-          <input
-            type="checkbox"
-            checked={page.indexable}
-            onChange={(e) => update({ indexable: e.target.checked })}
-          />
+          <Switch checked={page.indexable} onChange={(e) => update({ indexable: e.target.checked })} />
           Allow search engines to index this page
         </label>
-      </fieldset>
+      </FormSection>
       <div className="danger-zone">
         <h3>Delete page</h3>
-        <p>Remove this page from your draft and the next publication.</p>
+        <p>Remove this page from the draft and the next publication.</p>
         {page.blocks.some((block) => block.type === 'firebaseRewards') && (
           <p>Move the existing Firebase card to another page before deleting this page.</p>
         )}

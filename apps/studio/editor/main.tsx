@@ -1,5 +1,5 @@
 import { Button } from './controls';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { api, send } from './api';
 import { useDraft } from './useDraft';
@@ -13,16 +13,24 @@ import { SettingsPanel } from './SettingsPanel';
 import { MediaLibrary } from './MediaLibrary';
 import { HistoryPanel } from './HistoryPanel';
 import { Rewards } from './Rewards';
-import { Icon } from './ui';
-import { ConfirmDialog, StatusMessage } from './controls';
-import { ImagePreview } from './image-preview';
-import { createPage, pageName, sitePages } from './page-model';
+import { ConfirmDialog } from './controls';
+import { WorkspaceNavigation } from './WorkspaceNavigation';
+import { WorkspaceActions } from './WorkspaceActions';
+import { ScrollEdge } from './ScrollEdge';
+import { useMediaQuery } from './useMediaQuery';
+import { useGlassLighting } from './material/useGlassLighting';
+import { createPage, pageName, type NewPageTemplate } from './page-model';
 import type { ReleaseInfo, Revision, Asset } from './types';
 import './studio.css';
 import './editorial.css';
+import './theme.css';
+import './material/glass.css';
+import './shell.css';
 
 function App() {
+  useGlassLighting();
   const draft = useDraft();
+  const compact = useMediaQuery('(max-width: 700px)');
   const { content, change, save, load, run, local, message, setMessage, error, revision, previewVersion } =
     draft;
   const [sidebar, setSidebar] = useSidebar();
@@ -46,24 +54,24 @@ function App() {
   const [assets, setAssets] = useState<Asset[]>([]),
     [releases, setReleases] = useState<ReleaseInfo[]>([]),
     [revisions, setRevisions] = useState<Revision[]>([]);
-  const add = (article = false) => {
+  const add = (template: NewPageTemplate = 'page') => {
     if (!content) return;
-    const page = createPage(content, article);
+    const page = createPage(content, template);
     change((c) => ({ ...c, pages: [...c.pages, page] }));
-    navigatePage(page.id, article);
+    navigatePage(page.id, template === 'article');
   };
-  const refreshHistory = async () => {
+  const refreshHistory = useCallback(async () => {
     const [r, v] = await Promise.all([
       api<{ releases: ReleaseInfo[] }>('/releases'),
       api<Revision[]>('/revisions'),
     ]);
     setReleases(r.releases);
     setRevisions(v);
-  };
+  }, []);
   useEffect(() => {
     if (section === 'history') run(refreshHistory);
     if (section === 'assets') run(async () => setAssets(await api('/assets')));
-  }, [section]);
+  }, [section, run, refreshHistory]);
   useEffect(() => {
     if (
       section !== 'history' ||
@@ -72,7 +80,7 @@ function App() {
       return;
     const timer = setTimeout(() => run(refreshHistory), 5000);
     return () => clearTimeout(timer);
-  }, [section, releases]);
+  }, [section, releases, run, refreshHistory]);
   const upload = async (file: File) => {
     const result = await api<{ src: string }>('/assets', {
       method: 'POST',
@@ -110,79 +118,38 @@ function App() {
           }[section] || 'Workspace';
   return (
     <div className={'studio ' + (sidebar ? 'sidebar-open ' : '') + (collapsed ? 'navigation-collapsed' : '')}>
-      <header className="studio-top">
-        <div className="workspace-identity">
+      <ScrollEdge />
+      <nav className="navigation-launcher" aria-label="Workspace controls">
+        <Button
+          compactIcons="keep"
+          className="icon-button sidebar-toggle"
+          icon="menu"
+          aria-label="Toggle sidebar"
+          aria-expanded={sidebar}
+          onClick={() => setSidebar(!sidebar)}
+        />
+        {collapsed && (
           <Button
             compactIcons="keep"
             className="icon-button desktop-sidebar-toggle"
-            aria-label={collapsed ? 'Show sidebar' : 'Hide sidebar'}
-            title={collapsed ? 'Show sidebar' : 'Hide sidebar'}
-            aria-expanded={!collapsed}
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            <Icon name="menu" />
-          </Button>
-          <Button
-            compactIcons="keep"
-            className="icon-button sidebar-toggle"
-            aria-label="Toggle sidebar"
-            aria-expanded={sidebar}
-            onClick={() => setSidebar(!sidebar)}
-          >
-            <Icon name="menu" />
-          </Button>
-          <ImagePreview
-            className="studio-brand"
-            src={content?.settings.logo || '/assets/logo.svg'}
-            alt="Website logo"
+            icon="sidebar"
+            aria-label="Show sidebar"
+            onClick={() => setCollapsed(false)}
           />
-          <div>
-            <strong>Website admin</strong>
-          </div>
-        </div>
-        <div className="top-actions">
-          <StatusMessage
-            tone={
-              error
-                ? 'error'
-                : message === 'Saving…'
-                  ? 'busy'
-                  : message === 'All changes saved'
-                    ? 'success'
-                    : 'neutral'
-            }
-          >
-            {message}
-          </StatusMessage>
-          <div className="history-actions">
-            <Button
-              compactIcons="keep"
-              className="icon-button"
-              aria-label="Undo change"
-              disabled={!draft.canUndo}
-              onClick={() => draft.historyAction(true)}
-            >
-              <Icon name="undo" />
-            </Button>
-            <Button
-              compactIcons="keep"
-              className="icon-button"
-              aria-label="Redo change"
-              disabled={!draft.canRedo}
-              onClick={() => draft.historyAction(false)}
-            >
-              <Icon name="redo" />
-            </Button>
-          </div>
-          <Button onClick={() => run(draft.retrySave)} disabled={!content}>
-            <Icon name="check" /> Save
-          </Button>
-          <Button className="primary" onClick={() => go('history')} disabled={!content}>
-            <Icon name="publish" />
-            <span>Review & publish</span>
-          </Button>
-        </div>
-      </header>
+        )}
+        {compact && !sidebar && <span className="mobile-workspace-name">Website admin</span>}
+      </nav>
+      <WorkspaceActions
+        message={message}
+        error={error}
+        ready={!!content}
+        canUndo={draft.canUndo}
+        canRedo={draft.canRedo}
+        undo={() => draft.historyAction(true)}
+        redo={() => draft.historyAction(false)}
+        save={() => run(draft.retrySave)}
+        review={() => go('history')}
+      />
       {error && (
         <div className="error-banner" role="alert">
           <strong>Changes need attention</strong>
@@ -207,85 +174,22 @@ function App() {
           <p>Unsaved edits in this window will be discarded. Saved content will be loaded from the server.</p>
         </ConfirmDialog>
       )}
-      <aside className="sidebar" aria-label="Workspace navigation">
-        <p className="sidebar-label">Website</p>
-        <nav aria-label="Website">
-          <Button
-            compactIcons="keep"
-            className={section === 'structure' ? 'selected' : ''}
-            onClick={() => go('structure')}
-          >
-            <Icon name="structure" />
-            Site structure
-          </Button>
-          <Button
-            compactIcons="keep"
-            className={section === 'pages' && !page ? 'selected' : ''}
-            onClick={() => go('pages')}
-          >
-            <Icon name="pages" />
-            Pages
-          </Button>
-          <div className="sidebar-pages">
-            {content &&
-              sitePages(content).map((p) => (
-                <Button
-                  compactIcons="keep"
-                  key={p.id}
-                  className={page?.id === p.id ? 'selected' : ''}
-                  onClick={() => openPage(p.id)}
-                >
-                  <span className="page-dot" />
-                  <span>{pageName(p)}</span>
-                  {p.status === 'draft' && <small>Draft</small>}
-                </Button>
-              ))}
-          </div>
-        </nav>
-        <p className="sidebar-label">Content</p>
-        <nav aria-label="Content">
-          <Button
-            compactIcons="keep"
-            className={section === 'articles' || page?.template === 'article' ? 'selected' : ''}
-            onClick={() => go('articles')}
-          >
-            <Icon name="articles" /> Articles
-          </Button>
-          <Button
-            compactIcons="keep"
-            className={section === 'assets' ? 'selected' : ''}
-            onClick={() => go('assets')}
-          >
-            <Icon name="image" />
-            Image library
-          </Button>
-        </nav>
-        <p className="sidebar-label">Settings</p>
-        <nav aria-label="Settings">
-          <Button
-            compactIcons="keep"
-            className={section === 'settings' ? 'selected' : ''}
-            onClick={() => go('settings')}
-          >
-            <Icon name="settings" />
-            Site settings
-          </Button>
-        </nav>
-        <div className="sidebar-foot">
-          <a href="/" target="_blank" rel="noopener noreferrer">
-            <Icon name="globe" />
-            View website ↗
-          </a>
-          <p>
-            Draft changes stay private
-            <br />
-            until you publish.
-          </p>
-        </div>
-      </aside>
+      <WorkspaceNavigation
+        content={content}
+        section={section}
+        page={page}
+        go={go}
+        openPage={openPage}
+        identity={draft.identity}
+        save={save}
+        showTitle={!compact || sidebar}
+        collapse={() => setCollapsed(true)}
+        close={() => setSidebar(false)}
+      />
       {sidebar && (
         <Button
           compactIcons="keep"
+          variant="quiet"
           className="sidebar-scrim"
           aria-label="Close sidebar"
           onClick={() => setSidebar(false)}
@@ -314,13 +218,13 @@ function App() {
               />
             </Suspense>
           ) : (
-            <PagesOverview content={content} openPage={openPage} addPage={() => add()} />
+            <PagesOverview content={content} openPage={openPage} addPage={add} />
           ))}
         {content && section === 'structure' && (
           <SiteStructure content={content} change={change} openPage={openPage} addPage={() => add()} />
         )}
         {content && section === 'settings' && (
-          <SettingsPanel content={content} change={change} run={run} upload={upload} />
+          <SettingsPanel content={content} change={change} upload={upload} />
         )}
         {content && section === 'articles' && (
           <div className="collection wide">
@@ -329,7 +233,7 @@ function App() {
               content={content}
               change={change}
               openPage={openPage}
-              addArticle={() => add(true)}
+              addArticle={() => add('article')}
             />
           </div>
         )}
@@ -347,11 +251,11 @@ function App() {
               </div>
               <div className="publish-card">
                 <div>
-                  <h2>{local ? 'Create a local snapshot' : 'Publish your website'}</h2>
+                  <h2>{local ? 'Create a local snapshot' : 'Publish website'}</h2>
                   <p>
                     {local
                       ? 'Creates a local copy for review. The live website is unchanged.'
-                      : 'Your saved pages, news and images are published together.'}
+                      : 'Publish saved changes to the website.'}
                   </p>
                   <div className="publish-counts">
                     <span>

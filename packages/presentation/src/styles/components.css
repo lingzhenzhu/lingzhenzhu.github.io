@@ -26,34 +26,6 @@
   display: flex;
   justify-content: space-between;
 }
-.post-nav {
-  display: flow-root;
-}
-.post-nav a {
-  font-weight: 600;
-  font-size: 16px;
-  transition: transform 0.3s ease-out;
-}
-.post-nav .prev {
-  float: left;
-}
-.post-nav .next {
-  float: right;
-}
-.post-nav .prev::before {
-  content: '<';
-  margin-right: 0.5em;
-}
-.post-nav .next::after {
-  content: '>';
-  margin-left: 0.5em;
-}
-.post-nav .prev:hover {
-  transform: translateX(-4px);
-}
-.post-nav .next:hover {
-  transform: translateX(4px);
-}
 .content-image img {
   display: block;
   width: 100%;
@@ -168,6 +140,18 @@
   display: block;
   font-size: 0.8em;
 }
+.external-arrow {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-inline-start: 0.2em;
+  vertical-align: var(--inline-icon-baseline);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .medium-card img {
   width: 180px;
   height: 120px;
@@ -178,10 +162,14 @@
   opacity: 0.8;
 }
 .podcast-frame {
+  display: block;
   width: 100%;
   max-width: 660px;
   border: 0;
   border-radius: 12px;
+  /* Apple's player declares `only light`. A matching iframe scheme keeps its
+     unused canvas transparent even when the surrounding page is dark. */
+  color-scheme: light;
 }
 .skip-link {
   position: fixed;
@@ -198,6 +186,12 @@
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: var(--field-focus-shadow);
 }
 .sr-only {
   position: absolute;
@@ -239,18 +233,60 @@
     scroll-behavior: auto;
   }
 }
+@media (max-width: 600px) {
+  .medium-list {
+    display: grid;
+    grid-auto-rows: 1fr;
+  }
+  .medium-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    align-items: center;
+    gap: 16px;
+    min-height: 156px;
+    box-sizing: border-box;
+    padding: 18px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .medium-card > div {
+    min-width: 0;
+  }
+  .medium-card h3 {
+    text-align: start;
+    overflow-wrap: anywhere;
+    letter-spacing: 0.025em;
+    font-size: 1.15em;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+  .medium-card img {
+    width: 88px;
+    height: 88px;
+    margin: 0;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+  .medium-card time,
+  .medium-card .medium-read {
+    font-size: 0.72em;
+    line-height: 1.7;
+  }
+  .medium-card:last-child {
+    border-bottom: 0;
+  }
+  .a11y-large-text .medium-card h3 {
+    display: block;
+    overflow: visible;
+  }
+}
 @media (max-width: 479px) {
   .a11y-panel {
     bottom: 1rem;
     right: 1rem;
-  }
-  .medium-card {
-    flex-direction: column;
-  }
-  .medium-card img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
   }
   .archive-item-date {
     float: none;

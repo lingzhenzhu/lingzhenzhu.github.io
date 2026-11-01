@@ -1,3 +1,4 @@
+import { SegmentedControl } from './SegmentedControl';
 import { Button, ConfirmDialog } from './controls';
 import { useEffect, useRef, useState } from 'react';
 import type { Content } from '@lzzhu/content';
@@ -58,23 +59,20 @@ export function HistoryPanel({
           )}
         </div>
       </div>
-      <nav className="history-tabs" aria-label="History views">
-        <Button
-          compactIcons="keep"
-          aria-pressed={tab === 'publications'}
-          onClick={() => setTab('publications')}
-        >
-          Publications
-        </Button>
-        <Button compactIcons="keep" aria-pressed={tab === 'drafts'} onClick={() => setTab('drafts')}>
-          Draft revisions
-        </Button>
-      </nav>
+      <SegmentedControl
+        label="History views"
+        value={tab}
+        onChange={setTab}
+        options={[
+          { value: 'publications', label: 'Publications' },
+          { value: 'drafts', label: 'Draft revisions' },
+        ]}
+      />
       {tab === 'publications' ? (
         <>
           {!releases.length && (
             <EmptyState title="No publications yet">
-              <p>Your first publication will appear here, with its status and restore options.</p>
+              <p>No publications yet.</p>
             </EmptyState>
           )}
           {releases.map((release) => (
@@ -127,7 +125,7 @@ export function HistoryPanel({
         </>
       ) : (
         <>
-          <p className="field-help">Restore a saved revision to your draft. Publishing is a separate step.</p>
+          <p className="field-help">Restore a saved draft. Publish when ready.</p>
           {revisions.map((item) => (
             <div className="history-row" key={item.revision}>
               <span>
@@ -180,8 +178,8 @@ export function HistoryPanel({
         >
           <p>
             {restore.release
-              ? 'This starts a publication using the selected verified website version.'
-              : 'This replaces your current draft with the selected saved revision. You can undo it before publishing.'}
+              ? 'Publish the selected website version.'
+              : 'Replace the current draft with this revision. You can undo it before publishing.'}
           </p>
         </ConfirmDialog>
       )}

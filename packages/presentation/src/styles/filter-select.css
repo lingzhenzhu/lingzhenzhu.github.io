@@ -1,0 +1,96 @@
+.filter-select {
+  min-width: 0;
+  color: var(--search-ink, currentColor);
+}
+.filter-select select,
+.filter-select [data-filter-trigger] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font: inherit;
+  line-height: 1.4;
+  color: inherit;
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--filter-radius, 5px);
+  background: var(--filter-surface, #fffefa);
+  box-sizing: border-box;
+  text-align: left;
+  cursor: pointer;
+}
+.filter-select [data-filter-value] {
+  overflow-wrap: anywhere;
+}
+.filter-select [data-filter-trigger]:is(:hover, [aria-expanded='true']) {
+  border-color: var(--search-line, #c9beae);
+}
+.filter-select svg {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  transition: transform 180ms ease;
+}
+.filter-select [aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+.filter-options {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 7px;
+  border: 1px solid color-mix(in srgb, var(--search-line, #c9beae) 50%, transparent);
+  border-radius: var(--filter-popup-radius, 8px);
+  background: var(--filter-surface, #fffefa);
+  color: var(--search-ink, inherit);
+  font: inherit;
+  line-height: 1.5;
+  text-align: left;
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  box-shadow:
+    0 14px 38px #2e211d29,
+    0 3px 10px #2e211d0d;
+}
+.filter-options:popover-open {
+  animation: filter-reveal 160ms ease-out;
+}
+.filter-options [role='option'] {
+  min-height: 46px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.filter-options [aria-selected='true'] {
+  background: var(--filter-active, #f0ede7);
+  font-weight: var(--weight-medium);
+}
+.filter-options [data-active] {
+  background: var(--filter-active, #f0ede7);
+}
+@keyframes filter-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .filter-options:popover-open {
+    animation: none;
+  }
+  .filter-select svg {
+    transition: none;
+  }
+}

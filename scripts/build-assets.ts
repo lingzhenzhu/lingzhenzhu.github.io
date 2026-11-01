@@ -5,13 +5,12 @@ import sharp from 'sharp';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { createElement } from 'react';
-import { build } from 'esbuild';
+import { buildPresentation } from './build-presentation';
 import { buildFonts } from './assets/fonts';
 import { optimizeEmbeddedImages } from './assets/svg';
 import { buildUploadedImages } from './assets/uploads';
-import { preferencesBootstrap } from '../packages/presentation/src/behavior/bootstrap';
-import { ContentSchema, publicSnapshot } from '@lzzhu/content';
-import { requestCardCopy } from '../packages/presentation/src/request-card-copy';
+import { ContentSchema, publicSnapshot, articleIndex } from '@lzzhu/content';
+import { requestCardCopy } from '@lzzhu/presentation/request-card-copy';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const publicDir = path.join(root, 'apps/site/public');
@@ -42,9 +41,21 @@ const { chinese, previewCss } = await buildFonts(
   root,
   publicDir,
   snapshotJson + JSON.stringify(requestCardCopy),
+  content.pages
+    .filter((page) => page.template === 'home')
+    .map((page) => page.homeHero?.nameNote || '')
+    .join(''),
 );
 await write('assets/medium-public.json', JSON.stringify(content.medium));
-await write('assets/preferences.js', preferencesBootstrap);
+await write('assets/article-index.json', JSON.stringify(articleIndex(content)));
+await fs.mkdir(path.join(publicDir, 'assets/math'), { recursive: true });
+await fs.copyFile(
+  path.join(root, 'node_modules/katex/dist/katex.min.css'),
+  path.join(publicDir, 'assets/math/katex.min.css'),
+);
+await fs.cp(path.join(root, 'node_modules/katex/dist/fonts'), path.join(publicDir, 'assets/math/fonts'), {
+  recursive: true,
+});
 const imageManifest: Record<string, { width: number; height: number; srcset?: string }> = {};
 for (const entry of await fs.readdir(path.join(root, 'assets/source'))) {
   const source = path.join(root, 'assets/source', entry);
@@ -159,6 +170,13 @@ await write(
     '</urlset>',
 );
 await fs.cp(path.join(publicDir, 'assets'), path.join(studioDir, 'assets'), { recursive: true });
+await fs.writeFile(
+  path.join(studioDir, 'assets/card-fonts.css'),
+  (await fs.readFile(path.join(publicDir, 'assets/card-fonts.css'), 'utf8')).replaceAll(
+    '/assets/fonts/',
+    '/admin/assets/fonts/',
+  ),
+);
 for (const entry of await fs.readdir(path.join(root, 'assets/fonts')))
   if (entry.endsWith('.woff2'))
     await fs.copyFile(path.join(root, 'assets/fonts', entry), path.join(studioDir, 'assets/fonts', entry));
@@ -170,20 +188,7 @@ await fs.writeFile(
   path.join(studioDir, 'assets/fonts.css'),
   previewCss.replaceAll('/assets/fonts/', '/admin/assets/fonts/'),
 );
-await build({
-  entryPoints: [path.join(root, 'packages/presentation/src/behavior/index.ts')],
-  outfile: path.join(studioDir, 'runtime.js'),
-  bundle: true,
-  minify: true,
-  format: 'esm',
-  target: 'es2022',
-});
-await build({
-  entryPoints: [path.join(root, 'packages/presentation/src/styles/index.css')],
-  outfile: path.join(studioDir, 'site.css'),
-  bundle: true,
-  minify: true,
-});
+await buildPresentation();
 console.log(
   'Built local fonts, image variants, public metadata, ' +
     content.pages.length +

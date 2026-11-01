@@ -29,7 +29,7 @@ export async function buildUploadedImages(snapshot: string, originals: string, p
     await fs.writeFile(path.join(uploads, filename), normalized.data);
     const { width, height } = normalized.info;
     const variants: string[] = [];
-    for (const size of [...new Set([220, 330, 500, 1000, 1500, width].filter((size) => size <= width))]) {
+    for (const size of new Set([220, 330, 500, 1000, 1500, width].filter((size) => size <= width))) {
       const bytes = await sharp(normalized.data)
         .resize({ width: size, withoutEnlargement: true })
         .webp({ quality: 92 })

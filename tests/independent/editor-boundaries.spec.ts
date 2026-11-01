@@ -283,16 +283,21 @@ test('IND-06 transient save failure retains the draft and manual retry commits i
       }
       return route.continue();
     });
+    // The page's clock is controlled, so the manual save always precedes the 1.2s autosave
+    // however slowly the browser types; otherwise the autosave can make the first attempt.
+    await page.clock.install();
     await page.goto('/admin/');
     await page.getByRole('button', { name: 'Site settings', exact: true }).click();
+    await page.clock.pauseAt(Date.now() + 60_000);
     await page.getByLabel('Footer', { exact: true }).fill('RECOVERABLE OFFLINE EDIT');
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.getByRole('alert')).toContainText('Independent temporary outage');
     await expect(page.getByLabel('Footer', { exact: true })).toHaveValue('RECOVERABLE OFFLINE EDIT');
     // Let the pre-existing 1.2s debounce expire: a failed manual save must
     // pause that queued autosave as well, preserving an explicit retry.
-    await page.waitForTimeout(1600);
+    await page.clock.runFor(1600);
     expect(attempts).toBe(1);
+    await page.clock.resume();
     await expect(page.getByText('Saving paused', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Try saving again', exact: true }).click();
     await expect(page.getByText('All changes saved', { exact: true })).toBeVisible();

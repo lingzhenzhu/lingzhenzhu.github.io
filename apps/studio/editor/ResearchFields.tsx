@@ -1,9 +1,10 @@
 import { Button } from './controls';
+import { FormSection } from './FormSection';
 import { Icon } from './ui';
 import { useRecordSelection } from './useRecordSelection';
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense } from 'react';
 import { emptyDocument, type Block } from '@lzzhu/content';
-import { reorder } from '../../../packages/content/src/operations';
+import { reorder } from '@lzzhu/content/operations';
 import { ImageField, type ImageTools } from './ImageField';
 import { SortableList } from './SortableList';
 const RichEditor = lazy(() => import('./RichEditor').then((module) => ({ default: module.RichEditor })));
@@ -34,6 +35,7 @@ export function ResearchFields({
           <div className="item-row record-row">
             {handle}
             <Button
+              variant="quiet"
               compactIcons="keep"
               ref={rowRef(item.id)}
               className="row-link"
@@ -77,8 +79,7 @@ export function ResearchFields({
         ))}
       </div>
       {part && (
-        <fieldset className="record-detail" key={part.id}>
-          <legend>Edit {part.type}</legend>
+        <FormSection title={'Edit ' + part.type} className="record-detail" compact key={part.id}>
           {part.type === 'image' ? (
             <>
               <ImageField {...tools} src={part.src} alt={part.alt} onChange={edit} />
@@ -116,7 +117,7 @@ export function ResearchFields({
           <Button onClick={() => select('')}>
             <Icon name="check" /> Done
           </Button>
-        </fieldset>
+        </FormSection>
       )}
       <label>
         Paper link

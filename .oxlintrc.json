@@ -1,0 +1,40 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "import", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
+  },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "react/jsx-key": "error",
+    "import/no-cycle": "error",
+
+    // Not applicable: the automatic JSX runtime, side-effect CSS imports and Tiptap's default exports.
+    "react/react-in-jsx-scope": "off",
+    "import/no-unassigned-import": "off",
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
+
+    // React Compiler rules. This project does not compile with it; the latest-ref and
+    // DOM-synchronisation patterns they flag are deliberate.
+    "react/refs": "off",
+    "react/immutability": "off",
+    "react/purity": "off",
+    "react/set-state-in-effect": "off",
+    "react/exhaustive-effect-dependencies": "off",
+    "react/memo-dependencies": "off",
+
+    // Style preferences rather than defects in this codebase.
+    "no-shadow": "off",
+    "unicorn/no-array-sort": "off",
+    "unicorn/no-array-reverse": "off",
+    "unicorn/consistent-function-scoping": "off",
+    "unicorn/prefer-add-event-listener": "off",
+
+    // The live preview and the Apple Podcasts player both need scripts and their own origin.
+    "react/iframe-missing-sandbox": "off"
+  },
+  "ignorePatterns": ["**/dist/**", "**/node_modules/**", ".artifacts/**", "apps/*/public/**", "apps/site/.astro/**"]
+}

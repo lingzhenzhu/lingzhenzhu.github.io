@@ -1,3 +1,4 @@
+import { selectOption } from './select-control';
 import { test, expect, type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
 import type { Content } from '@lzzhu/content';
 import path from 'node:path';
@@ -49,8 +50,8 @@ test('MOD-01 institution upload, course fields, keyboard drag and deletion resto
       .setInputFiles(path.resolve('assets/source/uva.jpg'));
     await expect(page.getByLabel('Image URL', { exact: true })).toHaveValue(/\/assets\/uploads\//);
     await page.getByRole('button', { name: 'Add course', exact: true }).click();
-    await page.getByRole('combobox', { name: 'Year', exact: true }).selectOption('2026');
-    await page.getByRole('combobox', { name: 'Term', exact: true }).selectOption('Spring');
+    await selectOption(page.getByRole('combobox', { name: 'Year', exact: true }), '2026');
+    await selectOption(page.getByRole('combobox', { name: 'Term', exact: true }), 'Spring');
     await page.getByLabel('Course code', { exact: true }).fill('IE 5088');
     await page.getByLabel('Course name', { exact: true }).fill('Production Analysis');
     await page.getByLabel('Position', { exact: true }).fill('Lecturer');
@@ -143,6 +144,9 @@ test('MOD-03 gallery, cross-page feed, hidden Past page and keyboard slideshow u
   page,
   request,
 }) => {
+  // Covers uploads, two cross-page moves, page creation and slideshow controls
+  // in one transaction; Windows WebKit needs more than the default 45 seconds.
+  test.slow();
   const state = await fixture(page, request);
   try {
     await page.goto('/admin/');
@@ -154,7 +158,7 @@ test('MOD-03 gallery, cross-page feed, hidden Past page and keyboard slideshow u
       await page.getByLabel('Alternative text', { exact: true }).fill(name);
       await page.getByRole('button', { name: 'Done', exact: true }).click();
     }
-    await page.getByRole('checkbox', { name: 'Automatic slideshow', exact: true }).check();
+    await page.getByRole('switch', { name: 'Automatic slideshow', exact: true }).check();
     await page.getByRole('button', { name: 'Move section up', exact: true }).click();
     await page.getByRole('button', { name: 'Move section up', exact: true }).click();
     await page.locator('.block-select').filter({ hasText: 'Medium feed' }).click();
@@ -176,7 +180,7 @@ test('MOD-03 gallery, cross-page feed, hidden Past page and keyboard slideshow u
     await page.getByLabel('Title', { exact: true }).fill('Past');
     await page.getByRole('button', { name: 'Page settings', exact: true }).click();
     await page.getByLabel('Page address', { exact: true }).fill('/past/');
-    await page.getByRole('combobox', { name: 'Visibility', exact: true }).selectOption('published');
+    await selectOption(page.getByRole('combobox', { name: 'Visibility', exact: true }), 'published');
     await page.getByRole('button', { name: 'Blog', exact: true }).click();
     await page.locator('.block-select').filter({ hasText: 'Article list' }).click();
     await page.getByRole('button', { name: 'Move to page…', exact: true }).click();
@@ -315,7 +319,7 @@ test('MOD-06 adjustable columns, one image entry, notebook scroll and canonical 
     expect(await paper.evaluate((el) => el.scrollTop)).toBeGreaterThan(200);
     expect(await source.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/monospace|Consolas/);
     await page.getByRole('button', { name: 'Image', exact: true }).click();
-    await expect(page.getByRole('dialog').getByLabel('Upload a new image')).toBeVisible();
+    await expect(page.getByRole('dialog').getByRole('button', { name: 'Upload image', exact: true })).toBeVisible();
     await page
       .getByRole('dialog')
       .getByRole('button', { name: 'Cancel', exact: true })
@@ -356,7 +360,7 @@ test('MOD-04 custom contact choices and shared logo are editable; compact Admin 
     await page.getByRole('button', { name: 'Site settings', exact: true }).click();
     for (const icon of ['twitter', 'instagram', 'wechat']) {
       await page.getByRole('button', { name: 'Add contact', exact: true }).click();
-      await page.getByRole('combobox', { name: 'Icon', exact: true }).last().selectOption(icon);
+      await selectOption(page.getByRole('combobox', { name: 'Icon', exact: true }).last(), icon);
     }
     await page.getByLabel('Image URL', { exact: true }).fill('/assets/avatar.jpg');
     await save(page);

@@ -1,3 +1,4 @@
+import { selectOption } from './select-control';
 import { test, expect } from '@playwright/test';
 import type { Content } from '@lzzhu/content';
 test('News uses list, detail, multiple selection, confirmation and undo', async ({ page, request }) => {
@@ -70,8 +71,9 @@ test('optional homepage image moves the existing portrait into the opening witho
     await page.goto('/admin/');
     await page.getByRole('button', { name: 'Home', exact: true }).click();
     await page.getByRole('button', { name: 'Opening', exact: true }).click();
-    await expect(page.getByLabel('Opening image', { exact: true })).toHaveValue('none');
-    await page.getByLabel('Opening image', { exact: true }).selectOption('profile');
+    const openingImage = page.getByRole('combobox', { name: 'Opening image', exact: true });
+    await expect(openingImage.locator('..').locator('select')).toHaveValue('none');
+    await selectOption(openingImage, 'profile');
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.getByText('All changes saved', { exact: true })).toBeVisible();
     const frame = page.frameLocator('iframe[title="Page preview"]');
@@ -118,6 +120,7 @@ test('Media checks on every visit, renders safe text, and falls back for missing
   await page.goto('/media/');
   await expect(page.locator('.medium-card')).toHaveCount(2);
   expect(calls).toBe(1);
+  await expect(page.locator('.medium-read svg')).toHaveCount(2);
   await expect(page.locator('.medium-card').first().locator('h3')).toContainText('<script>');
   expect(await page.locator('.medium-card script').count()).toBe(0);
   await page.locator('.medium-card').last().scrollIntoViewIfNeeded();
@@ -149,10 +152,12 @@ test('desktop and mobile navigation share typography and the open menu sits abov
   expect(toggle).toEqual(desktop);
   await page.locator('.menu-toggle').click();
   const link = page.locator('#mobile-menu .menu-item').first();
-  expect(
-    await link.evaluate((el) => {
-      const r = el.getBoundingClientRect();
-      return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
-    }),
-  ).toBe(true);
+  await expect
+    .poll(() =>
+      link.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+      }),
+    )
+    .toBe(true);
 });

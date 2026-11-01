@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { identify, localDevelopment } from '../../apps/studio/server/auth';
+import { identify, localDevelopment, sameSecret } from '../../apps/studio/server/auth';
 import type { Env } from '../../apps/studio/server/types';
 describe('Access origin and local bypass boundary', () => {
   const env = {
@@ -26,5 +26,14 @@ describe('Access origin and local bypass boundary', () => {
         new URL('http://127.0.0.1/admin/'),
       ),
     ).toBe(false);
+  });
+});
+describe('CSRF token comparison', () => {
+  it('accepts only the exact token', () => {
+    expect(sameSecret('a1b2c3', 'a1b2c3')).toBe(true);
+    expect(sameSecret('a1b2c4', 'a1b2c3')).toBe(false);
+    expect(sameSecret('a1b2c', 'a1b2c3')).toBe(false);
+    expect(sameSecret(undefined, 'a1b2c3')).toBe(false);
+    expect(sameSecret('', '')).toBe(true);
   });
 });

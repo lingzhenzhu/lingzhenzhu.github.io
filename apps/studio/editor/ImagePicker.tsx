@@ -3,8 +3,9 @@ import { usePagination } from './usePagination';
 import { useEffect, useState } from 'react';
 import { api } from './api';
 import type { Asset } from './types';
-import { Dialog, EmptyState, Icon } from './ui';
+import { Dialog, EmptyState } from './ui';
 import { ImagePreview } from './image-preview';
+import { ImageUpload } from './ImageUpload';
 const builtInImages = [
   { id: 'logo', filename: 'ZH monogram', src: '/assets/logo.svg' },
   { id: 'avatar', filename: 'Portrait', src: '/assets/avatar.jpg' },
@@ -45,34 +46,15 @@ export function ImagePicker({
   return (
     <Dialog title="Choose an image" onClose={onClose} returnFocusTo={returnFocusTo} dismissible={!uploading}>
       {upload && (
-        <label className="picker-upload">
-          <span>
-            <Icon name="publish" /> Upload a new image
-          </span>
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            disabled={uploading}
-            onChange={async (event) => {
-              const file = event.target.files?.[0];
-              event.target.value = '';
-              if (!file) return;
-              setUploading(true);
-              setError('');
-              try {
-                const src = await upload(file);
-                onChoose(src);
-                onClose();
-              } catch (error) {
-                setError((error as Error).message);
-              } finally {
-                setUploading(false);
-              }
-            }}
-          />
-        </label>
+        <ImageUpload
+          onBusyChange={setUploading}
+          onUpload={async (file) => {
+            const src = await upload(file);
+            onChoose(src);
+            onClose();
+          }}
+        />
       )}
-      {uploading && <p role="status">Uploading image…</p>}
       <label>
         Search images
         <input

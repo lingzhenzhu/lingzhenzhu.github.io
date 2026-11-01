@@ -5,17 +5,25 @@ import subsetFont from 'subset-font';
 import { create as createFont } from 'fontkit';
 
 const digest = (buffer: Buffer) => createHash('sha256').update(buffer).digest('hex').slice(0, 12);
-export async function buildFonts(root: string, output: string, snapshot: string) {
+export async function buildFonts(root: string, output: string, snapshot: string, openingNames = '') {
   const directory = path.join(output, 'assets/fonts');
   const designRoot = path.join(root, 'assets/fonts');
+  // Complete Unicode subsets also cover future live card requests, not just the published snapshot.
+  const cardFonts = path.join(designRoot, 'card');
+  await fs.mkdir(path.join(directory, 'card'), { recursive: true });
+  for (const filename of await fs.readdir(cardFonts))
+    if (filename.endsWith('.woff2') || filename === 'OFL.txt')
+      await fs.copyFile(path.join(cardFonts, filename), path.join(directory, 'card', filename));
+  await fs.copyFile(path.join(cardFonts, 'card-fonts.css'), path.join(output, 'assets/card-fonts.css'));
   const css = await fs.readFile(path.join(designRoot, 'design-fonts.css'), 'utf8');
   let publicCss = css,
     previewCss = css;
   // Retain Latin alphabets, punctuation and all published glyphs. Private previews use full fonts.
   const glyphs =
     Array.from({ length: 0x250 - 0x20 }, (_, i) => String.fromCodePoint(i + 0x20)).join('') + snapshot;
-  for (const match of css.matchAll(/\/assets\/fonts\/([^\s)]+)/g)) {
-    const filename = match[1];
+  // Several exact weight declarations can share one variable font resource.
+  const designFiles = new Set([...css.matchAll(/\/assets\/fonts\/([^\s)]+)/g)].map((match) => match[1]));
+  for (const filename of designFiles) {
     const input = await fs.readFile(path.join(designRoot, filename));
     const subset = await subsetFont(input, glyphs, { targetFormat: 'woff2' });
     const target = filename.replace(/\.woff2$/, '-' + digest(subset) + '.woff2');
@@ -26,12 +34,11 @@ export async function buildFonts(root: string, output: string, snapshot: string)
     if (/license|ofl/i.test(filename))
       await fs.copyFile(path.join(designRoot, filename), path.join(directory, filename));
   for (const [family, slug, weights] of [
-    ['Inter', 'inter', [300, 400, 500]],
-    ['Cormorant Garamond', 'cormorant-garamond', [300, 400, 600]],
+    ['Inter', 'inter', [300, 400, 500, 600, 700]],
+    ['Cormorant Garamond', 'cormorant-garamond', [300, 400, 500, 600, 700]],
   ] as const) {
     for (const weight of weights)
       for (const style of slug === 'inter' ? ['normal'] : ['normal', 'italic']) {
-        if (style === 'italic' && weight === 600) continue;
         const filename = `${slug}-latin-${weight}-${style}.woff2`;
         await fs.copyFile(
           path.join(root, 'node_modules/@fontsource', slug, 'files', filename),
@@ -47,6 +54,18 @@ export async function buildFonts(root: string, output: string, snapshot: string)
     );
   }
   const chinese = await fs.readFile(path.join(root, 'assets/source/lanting.woff2'));
+  if (openingNames) {
+    // The same glyphs as before, with a tiny preloadable face that never swaps in late.
+    const subset = await subsetFont(chinese, openingNames, {
+      targetFormat: 'woff2',
+      preserveNameIds: [0, 7, 8, 9, 11, 13, 14],
+    });
+    const filename = 'lanting-name-' + digest(subset) + '.woff2';
+    await fs.writeFile(path.join(directory, filename), subset);
+    publicCss += `@font-face{font-family:lanting-name;font-weight:300;font-display:optional;src:url("/assets/fonts/${filename}") format("woff2")}\n`;
+  }
+  previewCss +=
+    '@font-face{font-family:lanting-name;font-weight:300;font-display:optional;src:url("/admin/fonts/lanting.woff2") format("woff2")}\n';
   const font = createFont(chinese);
   if ('fonts' in font) throw new Error('Expected a single Chinese font');
   const codepoints = [...new Set([...snapshot].map((character) => character.codePointAt(0)!))]

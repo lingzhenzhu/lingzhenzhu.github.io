@@ -1,3 +1,4 @@
+import { Select } from './Select';
 import { ConfirmDialog, Button, Pagination } from './controls';
 import { usePagination } from './usePagination';
 import { useEffect, useRef, useState } from 'react';
@@ -71,20 +72,26 @@ export function ArticlesPanel({
       <div className="article-filters">
         <label className="article-search">
           <span>Search</span>
-          <input
-            type="search"
-            aria-label="Search articles"
-            placeholder="Title or address"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setSelection([]);
-            }}
-          />
+          <span className="studio-search-field">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10" cy="10" r="6.5" />
+              <path d="m15 15 6 6" />
+            </svg>
+            <input
+              type="search"
+              aria-label="Search articles"
+              placeholder="Title or address"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setSelection([]);
+              }}
+            />
+          </span>
         </label>
         <label>
           Year
-          <select
+          <Select
             value={year}
             onChange={(e) => {
               setYear(e.target.value);
@@ -96,11 +103,11 @@ export function ArticlesPanel({
               <option key={value}>{value}</option>
             ))}
             <option value="undated">No date</option>
-          </select>
+          </Select>
         </label>
         <label>
           Status
-          <select
+          <Select
             value={status}
             onChange={(e) => {
               setStatus(e.target.value);
@@ -110,15 +117,15 @@ export function ArticlesPanel({
             <option value="">All statuses</option>
             <option value="published">Public</option>
             <option value="draft">Draft</option>
-          </select>
+          </Select>
         </label>
         <label>
           Sort
-          <select value={sort} onChange={(e) => setSort(e.target.value)}>
+          <Select value={sort} onChange={(e) => setSort(e.target.value)}>
             <option value="newest">Newest first</option>
             <option value="oldest">Oldest first</option>
             <option value="title">Title A–Z</option>
-          </select>
+          </Select>
         </label>
       </div>
       <div className="article-selection">
@@ -165,7 +172,7 @@ export function ArticlesPanel({
                 setSelection((s) => (e.target.checked ? [...s, p.id] : s.filter((id) => id !== p.id)))
               }
             />
-            <Button compactIcons="keep" className="row-link" onClick={() => openPage(p.id)}>
+            <Button variant="quiet" compactIcons="keep" className="row-link" onClick={() => openPage(p.id)}>
               <span>
                 <strong>{p.title}</strong>
                 <small>
@@ -205,7 +212,7 @@ export function ArticlesPanel({
             setSelection([]);
           }}
         >
-          <p>The selected items will be removed from your draft. You can undo this change.</p>
+          <p>The selected articles will be removed. You can undo this change.</p>
         </ConfirmDialog>
       )}
     </section>

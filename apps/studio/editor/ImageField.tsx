@@ -1,15 +1,14 @@
 import { Button } from './controls';
 import { useEffect, useRef, useState } from 'react';
 import { ImagePicker } from './ImagePicker';
+import { ImageUpload } from './ImageUpload';
 import { ImagePreview } from './image-preview';
-import type { RunTask } from './types';
 
-export type ImageTools = { run: RunTask; upload: (file: File) => Promise<string> };
+export type ImageTools = { upload: (file: File) => Promise<string> };
 export function ImageField({
   src,
   alt,
   onChange,
-  run,
   upload,
   logo = false,
   logoHelp = 'Every institution uses a 50 × 50 image with 10 px rounded corners. The full logo is kept inside the frame.',
@@ -39,26 +38,16 @@ export function ImageField({
     <div className={'image-field ' + (logo ? 'logo-field' : '')}>
       {src && <ImagePreview src={src} alt={alt || 'Selected image'} className="portrait-preview" />}
       <div className="image-field-actions">
-        <Button compactIcons="keep" ref={trigger} onClick={() => setPicking(true)}>
+        <Button icon="image" compactIcons="keep" ref={trigger} onClick={() => setPicking(true)}>
           Choose from image library
         </Button>
-        <label>
-          Upload image
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            onChange={(event) => {
-              const file = event.target.files?.[0],
-                token = ++generation.current;
-              event.target.value = '';
-              if (file)
-                run(async () => {
-                  const result = await upload(file);
-                  if (token === generation.current) latestChange.current({ src: result });
-                });
-            }}
-          />
-        </label>
+        <ImageUpload
+          onUpload={async (file) => {
+            const token = ++generation.current;
+            const result = await upload(file);
+            if (token === generation.current) latestChange.current({ src: result });
+          }}
+        />
       </div>
       {logo && <p className="field-help">{logoHelp}</p>}
       <label>

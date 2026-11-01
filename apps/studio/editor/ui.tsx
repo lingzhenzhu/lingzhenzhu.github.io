@@ -17,12 +17,14 @@ export function Dialog({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  // The trigger is fixed when the dialog opens; later renders must not re-run the modal setup.
+  const trigger = useRef(returnFocusTo);
   useEffect(() => {
     const el = ref.current!;
     // Safari does not focus buttons on pointer activation. Callers identify
     // the trigger explicitly so mouse and keyboard dismissals behave alike.
     const opener =
-      returnFocusTo ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      trigger.current ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     const workspace = el.closest('main');
     el.showModal();
     // React autofocus runs while the native dialog is still closed. Apply the
@@ -40,6 +42,7 @@ export function Dialog({
     <dialog
       ref={ref}
       className="studio-dialog"
+      data-glass="dialog"
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault();
@@ -48,7 +51,13 @@ export function Dialog({
     >
       <header>
         <h2 id={titleId}>{title}</h2>
-        <IconButton label="Close dialog" icon="close" disabled={!dismissible} onClick={onClose} />
+        <IconButton
+          variant="quiet"
+          label="Close dialog"
+          icon="close"
+          disabled={!dismissible}
+          onClick={onClose}
+        />
       </header>
       {children}
     </dialog>

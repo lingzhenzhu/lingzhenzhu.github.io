@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts", "./resources": "./src/resources.ts" },
+  "exports": {
+    ".": "./src/index.ts",
+    "./resources": "./src/resources.ts",
+    "./article-search": "./src/article-search.ts",
+    "./operations": "./src/operations.ts",
+    "./seed": "./src/seed.ts"
+  },
   "dependencies": {
     "zod": "4.6.7"
   }

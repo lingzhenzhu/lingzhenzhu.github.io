@@ -1,3 +1,4 @@
+import { Switch } from './Switch';
 import { Button, Pagination } from './controls';
 import { usePagination } from './usePagination';
 import { useEffect, useState } from 'react';
@@ -12,7 +13,7 @@ export function MediumPanel({ content, change, run }: CollectionProps & { run: R
     [busy, setBusy] = useState(false);
   useEffect(() => {
     run(async () => setFeed(await api('/feed')));
-  }, []);
+  }, [run]);
   const entries = mergeMedium(content.medium, JSON.parse(feed?.entries || '[]') as Content['medium']);
   const pagination = usePagination(entries.length);
   const selected = entries.find((e) => e.id === active);
@@ -40,7 +41,12 @@ export function MediumPanel({ content, change, run }: CollectionProps & { run: R
       </div>
       {selected ? (
         <>
-          <Button compactIcons="keep" className="back-button" onClick={() => setActive(undefined)}>
+          <Button
+            variant="quiet"
+            compactIcons="keep"
+            className="back-button"
+            onClick={() => setActive(undefined)}
+          >
             <Icon name="back" />
             All articles
           </Button>
@@ -58,11 +64,7 @@ export function MediumPanel({ content, change, run }: CollectionProps & { run: R
           </label>
           <p className="field-help">Articles without a cover use the website’s illustrated default.</p>
           <label className="check">
-            <input
-              type="checkbox"
-              checked={!selected.hidden}
-              onChange={(e) => update({ hidden: !e.target.checked })}
-            />
+            <Switch checked={!selected.hidden} onChange={(e) => update({ hidden: !e.target.checked })} />
             Show this article after publishing
           </label>
           <Button compactIcons="keep" onClick={() => setActive(undefined)}>
@@ -99,6 +101,7 @@ export function MediumPanel({ content, change, run }: CollectionProps & { run: R
           <div className="item-list">
             {entries.slice(pagination.start, pagination.end).map((entry) => (
               <Button
+                variant="quiet"
                 compactIcons="keep"
                 className="row-link"
                 key={entry.id}

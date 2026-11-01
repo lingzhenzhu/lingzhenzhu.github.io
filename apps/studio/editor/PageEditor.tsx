@@ -1,10 +1,11 @@
 import { ConfirmDialog, Button } from './controls';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { moduleCapabilities, moduleDefinitions, type Block, type Page } from '@lzzhu/content';
 import type { CollectionProps, RunTask } from './types';
 import { BlockFields } from './BlockFields';
 import { HomeOpening } from './HomeOpening';
 import { PageSettings } from './PageSettings';
+import { ArticleNavigationSettings } from './ArticleNavigationSettings';
 import { NewsPanel } from './NewsPanel';
 import { MediumPanel } from './MediumPanel';
 import { Icon } from './ui';
@@ -14,7 +15,10 @@ import { SortableList } from './SortableList';
 import { TransferSection } from './TransferSection';
 import { SectionLibrary } from './SectionLibrary';
 import { ResizableWorkspace } from './ResizableWorkspace';
-import { reorder } from '../../../packages/content/src/operations';
+import { SegmentedControl } from './SegmentedControl';
+import { PagePreview } from './PagePreview';
+import { PageOutline } from './PageOutline';
+import { reorder } from '@lzzhu/content/operations';
 export function PageEditor({
   content,
   change,
@@ -35,19 +39,9 @@ export function PageEditor({
   const [tab, setTab] = useState('content'),
     [blockId, setBlockId] = useState(''),
     [preview, setPreview] = useState(true),
-    [width, setWidth] = useState(1440),
     [deleting, setDeleting] = useState(false),
     [removeBlock, setRemoveBlock] = useState<string>();
   const dialogTrigger = useRef<HTMLButtonElement | null>(null);
-  const frame = useRef<HTMLIFrameElement>(null);
-  const previewSurface = useRef<HTMLDivElement>(null);
-  const [previewWidth, setPreviewWidth] = useState(600);
-  const previewScale = Math.min(1, previewWidth / width);
-  const previewHeight = width === 1440 ? 900 : width === 768 ? 1024 : 844;
-  const previewScroll = useRef(0),
-    previewLoaded = useRef(false),
-    previewEvents = useRef<AbortController | undefined>(undefined);
-  const [refresh, setRefresh] = useState(0);
   const [moving, setMoving] = useState(''),
     [adding, setAdding] = useState(false);
   const moveBlock = (id: string, to: number) =>
@@ -55,23 +49,6 @@ export function PageEditor({
       ...c,
       pages: c.pages.map((p) => (p.id === page.id ? { ...p, blocks: reorder(p.blocks, id, to) } : p)),
     }));
-  useEffect(() => {
-    const surface = previewSurface.current;
-    if (!surface) return;
-    const observer = new ResizeObserver(() => setPreviewWidth(surface.clientWidth));
-    observer.observe(surface);
-    return () => observer.disconnect();
-  }, [preview]);
-  // Access can redirect an expired session. Never access a cross-origin login frame.
-  const previewWindow = () => {
-    try {
-      return frame.current?.contentDocument?.documentElement.dataset.preview === 'true'
-        ? frame.current.contentWindow
-        : null;
-    } catch {
-      return null;
-    }
-  };
   const home = page.template === 'home',
     medium = page.blocks.some((b) => b.type === 'medium');
   const update = (patch: Partial<Page>) =>
@@ -85,26 +62,6 @@ export function PageEditor({
           : p,
       ),
     }));
-  const scrollPreview = () => {
-    const view = previewWindow();
-    if (!view) return;
-    if (tab === 'opening') {
-      view.scrollTo(0, 0);
-      return;
-    }
-    const selector =
-      tab === 'news'
-        ? '[data-news]'
-        : tab === 'medium'
-          ? '[data-medium]'
-          : blockId && tab === 'content'
-            ? '[data-block-id="' + CSS.escape(blockId) + '"] > *'
-            : '';
-    const target = selector ? view.document.querySelector(selector) : null;
-    if (target) view.scrollTo(0, target.getBoundingClientRect().top + view.scrollY - 20);
-  };
-  useEffect(scrollPreview, [tab, blockId]);
-  useEffect(() => () => previewEvents.current?.abort(), []);
   const tabs = [
     ['content', 'Content'],
     ...(home
@@ -116,21 +73,6 @@ export function PageEditor({
     ...(medium ? [['medium', 'Medium']] : []),
     ['settings', 'Page settings'],
   ];
-  useEffect(() => {
-    const listener = (event: MessageEvent) => {
-      if (
-        event.origin === location.origin &&
-        event.source === frame.current?.contentWindow &&
-        event.data?.type === 'site:block-select' &&
-        typeof event.data.blockId === 'string'
-      ) {
-        setTab('content');
-        setBlockId(event.data.blockId);
-      }
-    };
-    window.addEventListener('message', listener);
-    return () => window.removeEventListener('message', listener);
-  }, []);
   const route = (section: string) => {
     if (section === 'news' || section === 'medium') setTab(section);
     else go(section);
@@ -143,225 +85,211 @@ export function PageEditor({
           {preview ? 'Hide preview' : 'Show preview'}
         </Button>
       </PageWorkspaceHeader>
-      <nav className="section-tabs" aria-label="Page sections">
-        {tabs.map(([id, name]) => (
-          <Button
-            compactIcons="keep"
-            key={id}
-            aria-current={tab === id ? 'page' : undefined}
-            onClick={() => setTab(id)}
-          >
-            {name}
-          </Button>
-        ))}
-      </nav>
+      <SegmentedControl
+        role="navigation"
+        className="section-tabs"
+        label="Page sections"
+        value={tab}
+        onChange={setTab}
+        options={tabs.map(([value, label]) => ({
+          value,
+          label,
+          icon: (
+            {
+              content: 'articles',
+              opening: 'home',
+              news: 'news',
+              medium: 'medium',
+              settings: 'settings',
+            } as Record<string, string>
+          )[value],
+        }))}
+      />
       <ResizableWorkspace enabled={preview}>
         <div className="inspector">
-          {tab === 'content' && (
-            <>
-              <div className="section-heading">
-                <div>
-                  <h2>Page content</h2>
-                  <p className="muted">
-                    Select a section to edit. Drag its handle to reorder. Changes save automatically.
-                  </p>
-                </div>
-              </div>
-              {!home && (
-                <label>
-                  Title
-                  <input
-                    value={page.title}
-                    onChange={(e) =>
-                      update({
-                        title: e.target.value,
-                        ...(page.navLabel === page.title || page.navLabel === 'New page'
-                          ? { navLabel: e.target.value.slice(0, 60) }
-                          : {}),
-                      })
-                    }
-                  />
-                </label>
-              )}
-              <SortableList
-                items={page.blocks}
-                label="Page sections order"
-                name={blockSummary}
-                onMove={moveBlock}
-              >
-                {(block, index, handle) => (
-                  <section
-                    key={block.id}
-                    className={'block-editor ' + (blockId === block.id ? 'selected' : '')}
-                  >
-                    <div className="block-bar">
-                      {handle}
-                      <Button
-                        compactIcons="keep"
-                        className="block-select"
-                        aria-expanded={blockId === block.id}
-                        onClick={() => setBlockId(blockId === block.id ? '' : block.id)}
-                      >
-                        <span className="row-index">{String(index + 1).padStart(2, '0')}</span>
-                        <span>
-                          <strong>
-                            <Icon name={moduleDefinitions[block.type].icon} /> {blockNames[block.type]}
-                          </strong>
-                          <small>{blockSummary(block)}</small>
-                        </span>
-                        <Icon name="arrow" />
-                      </Button>
+          <div className={'page-editing-columns' + (!preview && tab === 'content' ? ' with-outline' : '')}>
+            <div className="editing-fields">
+              {tab === 'content' && (
+                <>
+                  <div className="section-heading">
+                    <div>
+                      <h2>Page content</h2>
+                      <p className="muted">Select a section to edit, or drag to reorder.</p>
                     </div>
-                    {blockId === block.id && (
-                      <>
-                        <BlockFields
-                          content={content}
-                          block={block}
-                          updateBlock={updateBlock}
-                          run={run}
-                          upload={upload}
-                          setSection={route}
-                        />
-                        <div className="block-actions">
+                  </div>
+                  {!home && (
+                    <label>
+                      Title
+                      <input
+                        value={page.title}
+                        onChange={(e) =>
+                          update({
+                            title: e.target.value,
+                            ...(page.navLabel === page.title || page.navLabel === 'New page'
+                              ? { navLabel: e.target.value.slice(0, 60) }
+                              : {}),
+                          })
+                        }
+                      />
+                    </label>
+                  )}
+                  <SortableList
+                    items={page.blocks}
+                    label="Page sections order"
+                    name={blockSummary}
+                    onMove={moveBlock}
+                  >
+                    {(block, index, handle) => (
+                      <section
+                        key={block.id}
+                        data-editor-block={block.id}
+                        className={'block-editor ' + (blockId === block.id ? 'selected' : '')}
+                      >
+                        <div className="block-bar">
+                          {handle}
                           <Button
-                            aria-label="Move section up"
-                            disabled={index === 0}
-                            onClick={() => {
-                              moveBlock(block.id, index - 1);
-                            }}
+                            variant="quiet"
+                            compactIcons="keep"
+                            className="block-select"
+                            aria-expanded={blockId === block.id}
+                            onClick={() => setBlockId(blockId === block.id ? '' : block.id)}
                           >
-                            <Icon name="up" /> Move up
+                            <span className="row-index">{String(index + 1).padStart(2, '0')}</span>
+                            <span>
+                              <strong>
+                                <Icon name={moduleDefinitions[block.type].icon} /> {blockNames[block.type]}
+                              </strong>
+                              <small>{blockSummary(block)}</small>
+                            </span>
+                            <Icon name="arrow" />
                           </Button>
-                          <Button
-                            aria-label="Move section down"
-                            disabled={index === page.blocks.length - 1}
-                            onClick={() => {
-                              moveBlock(block.id, index + 1);
-                            }}
-                          >
-                            <Icon name="down" /> Move down
-                          </Button>
-                          <Button
-                            disabled={!moduleCapabilities(block.type).move}
-                            onClick={(event) => {
-                              dialogTrigger.current = event.currentTarget;
-                              setMoving(block.id);
-                            }}
-                          >
-                            <Icon name="move" /> Move to page…
-                          </Button>
-                          {moduleCapabilities(block.type).remove && (
-                            <Button
-                              className="danger"
-                              onClick={(event) => {
-                                dialogTrigger.current = event.currentTarget;
-                                setRemoveBlock(block.id);
-                              }}
-                            >
-                              <Icon name="trash" /> Remove section
-                            </Button>
-                          )}
                         </div>
-                      </>
+                        {blockId === block.id && (
+                          <>
+                            <BlockFields
+                              content={content}
+                              block={block}
+                              updateBlock={updateBlock}
+                              upload={upload}
+                              setSection={route}
+                            />
+                            <div className="block-actions">
+                              <Button
+                                aria-label="Move section up"
+                                disabled={index === 0}
+                                onClick={() => {
+                                  moveBlock(block.id, index - 1);
+                                }}
+                              >
+                                <Icon name="up" /> Move up
+                              </Button>
+                              <Button
+                                aria-label="Move section down"
+                                disabled={index === page.blocks.length - 1}
+                                onClick={() => {
+                                  moveBlock(block.id, index + 1);
+                                }}
+                              >
+                                <Icon name="down" /> Move down
+                              </Button>
+                              <Button
+                                disabled={!moduleCapabilities(block.type).move}
+                                onClick={(event) => {
+                                  dialogTrigger.current = event.currentTarget;
+                                  setMoving(block.id);
+                                }}
+                              >
+                                <Icon name="move" /> Move to page…
+                              </Button>
+                              {moduleCapabilities(block.type).remove && (
+                                <Button
+                                  className="danger"
+                                  onClick={(event) => {
+                                    dialogTrigger.current = event.currentTarget;
+                                    setRemoveBlock(block.id);
+                                  }}
+                                >
+                                  <Icon name="trash" /> Remove section
+                                </Button>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </section>
                     )}
-                  </section>
-                )}
-              </SortableList>
-              <Button
-                className="add-section-button"
-                onClick={(event) => {
-                  dialogTrigger.current = event.currentTarget;
-                  setAdding(true);
-                }}
-              >
-                <Icon name="add" /> Add section
-              </Button>
-            </>
-          )}
-          {tab === 'opening' && (
-            <HomeOpening
-              content={content}
-              change={change}
-              page={page}
-              update={update}
-              run={run}
-              upload={upload}
-            />
-          )}
-          {tab === 'news' && <NewsPanel content={content} change={change} />}
-          {tab === 'medium' && <MediumPanel content={content} change={change} run={run} />}
-          {tab === 'settings' && (
-            <PageSettings
-              page={page}
-              update={update}
-              onDelete={(trigger) => {
-                dialogTrigger.current = trigger;
-                setDeleting(true);
-              }}
-            />
-          )}
-        </div>
-        {preview && (
-          <section className="preview-panel" aria-label="Page preview">
-            <div className="preview-toolbar">
-              <span>Live preview</span>
-              <select
-                aria-label="Preview size"
-                value={width}
-                onChange={(e) => setWidth(Number(e.target.value))}
-              >
-                <option value="1440">Desktop</option>
-                <option value="768">Tablet</option>
-                <option value="390">Phone</option>
-              </select>
-              <Button
-                compactIcons="keep"
-                aria-label="Update preview"
-                onClick={() =>
-                  run(async () => {
-                    await save();
-                    setRefresh((v) => v + 1);
-                  })
-                }
-              >
-                ↻
-              </Button>
+                  </SortableList>
+                  <Button
+                    className="add-section-button"
+                    onClick={(event) => {
+                      dialogTrigger.current = event.currentTarget;
+                      setAdding(true);
+                    }}
+                  >
+                    <Icon name="add" /> Add section
+                  </Button>
+                </>
+              )}
+              {tab === 'opening' && (
+                <HomeOpening
+                  content={content}
+                  change={change}
+                  page={page}
+                  update={update}
+                  upload={upload}
+                />
+              )}
+              {tab === 'settings' && page.template === 'article' && (
+                <ArticleNavigationSettings content={content} change={change} />
+              )}
+              {tab === 'news' && <NewsPanel content={content} change={change} />}
+              {tab === 'medium' && <MediumPanel content={content} change={change} run={run} />}
+              {tab === 'settings' && (
+                <PageSettings
+                  author={content.settings.author}
+                  page={page}
+                  update={update}
+                  onDelete={(trigger) => {
+                    dialogTrigger.current = trigger;
+                    setDeleting(true);
+                  }}
+                />
+              )}
             </div>
-            <div
-              className="preview-surface"
-              ref={previewSurface}
-              style={{ height: previewHeight * previewScale + 2 }}
-            >
-              <iframe
-                ref={frame}
-                title="Page preview"
-                style={{
-                  width,
-                  height: previewHeight,
-                  transform: `scale(${previewScale})`,
-                  marginLeft: Math.max(0, (previewWidth - width * previewScale) / 2),
-                }}
-                src={'/admin/preview/' + page.id + '?v=' + previewVersion + '&r=' + refresh}
-                sandbox="allow-scripts allow-same-origin"
-                onLoad={() => {
-                  const view = previewWindow();
-                  if (!view) return;
-                  previewEvents.current?.abort();
-                  previewEvents.current = new AbortController();
-                  view.scrollTo(0, previewScroll.current);
-                  if (!previewLoaded.current) scrollPreview();
-                  previewLoaded.current = true;
-                  view.addEventListener(
-                    'scroll',
-                    () => {
-                      previewScroll.current = view.scrollY;
-                    },
-                    { signal: previewEvents.current.signal, passive: true },
-                  );
+            {!preview && tab === 'content' && (
+              <PageOutline
+                page={page}
+                selected={blockId}
+                update={update}
+                settings={() => setTab('settings')}
+                select={(id) => {
+                  setBlockId(id);
+                  requestAnimationFrame(() => {
+                    const section = document.querySelector<HTMLElement>(
+                      '[data-editor-block="' + CSS.escape(id) + '"]',
+                    );
+                    if (section)
+                      window.scrollTo({
+                        top: section.getBoundingClientRect().top + scrollY - 112,
+                        behavior: 'instant',
+                      });
+                  });
                 }}
               />
-            </div>
-          </section>
+            )}
+          </div>
+        </div>
+        {preview && (
+          <PagePreview
+            pageId={page.id}
+            version={previewVersion}
+            selection={{ tab, blockId }}
+            save={save}
+            run={run}
+            onSelectBlock={(id) => {
+              setTab('content');
+              setBlockId(id);
+            }}
+          />
         )}
       </ResizableWorkspace>
       {adding && (
@@ -406,7 +334,7 @@ export function PageEditor({
             go(page.template === 'article' ? 'articles' : 'pages');
           }}
         >
-          <p>This removes the page from your draft. You can undo this change before publishing.</p>
+          <p>The page will be removed from the draft. You can undo this before publishing.</p>
         </ConfirmDialog>
       )}
       {removeBlock && (

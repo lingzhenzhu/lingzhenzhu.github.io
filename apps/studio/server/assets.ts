@@ -11,6 +11,7 @@ export function imageFilename(header = 'image'): string {
     Array.from(
       decodeURIComponent(header)
         .normalize('NFC')
+        // oxlint-disable-next-line no-control-regex -- strips control characters from file names
         .replace(/[\u0000-\u001f\u007f]/g, ''),
     )
       .slice(0, 200)

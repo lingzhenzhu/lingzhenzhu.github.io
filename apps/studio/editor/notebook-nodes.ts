@@ -8,6 +8,8 @@ const escape = (value: unknown) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
 function inline(node: RichNode): string {
+  if (node.type === 'inlineMath')
+    return `<span data-type="inline-math" data-latex="${escape(node.attrs?.latex)}"></span>`;
   if (node.type === 'hardBreak') return '<br>';
   let value = node.type === 'text' ? escape(node.text) : node.content?.map(inline).join('') || '';
   for (const mark of node.marks || []) {

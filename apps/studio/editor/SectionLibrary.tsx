@@ -7,7 +7,12 @@ const catalog = [...new Set(Object.values(moduleDefinitions).map((definition) =>
   (group) => ({
     group,
     items: (Object.keys(moduleDefinitions) as BlockType[])
-      .filter((type) => moduleDefinitions[type].group === group && moduleCapabilities(type).add)
+      .filter(
+        (type) =>
+          moduleDefinitions[type].group === group &&
+          moduleCapabilities(type).add &&
+          !('variantOf' in moduleDefinitions[type]),
+      )
       .map((type) => ({ type, ...moduleDefinitions[type] })),
   }),
 );

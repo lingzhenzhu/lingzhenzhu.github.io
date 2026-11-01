@@ -15,16 +15,6 @@
   color: var(--accent);
   fill: none;
 }
-.navbar-mobile .navbar-header > a {
-  display: flex;
-  align-items: center;
-}
-.navbar-mobile .site-logo {
-  width: 44px;
-  height: 34px;
-  object-fit: contain;
-  display: block;
-}
 .photo-gallery {
   margin: 2em 0 3em;
   --gallery-line: color-mix(in srgb, currentColor 22%, transparent);
@@ -69,20 +59,37 @@
 }
 .gallery-description {
   min-width: 0;
+  flex: 1;
+  display: grid;
 }
 .gallery-description p {
-  margin: 0 0 4px;
+  grid-area: 1 / 1;
+  min-height: 1.5em;
+  margin: 0;
+  text-align: start;
   font-size: 0.8em;
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
-.gallery-description p:empty {
-  display: none;
+.gallery-description p[aria-hidden='true'] {
+  /* All captions reserve their natural height; switching slides never moves the controls. */
+  visibility: hidden;
 }
-.gallery-description span {
+.gallery-footer [data-gallery-count] {
+  flex: 0 0 auto;
   font-size: 11px;
   letter-spacing: 0.12em;
   font-variant-numeric: tabular-nums;
+}
+.gallery-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 8px;
+}
+.gallery-tools:has(.gallery-controls[hidden]):has(.gallery-thumbnails[hidden]) {
+  display: none;
 }
 .gallery-controls {
   display: flex;
@@ -138,7 +145,8 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 12px 2px 4px;
+  min-width: 0;
+  padding: 4px 2px;
 }
 .gallery-thumbnails button {
   flex: 0 0 62px;
@@ -178,6 +186,9 @@
   clip-path: inset(50%);
   overflow: hidden;
   white-space: nowrap;
+  padding: 0;
+  margin: -1px;
+  border: 0;
 }
 .content-checklist {
   list-style: none;
