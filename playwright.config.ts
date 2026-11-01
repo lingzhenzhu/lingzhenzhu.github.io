@@ -5,6 +5,8 @@ export default defineConfig({
   workers: 1,
   fullyParallel: false,
   timeout: 45000,
+  // CI logs name each failing test and its error as it happens, even if the job is cut short.
+  reporter: process.env.CI ? 'line' : 'list',
   use: {
     baseURL: 'http://127.0.0.1:4173',
     colorScheme: 'light',
