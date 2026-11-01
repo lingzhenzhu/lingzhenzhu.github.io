@@ -8,8 +8,12 @@ declare global {
 }
 
 async function audit(page: Page, label: string) {
-  await page.locator('body').evaluate(async (body) => {
-    await Promise.all(body.getAnimations().map((animation) => animation.finished.catch(() => {})));
+  // Every running transition must settle, including the navigation's colour changes;
+  // body.getAnimations() alone sees only animations on <body> itself.
+  await page.evaluate(async () => {
+    await Promise.all(
+      document.getAnimations().map((animation) => animation.finished.catch(() => {})),
+    );
   });
   await page.evaluate(() => document.fonts.ready);
   await page.addScriptTag({ content: axe.source });
