@@ -1,6 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, cpuGlass } from '../fixtures';
 
-test('Admin navigation, fixed actions and modal focus work at desktop and phone sizes', async ({ page }) => {
+test('Admin navigation, fixed actions and modal focus work at desktop and phone sizes', async ({
+  page,
+  browserName,
+}) => {
+  // Wherever the real glass renders, the built CSS must keep its blur.
+  const glass = !cpuGlass(browserName);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/admin/#pages/home');
@@ -17,11 +22,11 @@ test('Admin navigation, fixed actions and modal focus work at desktop and phone 
   await expect(page.getByRole('dialog')).toBeVisible();
   // Exercise the built CSS: prefixed aliases must not replace the standard
   // property during minification and silently disable the material in Chromium.
-  await expect(page.getByRole('dialog')).toHaveCSS('backdrop-filter', /blur\(9px\)/);
+  if (glass) await expect(page.getByRole('dialog')).toHaveCSS('backdrop-filter', /blur\(9px\)/);
   await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: 'Add section', exact: true })).toBeFocused();
   await page.evaluate(() => scrollTo(0, 400));
-  await expect(page.locator('.scroll-edge > i').last()).toHaveCSS('backdrop-filter', 'blur(9px)');
+  if (glass) await expect(page.locator('.scroll-edge > i').last()).toHaveCSS('backdrop-filter', 'blur(9px)');
   await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeInViewport();
   await expect(page.getByRole('button', { name: 'Review & publish' })).toBeInViewport();
   for (const width of [1024, 768, 390, 320]) {
@@ -102,6 +107,7 @@ test('Reduced motion snaps selection; local accounts do not pretend to sign out'
 
 test('Sidebar fills the viewport, form headings sit inside their panels, and account menus stay separate', async ({
   page,
+  browserName,
 }) => {
   await page.goto('/admin/#pages/research');
   await page.getByRole('button', { name: 'Page settings', exact: true }).click();
@@ -141,7 +147,7 @@ test('Sidebar fills the viewport, form headings sit inside their panels, and acc
       Math.abs(menuBounds.x + menuBounds.width / 2 - triggerBounds.x - triggerBounds.width / 2),
     ).toBeLessThan(2);
     expect(await menu.evaluate((el) => el.parentElement === document.body)).toBe(true);
-    await expect(menu).toHaveCSS('backdrop-filter', /blur\(20px\)/);
+    if (!cpuGlass(browserName)) await expect(menu).toHaveCSS('backdrop-filter', /blur\(20px\)/);
     await page.keyboard.press('Escape');
     await expect(menu).toHaveCount(0);
   }

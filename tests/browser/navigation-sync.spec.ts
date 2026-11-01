@@ -1,5 +1,5 @@
 import { selectOption } from './select-control';
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import type { Content } from '@lzzhu/content';
 
 test('Admin page creation, labels, order, visibility and deletion update both navigation layouts', async ({

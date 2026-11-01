@@ -1,5 +1,6 @@
 import { selectOption } from './select-control';
-import { test, expect, type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
+import { type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 import type { Content } from '@lzzhu/content';

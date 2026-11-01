@@ -1,4 +1,5 @@
-import { test, expect, type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
+import { type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import type { Content, RichNode } from '@lzzhu/content';
 import { readFile } from 'node:fs/promises';
 

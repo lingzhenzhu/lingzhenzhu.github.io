@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 
 test('mobile navigation fills the screen and restores reading position, focus and desktop navigation', async ({
   page,

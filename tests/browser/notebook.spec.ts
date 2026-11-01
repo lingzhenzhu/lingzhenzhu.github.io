@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import axe from 'axe-core';
 
 test.use({ bypassCSP: true });

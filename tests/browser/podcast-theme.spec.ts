@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import sharp from 'sharp';
 
 test('the light-only podcast canvas stays transparent across site themes and sizes', async ({ page }) => {

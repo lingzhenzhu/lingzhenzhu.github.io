@@ -1,4 +1,5 @@
-import { test, expect, type Locator } from '@playwright/test';
+import { type Locator } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { newBlock, type Content } from '@lzzhu/content';
 
 // WebKit scrolls the document to reveal focused thumbnails. Measure layout in document coordinates.

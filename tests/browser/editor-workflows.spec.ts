@@ -1,5 +1,5 @@
 import { selectOption } from './select-control';
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import type { Content } from '@lzzhu/content';
 test('News uses list, detail, multiple selection, confirmation and undo', async ({ page, request }) => {
   const original = (await (await request.get('/admin/api/content')).json()) as Content;

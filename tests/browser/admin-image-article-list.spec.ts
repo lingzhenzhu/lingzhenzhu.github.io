@@ -1,4 +1,5 @@
-import { test, expect, request as independentRequest, type APIRequestContext } from '@playwright/test';
+import { request as independentRequest, type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { selectOption } from './select-control';

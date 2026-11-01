@@ -1,4 +1,5 @@
-import { test, expect, type APIRequestContext } from '@playwright/test';
+import { type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { createHash, randomUUID } from 'node:crypto';
 import path from 'node:path';
 import type { Content } from '@lzzhu/content';

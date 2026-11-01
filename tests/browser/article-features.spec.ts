@@ -1,11 +1,6 @@
 import { selectOption } from './select-control';
-import {
-  test,
-  expect,
-  request as independentRequest,
-  type APIRequestContext,
-  type Page as BrowserPage,
-} from '@playwright/test';
+import { request as independentRequest, type APIRequestContext, type Page as BrowserPage } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { ContentSchema, newBlock, PageSchema, type Content } from '@lzzhu/content';
 import fs from 'node:fs/promises';
 import axe from 'axe-core';

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import content from '../../content/site.json' with { type: 'json' };
 const routes = ['/', '/research/', '/teaching/', '/media/', '/archives/'];
 

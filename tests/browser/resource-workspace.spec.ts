@@ -1,4 +1,5 @@
-import { test, expect, type Page, type APIRequestContext } from '@playwright/test';
+import { type Page, type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { ContentSchema, type Content } from '@lzzhu/content';
 import type { WorkspaceSnapshot, ChangeRequest } from '@lzzhu/content/resources';
 import { largeWorkspace } from '../helpers/large-workspace';

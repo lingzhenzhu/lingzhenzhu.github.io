@@ -1,4 +1,5 @@
-import { test, expect, request as independentRequest, type APIRequestContext } from '@playwright/test';
+import { request as independentRequest, type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { ContentSchema, PageSchema, type Content, type Page } from '@lzzhu/content';
 import { selectOption } from './select-control';
 import fs from 'node:fs/promises';

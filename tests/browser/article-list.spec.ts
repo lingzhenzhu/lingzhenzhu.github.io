@@ -1,5 +1,5 @@
 import { selectOption } from './select-control';
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 
 test('article search, date filters, ordering and navigation share one list; labelled action icons adapt consistently', async ({
   page,
