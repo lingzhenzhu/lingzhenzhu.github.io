@@ -10,6 +10,7 @@ export default defineConfig({
     'browser/admin-glass.spec.ts',
     'browser/accessibility.spec.ts',
   ],
+  webServer: { ...(base.webServer as object), cwd: '../..' } as typeof base.webServer,
   maxFailures: 0,
   reporter: 'line',
   use: { ...base.use, trace: 'on' },
