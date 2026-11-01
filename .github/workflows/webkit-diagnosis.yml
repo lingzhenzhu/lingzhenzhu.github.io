@@ -18,7 +18,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps webkit
-      - run: pnpm exec playwright test -c tests/diagnostics/diagnosis.config.ts -g "timing|AUD-03|Sidebar fills|Page outline|published pages pass"
+      - run: pnpm exec playwright test -c tests/diagnostics/diagnosis.config.ts -g "diagnose"
         timeout-minutes: 15
         env:
           CI: '1'
