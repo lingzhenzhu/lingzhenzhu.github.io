@@ -246,6 +246,10 @@ test('public full-text search combines tags and time, resets and handles network
       route.fulfill({ contentType: 'application/javascript', body: axe.source }),
     );
     await page.addScriptTag({ url: '/admin/assets/axe-test.js' });
+    // The open listbox fades in; measure contrast once it has settled, not mid-fade.
+    await page.evaluate(() =>
+      Promise.all(document.getAnimations().map((animation) => animation.finished.catch(() => {}))),
+    );
     const violations = await page.evaluate(
       async () =>
         (
