@@ -5,8 +5,21 @@ body {
   margin: 0;
   font-size: var(--type-body);
   line-height: 1.5;
-  background: var(--scene) fixed;
   -webkit-font-smoothing: antialiased;
+}
+/* The ambient scene stays put behind scrolling content. A fixed layer composites once;
+   `background-attachment: fixed` repainted the whole page on every scroll frame (and
+   iOS ignored it, letting the scene scroll away). */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100lvh;
+  background: var(--scene);
+  pointer-events: none;
 }
 .ui-icon {
   flex-shrink: 0;
@@ -64,9 +77,13 @@ a {
   color: var(--accent);
   text-underline-offset: 3px;
 }
+/* Headings break only words that cannot fit: `anywhere` also lowers their min-content
+   width, so a heading beside an action shrank to a sliver and split "History". */
 h1,
 h2,
-h3,
+h3 {
+  overflow-wrap: break-word;
+}
 p {
   overflow-wrap: anywhere;
 }
@@ -140,8 +157,29 @@ label input,
 label select,
 label textarea {
   display: block;
-  margin-top: 6px;
+  margin-top: 10px;
   font-weight: 400;
+}
+/* Pickers and search fields keep the same gap below their label as plain fields. */
+label .studio-select,
+label .studio-search-field {
+  margin-top: 10px;
+}
+/* iOS gives date and time fields an intrinsic width and centred text, so they ran past
+   the column; they now size and align like every other field. */
+input:is([type='date'], [type='time'], [type='datetime-local']) {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+  text-align: left;
+  /* The empty-field hint reads MM/DD/YYYY, like the uppercase labels elsewhere. */
+  text-transform: uppercase;
+}
+input::-webkit-date-and-time-value {
+  min-height: 1.5em;
+  margin: 0;
+  text-align: left;
 }
 .check {
   display: flex;
@@ -230,8 +268,10 @@ label textarea {
 .section-heading {
   margin-bottom: 20px;
 }
+/* When the actions do not fit beside the title they move to one row beneath it. */
 .section-heading:not(.heading-row) {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -610,6 +650,10 @@ label textarea {
 }
 .wrap-action > .studio-button {
   margin-left: auto;
+}
+/* Keeps a wrapped action clear of the row's divider. */
+.item-row.wrap-action > .studio-button {
+  margin-block: 8px;
 }
 .item-list > .row-link {
   border-bottom: 1px solid var(--line);

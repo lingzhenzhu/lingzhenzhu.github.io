@@ -64,14 +64,24 @@ export function PagePreview({
   // session history entry per save, so the browser's Back button would step through old previews.
   const src = '/admin/preview/' + pageId + '?v=' + version + '&r=' + refresh;
   const [initialSrc] = useState(src);
+  // An off-screen preview (below the editor on phones) skips the full page load each autosave
+  // would cost and catches up with the latest version once it scrolls near the viewport.
+  const [nearViewport, setNearViewport] = useState(true);
+  const shown = useRef(initialSrc);
   useEffect(() => {
-    if (src === initialSrc) return;
+    if (!nearViewport || src === shown.current) return;
     const view = frame.current?.contentWindow;
-    if (view) view.location.replace(src);
-  }, [src, initialSrc]);
+    if (!view) return;
+    shown.current = src;
+    view.location.replace(src);
+  }, [src, nearViewport]);
   useEffect(() => {
     const observer = new ResizeObserver(() => setSurfaceWidth(surface.current!.clientWidth));
     observer.observe(surface.current!);
+    const visibility = new IntersectionObserver(([entry]) => setNearViewport(entry.isIntersecting), {
+      rootMargin: '300px 0px',
+    });
+    visibility.observe(surface.current!);
     const listener = (event: MessageEvent) => {
       if (
         event.origin === location.origin &&
@@ -84,6 +94,7 @@ export function PagePreview({
     window.addEventListener('message', listener);
     return () => {
       observer.disconnect();
+      visibility.disconnect();
       events.current?.abort();
       window.removeEventListener('message', listener);
     };

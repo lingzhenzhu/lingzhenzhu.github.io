@@ -155,6 +155,8 @@ test('News scrolls when content overflows and manual pause survives visibility e
     document.querySelector<HTMLElement>('[data-news]')!.dataset.interval = '4000';
     window.dispatchEvent(new Event('resize'));
   });
+  // News waits while it is off screen and starts once a reader reaches it.
+  await page.locator('[data-news]').scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
   const scroller = page.locator('.news-feed-inner');
   await expect.poll(() => scroller.evaluate((el) => el.scrollTop), { timeout: 10000 }).toBeGreaterThan(0);

@@ -18,8 +18,8 @@ test('opening has a large-screen height cap and a finite, optional invitation an
       'animationstart',
       (event) => {
         const target = event.target;
-        if (target instanceof HTMLElement && target.matches('.explore-cue'))
-          target.getAnimations().forEach((animation) => animation.pause());
+        if (target instanceof HTMLElement && target.matches('.explore-cue, .explore-cue span'))
+          target.getAnimations({ subtree: true }).forEach((animation) => animation.pause());
       },
       true,
     );
@@ -38,26 +38,46 @@ test('opening has a large-screen height cap and a finite, optional invitation an
     expect(cue!.y + cue!.height).toBeLessThan(hero!.y + hero!.height);
   }
   await expect(page.locator('.explore-cue')).toHaveAttribute('data-inviting', '');
-  const animation = await page.locator('.explore-cue').evaluate((el) => {
-    const css = getComputedStyle(el);
-    return { duration: parseFloat(css.animationDuration), repeats: Number(css.animationIterationCount) };
+  for (const [selector, pseudo] of [
+    ['.explore-cue', null],
+    ['.explore-cue span', '::before'],
+  ] as const) {
+    const animation = await page.locator(selector).evaluate((el, pseudo) => {
+      const css = getComputedStyle(el, pseudo);
+      return {
+        duration: parseFloat(css.animationDuration),
+        delay: parseFloat(css.animationDelay),
+        repeats: Number(css.animationIterationCount),
+      };
+    }, pseudo);
+    expect(animation.repeats).toBe(2);
+    expect(animation.delay + animation.duration * animation.repeats).toBeLessThanOrEqual(7);
+  }
+  // The label rises to a soft tone and settles back while the light runs down the line.
+  const frames = await page.locator('.explore-cue span').evaluate((el) => {
+    const cue = el.parentElement!;
+    const animations = cue.getAnimations({ subtree: true });
+    const sample = (time: number) => {
+      for (const animation of animations) {
+        animation.pause();
+        animation.currentTime = time;
+      }
+      return { light: getComputedStyle(el, '::before').opacity, label: getComputedStyle(cue).color };
+    };
+    return { start: sample(0), middle: sample(1300), end: sample(6700) };
   });
-  expect(animation.duration * animation.repeats).toBeLessThanOrEqual(5);
-  const colors = await page.locator('.explore-cue').evaluate((el) => {
-    const animation = el.getAnimations()[0];
-    animation.pause();
-    animation.currentTime = 0;
-    const bright = getComputedStyle(el).color;
-    animation.currentTime = 1200;
-    const dim = getComputedStyle(el).color;
-    animation.currentTime = 4800;
-    return { bright, dim, end: getComputedStyle(el).color };
-  });
-  expect(colors.bright).not.toBe(colors.dim);
-  expect(colors.end).toBe(colors.bright);
+  expect(frames.middle.light).not.toBe(frames.start.light);
+  expect(frames.end.light).toBe('0');
+  expect(frames.middle.label).not.toBe(frames.start.label);
+  expect(frames.end.label).toBe(frames.start.label);
   await expect(page.locator('.name-note')).toHaveCSS('animation-name', 'none');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('.explore-cue')).toHaveCSS('animation-name', 'none');
+  expect(
+    await page
+      .locator('.explore-cue span')
+      .evaluate((el) => getComputedStyle(el, '::before').animationName),
+  ).toBe('none');
   await page.getByRole('link', { name: 'Explore more' }).click();
   await expect(page).toHaveURL(/#page-content$/);
   await page.emulateMedia({ reducedMotion: 'no-preference' });

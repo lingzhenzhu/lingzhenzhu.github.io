@@ -28,8 +28,9 @@
 }
 /* Phones must not zoom the page on their own. Double-tap zoom is off for the whole page
    (pinch zoom stays available for reading). Safari zooms into any focused field whose
-   text is under 16px, so touch screens give fields at least 16px; the extra specificity
-   outranks `font: inherit` resets in either app. */
+   text is under 16px, so touch screens give fields at least 16px. It is !important
+   because a component's own field size (the request card's password, say) must never
+   reopen the zoom; max() still keeps any larger size. */
 :root,
 :where(a, button, input, select, textarea, label, summary, [role='button'], [role='option']) {
   touch-action: manipulation;
@@ -42,7 +43,7 @@
       select,
       [contenteditable='true']
     ) {
-    font-size: max(16px, 1em);
+    font-size: max(16px, 1em) !important;
   }
 }
 /* Numeric features are restored by owners of explicit font shorthands. */

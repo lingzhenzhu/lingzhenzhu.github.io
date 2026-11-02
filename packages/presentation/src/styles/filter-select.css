@@ -74,6 +74,10 @@
   cursor: pointer;
   overflow-wrap: anywhere;
 }
+/* Neighbouring highlights (selected, hovered) stay visibly apart. */
+.filter-options [role='option'] + [role='option'] {
+  margin-top: 4px;
+}
 .filter-options [aria-selected='true'] {
   background: var(--filter-active, #f0ede7);
   font-weight: var(--weight-medium);
