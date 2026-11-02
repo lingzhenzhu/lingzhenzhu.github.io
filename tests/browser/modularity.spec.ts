@@ -314,10 +314,15 @@ test('MOD-06 adjustable columns, one image entry, notebook scroll and canonical 
     await source.fill(Array.from({ length: 70 }, (_, i) => 'A carefully typeset line ' + i).join('\n\n'));
     expect(await source.evaluate((el) => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
     const paper = page.locator('.note-paper-body');
-    await paper.evaluate((el) => {
-      el.scrollTop = 205;
-    });
-    expect(await paper.evaluate((el) => el.scrollTop)).toBeGreaterThan(200);
+    // The source grows to fit its text over the next frame; scroll once the paper is that tall.
+    await expect
+      .poll(() =>
+        paper.evaluate((el) => {
+          el.scrollTop = 205;
+          return el.scrollTop;
+        }),
+      )
+      .toBeGreaterThan(200);
     expect(await source.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/monospace|Consolas/);
     await page.getByRole('button', { name: 'Image', exact: true }).click();
     await expect(page.getByRole('dialog').getByRole('button', { name: 'Upload image', exact: true })).toBeVisible();

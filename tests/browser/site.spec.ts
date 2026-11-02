@@ -86,6 +86,11 @@ test('shared page shell has identical navigation and compact banner coordinates'
   let titleReference: unknown;
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
+  // Only this site's scripts are checked for errors; Apple's live player reports its own
+  // (WebKit surfaces them as page errors), so it is replaced by a local stand-in here.
+  await page.route('https://embed.podcasts.apple.com/**', (route) =>
+    route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Podcast</title>' }),
+  );
   for (const route of routes) {
     await page.goto(route);
     await page.evaluate(() => document.fonts.ready);

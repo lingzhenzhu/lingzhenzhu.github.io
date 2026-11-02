@@ -234,9 +234,14 @@ test('IND-05 unpublished rich text upload displays in editor without corrupting 
     await expect.poll(() => image.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     const editor = page.getByRole('textbox', { name: 'Content editor' });
     // A center click can select the image; Control+End does not move that
-    // NodeSelection in WebKit. Explicitly edit the caption beside the image.
-    await editor.getByText('Image caption', { exact: true }).click();
-    await editor.press('End');
+    // NodeSelection in WebKit. Explicitly edit the caption beside the image. Late font
+    // metrics can nudge the caption as it is clicked, and typing over a selected image
+    // replaces it, so type only once the caret is confirmed inside the caption.
+    await expect(async () => {
+      await editor.getByText('Image caption', { exact: true }).click();
+      await editor.press('End');
+      expect(await page.evaluate(() => getSelection()?.anchorNode?.textContent)).toBe('Image caption');
+    }).toPass();
     await editor.pressSequentially(' changed');
     await save(page);
     const saved = (await (await request.get('/admin/api/content')).json()) as Content;
