@@ -14,6 +14,7 @@
     "./filter-select": "./src/filter-select.tsx",
     "./filter-select/behavior": "./src/behavior/filter-select.ts",
     "./icons": "./src/icons.tsx",
+    "./asset-context": "./src/asset-context.ts",
     "./request-card-copy": "./src/request-card-copy.ts",
     "./styles/filter-select.css": "./src/styles/filter-select.css",
     "./styles/technical-text.css": "./src/styles/technical-text.css"

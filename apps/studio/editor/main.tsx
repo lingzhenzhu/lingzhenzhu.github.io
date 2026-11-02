@@ -21,11 +21,19 @@ import { useMediaQuery } from './useMediaQuery';
 import { useGlassLighting } from './material/useGlassLighting';
 import { createPage, pageName, type NewPageTemplate } from './page-model';
 import type { ReleaseInfo, Revision, Asset } from './types';
+import { rememberImageSizes } from './image-sizes';
 import './studio.css';
 import './editorial.css';
 import './theme.css';
 import './material/glass.css';
 import './shell.css';
+
+/** Every asset listing also teaches the editor each image's size. */
+const listAssets = async () => {
+  const list = await api<Asset[]>('/assets');
+  rememberImageSizes(list);
+  return list;
+};
 
 function App() {
   useGlassLighting();
@@ -70,7 +78,7 @@ function App() {
   }, []);
   useEffect(() => {
     if (section === 'history') run(refreshHistory);
-    if (section === 'assets') run(async () => setAssets(await api('/assets')));
+    if (section === 'assets') run(async () => setAssets(await listAssets()));
   }, [section, run, refreshHistory]);
   useEffect(() => {
     if (
@@ -82,12 +90,13 @@ function App() {
     return () => clearTimeout(timer);
   }, [section, releases, run, refreshHistory]);
   const upload = async (file: File) => {
-    const result = await api<{ src: string }>('/assets', {
+    const result = await api<Asset & { src: string }>('/assets', {
       method: 'POST',
       body: file,
       headers: { 'X-Filename': encodeURIComponent(file.name), 'Content-Type': file.type },
     });
-    setAssets(await api('/assets'));
+    rememberImageSizes([result]);
+    setAssets(await listAssets());
     return result.src;
   };
   const publish = () =>

@@ -13,8 +13,14 @@ export function useAssetUrl() {
           ? src.replace('/assets/', '/admin/assets/')
           : src;
 }
+const manifest = assets as Record<string, { width: number; height: number; srcset?: string }>;
+/** Intrinsic size of an image the build has processed. */
+export function builtImageSize(src: string): { width: number; height: number } | undefined {
+  const asset = manifest[src];
+  return asset && { width: asset.width, height: asset.height };
+}
 export function responsiveImage(src: string, width: number, resolve: (src: string) => string) {
-  const asset = (assets as Record<string, { width: number; height: number; srcset?: string }>)[src];
+  const asset = manifest[src];
   return asset
     ? {
         width: asset.width,

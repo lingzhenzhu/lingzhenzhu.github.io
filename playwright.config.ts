@@ -31,7 +31,15 @@ export default defineConfig({
               : { ...devices['Desktop Edge'], channel: 'msedge' },
           },
           { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-          { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+          {
+            name: 'webkit',
+            use: {
+              ...devices['Desktop Safari'],
+              // Linux CI paints WebKit on the CPU; the profile's 2x density quadruples that work.
+              // Assertions use CSS pixels, so 1x changes speed, not results.
+              ...(process.env.CI && process.platform === 'linux' ? { deviceScaleFactor: 1 } : {}),
+            },
+          },
         ]
       : [{ name: 'edge', use: { ...devices['Desktop Edge'], channel: 'msedge' } }],
 });

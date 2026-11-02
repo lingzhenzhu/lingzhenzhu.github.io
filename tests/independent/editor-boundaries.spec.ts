@@ -254,6 +254,65 @@ test('IND-05 unpublished rich text upload displays in editor without corrupting 
   }
 });
 
+test('IND-09 rich text images reserve their final space before they load', async ({ page, request }) => {
+  const fixture = await setup(request, page);
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => (release = resolve));
+  try {
+    const { csrf } = await (await request.get('/admin/api/session')).json();
+    const response = await request.post('/admin/api/assets', {
+      headers: {
+        Origin: origin,
+        'X-CSRF-Token': csrf,
+        'X-Filename': 'reserved-space.jpg',
+        'Content-Type': 'image/jpeg',
+      },
+      data: await readFile('assets/source/card.jpg'),
+    });
+    const upload = await response.json();
+    expect([upload.width, upload.height]).toEqual([1520, 1519]);
+    const content = structuredClone(fixture.original);
+    content.pages.find((p) => p.id === 'home')!.blocks = [
+      {
+        id: 'ind-reserved-image',
+        version: 1,
+        type: 'richText',
+        document: {
+          type: 'doc',
+          content: [
+            { type: 'image', attrs: { src: upload.src, alt: 'Reserved image' } },
+            { type: 'paragraph', content: [{ type: 'text', text: 'Caption below' }] },
+          ],
+        },
+      },
+    ];
+    await fixture.put(content);
+    // Hold the image itself; the asset list still answers.
+    await page.route('**/admin/api/assets/' + upload.id, async (route) => {
+      await held;
+      await route.continue();
+    });
+    await openHome(page);
+    await page.locator('.block-select').filter({ hasText: 'Text & headings' }).click();
+    const editor = page.getByRole('textbox', { name: 'Content editor' });
+    const image = editor.getByAltText('Reserved image');
+    const caption = editor.getByText('Caption below', { exact: true });
+    await expect(image).toHaveAttribute('width', '1520');
+    expect(await image.evaluate((el) => (el as HTMLImageElement).complete)).toBe(false);
+    const before = await caption.boundingBox();
+    const reserved = await image.boundingBox();
+    expect(reserved!.height).toBeGreaterThan(100);
+    release();
+    await expect.poll(() => image.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBe(1520);
+    // Loading the image moves nothing: same image box, caption where it was.
+    expect(await image.boundingBox()).toEqual(reserved);
+    expect(await caption.boundingBox()).toEqual(before);
+  } finally {
+    release();
+    await fixture.restore();
+  }
+});
+
 test('IND-04 published article with a cleared date remains discoverable in Blog', async ({
   page,
   request,
