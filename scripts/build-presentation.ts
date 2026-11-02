@@ -58,10 +58,12 @@ export async function buildPresentation() {
       versions['/assets/' + file] = createHash('sha256').update(text).digest('hex').slice(0, 10);
     } catch {}
   }
-  await fs.writeFile(
-    path.join(root, 'packages/presentation/src/asset-versions.json'),
-    JSON.stringify(versions, null, 2) + '\n',
-  );
+  // Rewrite only when a version changed: the checkout's CRLF copy of identical JSON would
+  // otherwise show as modified after every build on Windows.
+  const manifest = path.join(root, 'packages/presentation/src/asset-versions.json');
+  const next = JSON.stringify(versions, null, 2) + '\n';
+  const current = await fs.readFile(manifest, 'utf8').catch(() => '');
+  if (current.replace(/\r\n/g, '\n') !== next) await fs.writeFile(manifest, next);
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url))
   await buildPresentation();
