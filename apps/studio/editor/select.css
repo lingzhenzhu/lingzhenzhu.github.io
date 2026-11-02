@@ -20,6 +20,14 @@
   font-weight: 400;
   letter-spacing: normal;
 }
+/* A picker's label stays on one line; layouts give pickers room for their labels. */
+.studio-select [data-filter-value] {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .studio-select .filter-options {
   font-size: 16px;
   font-weight: 400;
@@ -32,8 +40,9 @@
   opacity: 0.4;
   cursor: default;
 }
-.studio-select button:focus-visible {
+.studio-select [data-filter-trigger]:focus-visible {
   outline: none;
+  border-color: var(--field-focus-border);
   box-shadow: var(--field-focus-shadow);
 }
 .preview-toolbar .studio-select {
@@ -62,19 +71,25 @@
   fill: none;
   stroke-width: 1.5;
 }
-.article-filters .studio-search-field input[type='search'] {
+/* Outranks the global field and focus styles, which load later: the wrapper, not the
+   input, carries the border and the focus rings. */
+.studio .studio-search-field input[type='search'],
+.studio .studio-search-field input[type='search']:focus {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
   border: 0;
   background: transparent;
   box-shadow: none;
   outline: none;
-  min-width: 0;
   padding-inline: 0;
 }
 .studio-search-field:focus-within {
+  border-color: var(--field-focus-border);
   box-shadow: var(--field-focus-shadow);
 }
 @media (forced-colors: active) {
-  .studio-select button:focus-visible,
+  .studio-select [data-filter-trigger]:focus-visible,
   .studio-search-field:focus-within {
     outline: 2px solid Highlight;
     outline-offset: 2px;

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { mergeMedium, type Content } from '@lzzhu/content';
 import { api, send } from './api';
 import type { CollectionProps, FeedState, RunTask } from './types';
-import { EmptyState, Icon } from './ui';
+import { EmptyState, HeadingRow, Icon } from './ui';
 import { SharedSourceNotice } from './SharedSourceNotice';
 export function MediumPanel({ content, change, run }: CollectionProps & { run: RunTask }) {
   const [feed, setFeed] = useState<FeedState>(),
@@ -24,13 +24,11 @@ export function MediumPanel({ content, change, run }: CollectionProps & { run: R
   return (
     <section>
       <SharedSourceNotice content={content} source="medium" />
-      <div className="section-heading">
-        <div>
-          <h2>Medium</h2>
-          <p className="muted">Connected to @lzzhu718</p>
-        </div>
-        <span className="badge live">Automatic</span>
-      </div>
+      <HeadingRow
+        title="Medium"
+        description="Connected to @lzzhu718"
+        action={<span className="badge live">Automatic</span>}
+      />
       <div className="notice">
         <strong>Articles refresh automatically</strong>
         <p>
@@ -73,7 +71,7 @@ export function MediumPanel({ content, change, run }: CollectionProps & { run: R
         </>
       ) : (
         <>
-          <div className="section-heading">
+          <div className="section-heading wrap-action">
             <small className="muted">
               Last successful check:{' '}
               {feed?.succeeded_at ? new Date(feed.succeeded_at).toLocaleString('en-US') : 'Not yet checked'}

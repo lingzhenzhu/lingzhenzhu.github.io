@@ -4,8 +4,9 @@ import { usePagination } from './usePagination';
 import { useRef, useState } from 'react';
 import type { NewsEntry } from '@lzzhu/content';
 import type { CollectionProps } from './types';
-import { EmptyState, Icon } from './ui';
+import { EmptyState, HeadingRow, Icon } from './ui';
 import { SharedSourceNotice } from './SharedSourceNotice';
+import { FilterBar, SearchField } from './SearchField';
 
 export function NewsPanel({ content, change }: CollectionProps) {
   const [active, setActive] = useState<string>();
@@ -100,40 +101,37 @@ export function NewsPanel({ content, change }: CollectionProps) {
         </>
       ) : (
         <>
-          <div className="section-heading">
-            <div>
-              <h2>News</h2>
-              <p className="muted">
-                {content.news.length} {content.news.length === 1 ? 'update' : 'updates'} · newest first
-              </p>
-            </div>
-            <Button
-              compactIcons="keep"
-              className="primary"
-              onClick={() => {
-                const id = crypto.randomUUID();
-                change((c) => ({
-                  ...c,
-                  news: [
-                    {
-                      id,
-                      text: 'New update',
-                      date: new Date().toISOString().slice(0, 10),
-                      label: 'New',
-                      published: false,
-                    },
-                    ...c.news,
-                  ],
-                }));
-                setActive(id);
-              }}
-            >
-              Add news
-            </Button>
-          </div>
-          <div className="list-tools">
-            <input
-              type="search"
+          <HeadingRow
+            title="News"
+            description={`${content.news.length} ${content.news.length === 1 ? 'update' : 'updates'} · newest first`}
+            action={
+              <Button
+                compactIcons="keep"
+                className="primary"
+                onClick={() => {
+                  const id = crypto.randomUUID();
+                  change((c) => ({
+                    ...c,
+                    news: [
+                      {
+                        id,
+                        text: 'New update',
+                        date: new Date().toISOString().slice(0, 10),
+                        label: 'New',
+                        published: false,
+                      },
+                      ...c.news,
+                    ],
+                  }));
+                  setActive(id);
+                }}
+              >
+                Add news
+              </Button>
+            }
+          />
+          <FilterBar>
+            <SearchField
               aria-label="Search news"
               placeholder="Search news"
               value={query}
@@ -144,7 +142,7 @@ export function NewsPanel({ content, change }: CollectionProps) {
               <option value="published">Visible</option>
               <option value="draft">Drafts</option>
             </Select>
-          </div>
+          </FilterBar>
           {rows.length > 0 && (
             <div className="selection-bar">
               <label className="check">

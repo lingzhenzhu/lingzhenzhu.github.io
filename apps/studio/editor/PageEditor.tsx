@@ -8,7 +8,7 @@ import { PageSettings } from './PageSettings';
 import { ArticleNavigationSettings } from './ArticleNavigationSettings';
 import { NewsPanel } from './NewsPanel';
 import { MediumPanel } from './MediumPanel';
-import { Icon } from './ui';
+import { HeadingRow, Icon } from './ui';
 import { blockNames, blockSummary, pageName } from './page-model';
 import { PageWorkspaceHeader } from './PageWorkspaceHeader';
 import { SortableList } from './SortableList';
@@ -111,12 +111,10 @@ export function PageEditor({
             <div className="editing-fields">
               {tab === 'content' && (
                 <>
-                  <div className="section-heading">
-                    <div>
-                      <h2>Page content</h2>
-                      <p className="muted">Select a section to edit, or drag to reorder.</p>
-                    </div>
-                  </div>
+                  <HeadingRow
+                    title="Page content"
+                    description="Select a section to edit, or drag to reorder."
+                  />
                   {!home && (
                     <label>
                       Title

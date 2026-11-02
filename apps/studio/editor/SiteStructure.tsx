@@ -2,8 +2,9 @@ import { Select } from './Select';
 import { Button } from './controls';
 import { useState } from 'react';
 import type { CollectionProps } from './types';
-import { isArchiveView, listedArticleCount, pageName, sitePages } from './page-model';
-import { EmptyState, Icon } from './ui';
+import { isArchiveView, listedArticleCount, pageIcon, pageName, sitePages } from './page-model';
+import { EmptyState, Icon, WorkspaceHeading } from './ui';
+import { FilterBar, SearchField } from './SearchField';
 export function SiteStructure({
   content,
   change,
@@ -30,16 +31,16 @@ export function SiteStructure({
     });
   return (
     <div className="collection wide">
-      <div className="workspace-heading">
-        <div>
-          <p className="eyebrow">Website</p>
-          <h1>Site structure</h1>
-          <p>Arrange navigation links and edit their labels.</p>
-        </div>
-        <Button compactIcons="keep" onClick={addPage}>
-          Add page
-        </Button>
-      </div>
+      <WorkspaceHeading
+        eyebrow="Website"
+        title="Site structure"
+        description="Arrange navigation links and edit their labels."
+        action={
+          <Button compactIcons="keep" onClick={addPage}>
+            Add page
+          </Button>
+        }
+      />
       <section className="surface">
         <div className="section-heading">
           <h2>Main navigation</h2>
@@ -107,7 +108,7 @@ export function SiteStructure({
         <h2>Other pages</h2>
         <p className="muted">These pages have their own address and are not in the main navigation.</p>
         {other.map((p) => (
-          <div className="item-row" key={p.id}>
+          <div className="item-row wrap-action" key={p.id}>
             <Button variant="quiet" compactIcons="keep" className="row-link" onClick={() => openPage(p.id)}>
               <span>
                 <strong>{pageName(p)}</strong>
@@ -150,24 +151,22 @@ export function PagesOverview({
   );
   return (
     <div className="collection wide">
-      <div className="workspace-heading">
-        <div>
-          <p className="eyebrow">Website</p>
-          <h1>Pages</h1>
-          <p>Edit page content and settings.</p>
-        </div>
-        <Button
-          compactIcons="keep"
-          className="primary"
-          onClick={() => addPage(kind === 'archives' ? 'archive' : 'page')}
-        >
-          Add page
-        </Button>
-      </div>
-      <div className="pages-filter">
-        <input
-          className="page-search"
-          type="search"
+      <WorkspaceHeading
+        eyebrow="Website"
+        title="Pages"
+        description="Edit page content and settings."
+        action={
+          <Button
+            compactIcons="keep"
+            className="primary"
+            onClick={() => addPage(kind === 'archives' ? 'archive' : 'page')}
+          >
+            Add page
+          </Button>
+        }
+      />
+      <FilterBar>
+        <SearchField
           aria-label="Search pages"
           placeholder="Find a page…"
           value={query}
@@ -177,7 +176,7 @@ export function PagesOverview({
           <option value="pages">Website pages</option>
           <option value="archives">Archive pages</option>
         </Select>
-      </div>
+      </FilterBar>
       <div className="page-grid">
         {pages.map((p) => (
           <Button
@@ -187,7 +186,7 @@ export function PagesOverview({
             key={p.id}
             onClick={() => openPage(p.id)}
           >
-            <Icon name={p.template === 'home' ? 'home' : 'pages'} />
+            <Icon name={pageIcon(p)} />
             <span className={'badge ' + (p.status === 'published' ? 'live' : '')}>
               {p.status === 'published' ? 'Public' : 'Draft'}
             </span>

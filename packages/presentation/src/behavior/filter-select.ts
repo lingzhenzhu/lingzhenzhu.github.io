@@ -59,7 +59,9 @@ export function initFilterSelect(root: HTMLElement) {
     if (trigger.disabled || isOpen()) return;
     typed = '';
     trigger.focus({ preventScroll: true });
-    list.showPopover();
+    // Naming the trigger as the popover's source keeps a press on it from counting as
+    // an outside light-dismiss, where supported; `openAtPress` covers other engines.
+    list.showPopover({ source: trigger } as ShowPopoverOptions);
     sync();
     position();
     highlight(active, true);
@@ -84,12 +86,16 @@ export function initFilterSelect(root: HTMLElement) {
     },
     { signal },
   );
+  // Light dismiss closes an open list as the press on the trigger ends, before its
+  // click. Remember the state at press time so that click closes rather than reopens.
+  let openAtPress = false;
   // Safari otherwise focuses a tabbable editor ancestor on pointer-down. That
   // can change the editor selection/layout before the subsequent click lands.
   trigger.addEventListener(
     'pointerdown',
     (event) => {
       if (event.button !== 0) return;
+      openAtPress = isOpen();
       event.preventDefault();
       trigger.focus({ preventScroll: true });
     },
@@ -99,7 +105,9 @@ export function initFilterSelect(root: HTMLElement) {
     'click',
     (event) => {
       event.preventDefault();
-      if (isOpen()) close();
+      const wasOpen = openAtPress || isOpen();
+      openAtPress = false;
+      if (wasOpen) close();
       else open();
     },
     { signal },

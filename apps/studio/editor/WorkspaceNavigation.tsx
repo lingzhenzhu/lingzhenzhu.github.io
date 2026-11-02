@@ -1,26 +1,11 @@
+import { useEffect, useId, useState } from 'react';
 import type { Content, Page } from '@lzzhu/content';
 import { Button } from './Button';
 import { ImagePreview } from './image-preview';
-import { pageName, sitePages } from './page-model';
+import { isSitePage, pageIcon, pageName, sitePages } from './page-model';
 import { GlassOptics } from './material/GlassOptics';
 import { AccountMenu } from './AccountMenu';
 
-function pageIcon(page: Page) {
-  if (page.template === 'home') return 'home';
-  return (
-    (
-      { research: 'research', teaching: 'teaching', media: 'media', archive: 'archive' } as Record<
-        string,
-        string
-      >
-    )[page.template] ||
-    (page.blocks.some((block) => block.type === 'research')
-      ? 'research'
-      : page.blocks.some((block) => block.type === 'teaching')
-        ? 'teaching'
-        : 'pages')
-  );
-}
 export function WorkspaceNavigation({
   content,
   section,
@@ -44,6 +29,19 @@ export function WorkspaceNavigation({
   close: () => void;
   showTitle: boolean;
 }) {
+  const pagesId = useId();
+  const [pagesOpen, setPagesOpen] = useState(() => {
+    try {
+      return localStorage.getItem('website-admin-sidebar-pages') !== 'collapsed';
+    } catch {
+      return true;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem('website-admin-sidebar-pages', pagesOpen ? 'expanded' : 'collapsed');
+    } catch {}
+  }, [pagesOpen]);
   return (
     <aside className="sidebar" data-glass="sidebar" aria-label="Workspace navigation">
       <GlassOptics />
@@ -87,30 +85,48 @@ export function WorkspaceNavigation({
           >
             Site structure
           </Button>
-          <Button
-            variant="quiet"
-            compactIcons="keep"
-            icon="pages"
-            className={section === 'pages' && !page ? 'selected' : ''}
-            onClick={() => go('pages')}
-          >
-            Pages
-          </Button>
-          <div className="sidebar-pages">
-            {content &&
-              sitePages(content).map((item) => (
-                <Button
-                  variant="quiet"
-                  compactIcons="keep"
-                  key={item.id}
-                  icon={pageIcon(item)}
-                  className={page?.id === item.id ? 'selected' : ''}
-                  onClick={() => openPage(item.id)}
-                >
-                  <span>{pageName(item)}</span>
-                  {item.status === 'draft' && <small>Draft</small>}
-                </Button>
-              ))}
+          <div className="sidebar-disclosure-row">
+            <Button
+              variant="quiet"
+              compactIcons="keep"
+              icon="pages"
+              className={
+                (section === 'pages' && !page) || (!pagesOpen && !!page && isSitePage(page)) ? 'selected' : ''
+              }
+              // On the overview itself, the row folds its pages, like a sidebar section.
+              onClick={() => (section === 'pages' && !page ? setPagesOpen(!pagesOpen) : go('pages'))}
+            >
+              Pages
+            </Button>
+            <Button
+              variant="quiet"
+              compactIcons="keep"
+              className="sidebar-disclosure icon-button"
+              icon="chevron"
+              aria-label={pagesOpen ? 'Hide page list' : 'Show page list'}
+              title={pagesOpen ? 'Hide page list' : 'Show page list'}
+              aria-expanded={pagesOpen}
+              aria-controls={pagesId}
+              onClick={() => setPagesOpen(!pagesOpen)}
+            />
+          </div>
+          <div id={pagesId} className="sidebar-pages" data-open={pagesOpen} inert={!pagesOpen}>
+            <div>
+              {content &&
+                sitePages(content).map((item) => (
+                  <Button
+                    variant="quiet"
+                    compactIcons="keep"
+                    key={item.id}
+                    icon={pageIcon(item)}
+                    className={page?.id === item.id ? 'selected' : ''}
+                    onClick={() => openPage(item.id)}
+                  >
+                    <span>{pageName(item)}</span>
+                    {item.status === 'draft' && <small>Draft</small>}
+                  </Button>
+                ))}
+            </div>
           </div>
         </nav>
         <p className="sidebar-label">Library</p>

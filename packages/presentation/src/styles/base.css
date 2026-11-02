@@ -172,13 +172,25 @@ h6 {
   border-top: 1px solid #ddd;
   overflow-wrap: anywhere;
 }
+/* Title and date always share one line; narrow screens shorten the date and the title. */
+.archive-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1em;
+}
 .archive-item-link {
   display: inline-block;
+  min-width: 0;
   text-decoration: none;
 }
 .archive-item-date {
-  float: right;
+  flex: none;
+  margin-left: auto;
   text-align: right;
+  white-space: nowrap;
+}
+.archive-date-short {
+  display: none;
 }
 @media (max-width: 479px) {
   .main {

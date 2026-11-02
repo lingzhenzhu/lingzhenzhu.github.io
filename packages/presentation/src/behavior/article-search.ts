@@ -4,7 +4,7 @@ import {
   type ArticleEntry,
   type ArticleQuery,
 } from '@lzzhu/content/article-search';
-import { displayDate } from '../date';
+import { displayDate, shortDate } from '../date';
 import { archiveRows } from '../archive-rows';
 import { initFilterSelect } from './filter-select';
 import { renderPagination } from './search-pagination';
@@ -60,7 +60,14 @@ function initialize(root: HTMLElement) {
         const date = document.createElement('time');
         date.className = 'archive-item-date';
         date.dateTime = entry.date;
-        date.textContent = displayDate(entry.date);
+        const full = document.createElement('span'),
+          short = document.createElement('span');
+        full.className = 'archive-date-full';
+        full.textContent = displayDate(entry.date);
+        short.className = 'archive-date-short';
+        short.textContent = shortDate(entry.date);
+        date.appendChild(full);
+        date.appendChild(short);
         row.appendChild(date);
       }
       list.appendChild(row);

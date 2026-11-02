@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { archiveRows, type ArchiveEntry } from './archive-rows';
-import { displayDate } from './date';
+import { displayDate, shortDate } from './date';
 
 export function ArchiveItems({ entries }: { entries: ArchiveEntry[] }) {
   return archiveRows(entries).map(({ entry, heading }) => (
@@ -16,7 +16,8 @@ export function ArchiveItems({ entries }: { entries: ArchiveEntry[] }) {
         </a>
         {entry.date && (
           <time className="archive-item-date" dateTime={entry.date}>
-            {displayDate(entry.date)}
+            <span className="archive-date-full">{displayDate(entry.date)}</span>
+            <span className="archive-date-short">{shortDate(entry.date)}</span>
           </time>
         )}
       </article>

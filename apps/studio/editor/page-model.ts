@@ -29,6 +29,17 @@ export function sitePages(content: Content) {
 export function pageName(page: Page) {
   return page.template === 'home' ? 'Home' : page.title;
 }
+/** The sidebar and the Pages overview identify a page by the same icon. */
+export function pageIcon(page: Page) {
+  if (page.template === 'home') return 'home';
+  if (page.template === 'archive') return 'archive';
+  const has = (...types: Block['type'][]) => page.blocks.some((block) => types.includes(block.type));
+  if (has('research')) return 'research';
+  if (has('teaching')) return 'teaching';
+  if (has('medium', 'podcast')) return 'media';
+  if (has('archive', 'articleSearch')) return 'archive';
+  return 'pages';
+}
 export type NewPageTemplate = 'page' | 'article' | 'archive';
 export function createPage(content: Content, template: NewPageTemplate = 'page'): Page {
   const id = crypto.randomUUID();

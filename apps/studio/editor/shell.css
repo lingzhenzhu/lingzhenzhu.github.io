@@ -103,10 +103,58 @@
 .sidebar .ui-icon {
   color: #82765f;
 }
+.sidebar-disclosure-row {
+  position: relative;
+  display: grid;
+}
+.sidebar nav .sidebar-disclosure-row > .studio-button:first-child {
+  padding-right: 44px;
+}
+.sidebar nav .studio-button.sidebar-disclosure {
+  --icon-min-width: 32px;
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  translate: 0 -50%;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 6px;
+  border-radius: 50%;
+}
+.sidebar-disclosure .ui-icon {
+  width: 15px;
+  height: 15px;
+  transition: rotate 0.25s ease;
+}
+.sidebar-disclosure[aria-expanded='true'] .ui-icon {
+  rotate: 90deg;
+}
+/* Folds by animating the row track; the vertical padding and matching negative margin
+   keep focus rings inside the clipping box while the list is open. */
 .sidebar-pages {
   display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows 0.28s ease,
+    opacity 0.2s ease;
+}
+.sidebar-pages[data-open='false'] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.28s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0.28s;
+}
+.sidebar-pages > div {
+  display: grid;
   gap: 2px;
-  padding-left: 10px;
+  min-height: 0;
+  overflow: hidden;
+  margin-block: -6px;
+  padding: 6px 0 6px 10px;
 }
 .sidebar-pages button > span {
   min-width: 0;
@@ -246,41 +294,102 @@
 .sidebar-scrim {
   display: none;
 }
+/* A contained glass alert below the toolbar, aligned with the content column. The
+   material comes from [data-glass='alert']; only layout and type live here. */
 .error-banner {
-  margin: 0 var(--shell-gutter) 0 var(--content-start);
-  padding: 105px 24px 18px;
-  color: #8c302a;
-  background: #fff1eec9;
-  border-radius: 0 0 18px 18px;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 96px var(--shell-gutter) 0 var(--content-start);
+  padding: 14px 14px 14px 16px;
+  border-radius: 26px;
+  color: #7e2d26;
   overflow-wrap: anywhere;
+}
+.error-banner > .ui-icon {
+  align-self: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+  color: #a8443a;
+}
+.error-banner strong {
+  display: block;
+  font-weight: 600;
+  color: #8c302a;
+}
+.error-banner p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: #8a4c43;
+}
+.error-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.error-banner-actions .studio-button {
+  min-height: 38px;
+  padding: 7px 15px;
+  font-size: 14px;
+  color: #7d2c25;
+  background: #ffffff4d;
+}
+.navigation-collapsed .error-banner {
+  margin-left: 36px;
 }
 .error-banner + .sidebar ~ .editor-main {
   padding-top: 24px;
 }
-.error-banner button {
-  margin: 5px;
-}
 .page-workspace-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'crumbs actions'
+    'title actions';
   align-items: center;
-  gap: 16px;
+  column-gap: 16px;
   padding: 0 0 24px;
 }
+/* Inline text, not flex: a wrapped flex title would fill the row and push the
+   status badge onto a line of its own. The badge follows the last word instead. */
 .page-workspace-header h1 {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
+  grid-area: title;
+  min-width: 0;
   margin: 24px 0 0;
 }
-.breadcrumbs {
+.page-workspace-header h1 > .badge {
+  margin-left: 0.2em;
+  vertical-align: middle;
+  position: relative;
+  top: -0.08em;
+}
+.page-workspace-actions {
+  grid-area: actions;
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.breadcrumbs {
+  grid-area: crumbs;
+  display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+  white-space: nowrap;
   color: var(--muted);
   font-size: 13px;
+}
+.breadcrumbs > * {
+  flex: none;
+}
+.breadcrumbs > span {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .breadcrumbs .studio-button {
   background: transparent;
@@ -525,24 +634,30 @@
   .scroll-edge {
     height: 100px;
   }
+  /* The title takes the full width; the actions share the breadcrumb's line. */
   .page-workspace-header {
-    align-items: flex-start;
-    padding-bottom: 24px;
+    grid-template-areas:
+      'crumbs actions'
+      'title title';
   }
   .page-workspace-header h1 {
-    margin-top: 18px;
+    margin-top: 14px;
+    font-size: 26px;
   }
-  .page-workspace-header > button {
+  .page-workspace-actions .studio-button {
     font-size: 13px;
-    margin-top: 40px;
   }
   .segmented-control > .studio-button {
     padding-inline: 14px;
     font-size: 13px;
   }
-  .error-banner {
-    margin: 0 16px;
-    padding-top: 94px;
+  .error-banner,
+  .navigation-collapsed .error-banner {
+    grid-template-columns: auto minmax(0, 1fr);
+    margin: 76px 16px 0;
+  }
+  .error-banner-actions {
+    grid-column: 1 / -1;
   }
   .studio-dialog {
     padding: 22px;

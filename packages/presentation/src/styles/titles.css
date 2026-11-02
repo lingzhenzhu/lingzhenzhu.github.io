@@ -134,21 +134,41 @@
   border-bottom: 1px solid;
   transform: rotate(45deg);
 }
+/* Two quiet flares: the cue brightens to warm white with a soft glow while the arrow
+   dips once, then settles. Brightening reads on the dark opening; dimming did not. */
 @media (prefers-reduced-motion: no-preference) {
   .explore-cue[data-inviting] {
-    animation: explore-invitation 2.4s ease-in-out 2;
+    animation: explore-invitation 2.4s cubic-bezier(0.33, 0, 0.2, 1) 2;
+  }
+  .explore-cue[data-inviting] span {
+    animation: explore-arrow 2.4s cubic-bezier(0.33, 0, 0.2, 1) 2;
   }
   .explore-cue[data-inviting]:is(:hover, :focus-visible),
-  .a11y-high-contrast .explore-cue[data-inviting] {
+  .explore-cue[data-inviting]:is(:hover, :focus-visible) span,
+  .a11y-high-contrast .explore-cue[data-inviting],
+  .a11y-high-contrast .explore-cue[data-inviting] span {
     animation: none;
   }
   @keyframes explore-invitation {
     0%,
+    75%,
     100% {
       color: #d8c9b3;
+      filter: drop-shadow(0 0 0 rgb(255 228 186 / 0%));
     }
-    50% {
-      color: #a18e72;
+    32% {
+      color: #fffaf0;
+      filter: drop-shadow(0 0 0.5em rgb(255 228 186 / 70%));
+    }
+  }
+  @keyframes explore-arrow {
+    0%,
+    75%,
+    100% {
+      transform: none;
+    }
+    32% {
+      transform: translateY(0.4em);
     }
   }
 }

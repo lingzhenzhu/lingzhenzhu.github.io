@@ -17,18 +17,25 @@
   gap: 12px;
   font-size: 14px;
 }
-.pages-filter {
+.filter-bar {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: stretch;
   gap: 12px;
+  margin-block: 0 24px;
 }
-.pages-filter select {
-  width: auto;
-  margin-bottom: 24px;
+.filter-bar > .studio-search-field {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.filter-bar > .studio-select {
+  flex: 0 0 200px;
+  width: 200px;
 }
 @media (max-width: 1100px) {
+  /* Pickers keep a width that fits their labels and move to a new row instead. */
   .article-filters {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
   .article-search {
     grid-column: 1 / -1;
@@ -41,13 +48,11 @@
   .article-filters label {
     margin: 2px 0;
   }
-  .pages-filter {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 0;
+  .filter-bar > .studio-search-field {
+    flex-basis: 100%;
   }
-  .pages-filter select {
-    width: 100%;
+  .filter-bar > .studio-select {
+    flex: 1 1 100%;
   }
 }
 .drag-handle {
@@ -91,36 +96,46 @@
   color: var(--muted);
   font-weight: 500;
 }
-.section-library-grid {
+.choice-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 10px;
 }
-.section-library-grid button {
-  display: flex;
-  gap: 12px;
+/* One fixed icon column and one text column: titles and descriptions start at the
+   same x in every card, and the icon sits centred on the title's first line. */
+.studio-button.choice-card {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  justify-content: stretch;
+  column-gap: 12px;
+  min-height: 88px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #fffaf280;
   text-align: left;
   white-space: normal;
-  align-items: flex-start;
-  padding: 14px;
-  min-height: 88px;
-  background: #fffaf280;
-  border-radius: 18px;
 }
-.section-library-grid strong {
+.choice-card > .ui-icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+.choice-card-text {
+  min-width: 0;
+}
+.choice-card strong {
   display: block;
   font-weight: 550;
   font-size: 15px;
+  line-height: 22px;
 }
-.section-library-grid small {
+.choice-card small {
   display: block;
+  margin-top: 4px;
   font-size: 13px;
   line-height: 1.5;
   color: var(--muted);
-  margin-top: 5px;
-}
-.section-library-grid .ui-icon {
-  flex: 0 0 20px;
 }
 .record-row {
   border: 1px solid var(--line);
@@ -133,8 +148,15 @@
   min-width: 0;
   font-size: 14px;
 }
-.record-row small {
+/* Like section rows: one line each for name and details, shortened only when the row
+   is truly too narrow. The edit form below shows the full text. */
+.record-row .row-link :is(strong, small) {
   display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.record-row small {
   color: var(--muted);
   margin-top: 4px;
   line-height: 1.4;
@@ -269,9 +291,6 @@
   height: 30px;
 }
 @media (max-width: 600px) {
-  .section-library-grid {
-    grid-template-columns: 1fr;
-  }
   .drag-handle {
     flex-basis: 44px;
   }

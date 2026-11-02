@@ -17,6 +17,8 @@ import { ConfirmDialog } from './controls';
 import { WorkspaceNavigation } from './WorkspaceNavigation';
 import { WorkspaceActions } from './WorkspaceActions';
 import { ScrollEdge } from './ScrollEdge';
+import { Icon } from './icons';
+import { WorkspaceHeading } from './ui';
 import { useMediaQuery } from './useMediaQuery';
 import { useGlassLighting } from './material/useGlassLighting';
 import { createPage, pageName, type NewPageTemplate } from './page-model';
@@ -160,15 +162,20 @@ function App() {
         review={() => go('history')}
       />
       {error && (
-        <div className="error-banner" role="alert">
-          <strong>Changes need attention</strong>
-          <p>{error}</p>
-          <Button compactIcons="keep" onClick={() => run(draft.retrySave)}>
-            Try saving again
-          </Button>
-          <Button compactIcons="keep" onClick={(event) => setReloading(event.currentTarget)}>
-            Reload saved draft
-          </Button>
+        <div className="error-banner" role="alert" data-glass="alert">
+          <Icon name="alert" />
+          <div>
+            <strong>Changes need attention</strong>
+            <p>{error}</p>
+          </div>
+          <div className="error-banner-actions">
+            <Button compactIcons="keep" onClick={() => run(draft.retrySave)}>
+              Try saving again
+            </Button>
+            <Button compactIcons="keep" onClick={(event) => setReloading(event.currentTarget)}>
+              Reload saved draft
+            </Button>
+          </div>
         </div>
       )}
       {reloading && (
@@ -251,13 +258,11 @@ function App() {
         {content && section === 'history' && (
           <div className="publishing-workspace">
             <section className="collection publish-summary">
-              <div className="workspace-heading">
-                <div>
-                  <p className="eyebrow">Publication</p>
-                  <h1>Publishing</h1>
-                  <p>Review and publish saved changes.</p>
-                </div>
-              </div>
+              <WorkspaceHeading
+                eyebrow="Publication"
+                title="Publishing"
+                description="Review and publish saved changes."
+              />
               <div className="publish-card">
                 <div>
                   <h2>{local ? 'Create a local snapshot' : 'Publish website'}</h2>
