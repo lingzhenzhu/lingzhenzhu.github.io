@@ -45,8 +45,10 @@ export async function buildPresentation() {
   const versions: Record<string, string> = {};
   for (const file of ['article-search.js', 'card-fonts.css', 'math/katex.min.css']) {
     try {
-      const bytes = await fs.readFile(path.join(site, 'assets', file));
-      versions['/assets/' + file] = createHash('sha256').update(bytes).digest('hex').slice(0, 10);
+      // Hash the text with normalised line endings: a Windows checkout writes CRLF, and the version
+      // must not change (and dirty the committed manifest) when only the checkout differs.
+      const text = (await fs.readFile(path.join(site, 'assets', file), 'utf8')).replace(/\r\n/g, '\n');
+      versions['/assets/' + file] = createHash('sha256').update(text).digest('hex').slice(0, 10);
     } catch {}
   }
   await fs.writeFile(
