@@ -74,9 +74,10 @@
   font-weight: 600;
   margin: 19px 12px 8px;
 }
+/* A little air between items, so neighbouring highlights (selected, hover) never touch. */
 .sidebar nav {
   display: grid;
-  gap: 2px;
+  gap: 6px;
 }
 .sidebar nav .studio-button {
   justify-content: flex-start;
@@ -150,7 +151,7 @@
 }
 .sidebar-pages > div {
   display: grid;
-  gap: 2px;
+  gap: 6px;
   min-height: 0;
   overflow: hidden;
   margin-block: -6px;
