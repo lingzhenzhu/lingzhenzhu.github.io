@@ -66,6 +66,9 @@ function setup() {
   };
   const token = 'e30.' + Buffer.from(JSON.stringify(claims)).toString('base64url') + '.test-signature';
   const upstream = vi.fn(async (url: string, init?: RequestInit) => {
+    // The Workers runtime throws on every request made with `redirect: 'error'`; Node does not.
+    if (init?.redirect === 'error')
+      throw new TypeError('Invalid redirect value, must be one of "follow" or "manual"');
     if (url === 'https://oauth2.googleapis.com/token')
       return Response.json({ access_token: 'test-access-token', expires_in: 3600 });
     if (url.includes('accounts:signInWithPassword')) {
@@ -140,6 +143,24 @@ it('returns only public card fields and denies unconfigured or anonymous adminis
   fixture.env.FIREBASE_CARD_ENABLED = '0';
   expect((await fixture.request()).status).toBe(503);
   expect(fixture.writes()).toBe(0);
+});
+it('refuses an upstream redirect instead of following it with the access token', async () => {
+  const fixture = setup();
+  const followed: string[] = [],
+    modes: unknown[] = [];
+  vi.stubGlobal('fetch', async (url: string, init?: RequestInit) => {
+    if (url === fixture.env.FIREBASE_DATABASE_URL + '/.json') {
+      modes.push(init?.redirect);
+      return new Response(null, { status: 307, headers: { Location: 'https://elsewhere.example/' } });
+    }
+    if (!url.startsWith('https://oauth2.googleapis.com/')) followed.push(url);
+    return fixture.upstream(url, init);
+  });
+  const response = await fixture.request();
+  expect(response.status).toBe(503);
+  expect(await response.json()).toEqual({ error: '暂时无法连接，请稍后重试' });
+  expect(modes).toEqual(['manual']);
+  expect(followed).toEqual([]);
 });
 it('deduplicates retries, retries concurrent ETag conflicts and never overdraws', async () => {
   const fixture = setup();

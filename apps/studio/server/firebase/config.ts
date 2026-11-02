@@ -30,11 +30,17 @@ export function firebaseConfig(env: Env) {
   };
 }
 
-/** Fixed service URLs only; never include upstream error bodies or credentials in errors. */
+/** Fixed service URLs only; never include upstream error bodies or credentials in errors.
+ * Workers reject `redirect: 'error'` outright (a TypeError on every call), so redirects are
+ * received with `manual` and refused here: credentials are never forwarded to another host. */
 export async function firebaseFetch(url: string, init: RequestInit = {}) {
+  let response: Response;
   try {
-    return await fetch(url, { ...init, redirect: 'error', signal: AbortSignal.timeout(10000) });
+    response = await fetch(url, { ...init, redirect: 'manual', signal: AbortSignal.timeout(10000) });
   } catch {
     throw new FirebaseCardError('暂时无法连接，请稍后重试');
   }
+  if (response.status >= 300 && response.status < 400)
+    throw new FirebaseCardError('暂时无法连接，请稍后重试');
+  return response;
 }
