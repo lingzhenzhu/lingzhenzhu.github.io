@@ -278,3 +278,19 @@ test('public full-text search combines tags and time, resets and handles network
     await restore();
   }
 });
+test('before or without JavaScript each search filter shows one control', async ({ page, request, browser }) => {
+  const restore = await fixture(request, page);
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const plain = await context.newPage();
+    await plain.goto('/admin/preview/' + searchId);
+    for (const name of ['Tag', 'Year', 'Month']) {
+      // The native select stands alone until the script enhances it.
+      await expect(plain.getByRole('combobox', { name, exact: true })).toHaveCount(1);
+      await expect(plain.locator('[data-filter-trigger][aria-label="' + name + '"]')).toBeHidden();
+    }
+  } finally {
+    await context.close();
+    await restore();
+  }
+});

@@ -209,3 +209,32 @@ test('accessibility button remains in the viewport bottom-right while scrolling'
     expect(await page.locator('#a11y-btn').boundingBox()).toEqual(before);
   }
 });
+test('every preloaded font is a face the page actually draws with', async ({ page }) => {
+  for (const route of routes) {
+    await page.goto(route);
+    await page.evaluate(() => document.fonts.ready);
+    const unused = await page.evaluate(() => {
+      const faces = [...document.styleSheets].flatMap((sheet) => {
+        try {
+          return [...sheet.cssRules].filter((rule): rule is CSSFontFaceRule => rule instanceof CSSFontFaceRule);
+        } catch {
+          return [];
+        }
+      });
+      const unquote = (value: string) => value.replace(/["']/g, '').trim();
+      return [...document.querySelectorAll<HTMLLinkElement>('link[rel="preload"][as="font"]')]
+        .map((link) => new URL(link.href).pathname)
+        .filter((path) => {
+          // A preload only helps if its @font-face is one the page loaded for drawing text.
+          const face = faces.find((rule) => rule.style.getPropertyValue('src').includes(path));
+          return !face || ![...document.fonts].some(
+            (font) =>
+              font.status === 'loaded' &&
+              unquote(font.family) === unquote(face.style.getPropertyValue('font-family')) &&
+              String(font.weight) === face.style.getPropertyValue('font-weight'),
+          );
+        });
+    });
+    expect(unused, route).toEqual([]);
+  }
+});

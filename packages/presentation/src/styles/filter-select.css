@@ -2,6 +2,11 @@
   min-width: 0;
   color: var(--search-ink, currentColor);
 }
+/* Exactly one of the native select and the enhanced trigger is shown; the display rule below must
+   not override `hidden`, whatever stylesheet order the host page has. */
+.filter-select :is(select, [data-filter-trigger])[hidden] {
+  display: none;
+}
 .filter-select select,
 .filter-select [data-filter-trigger] {
   display: flex;

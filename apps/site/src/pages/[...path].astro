@@ -16,7 +16,14 @@ const { content, page } = Astro.props;
 const title = page.path === '/' ? content.settings.title : page.title + ' | ' + content.settings.author;
 const description = page.description || content.settings.description;
 const fontCss = await readFile(resolve(process.cwd(), 'public/assets/fonts.css'), 'utf8');
-const titleFont = fontCss.match(new RegExp('/assets/fonts/' + (page.template === 'home' ? 'librecaslondisplay' : 'lora') + '-[\\w-]+\\.woff2'))?.[0];
+// Preload exactly the face the page title draws with (family and weight), not the first file of the
+// family: Lora has a 450 and a 500 face, and the title uses 500.
+const fontFile = (family: string, weight: number) =>
+  fontCss
+    .match(/@font-face\s*\{[^}]*\}/g)
+    ?.find((face) => face.includes(family) && new RegExp('font-weight:\\s*' + weight + '\\b').test(face))
+    ?.match(/\/assets\/fonts\/[\w-]+\.woff2/)?.[0];
+const titleFont = page.template === 'home' ? fontFile('Libre Caslon Display', 400) : fontFile('Lora', 500);
 const nameFont = page.template === 'home' && page.showTitle && page.homeHero?.nameNote
   ? fontCss.match(/\/assets\/fonts\/lanting-name-[\w-]+\.woff2/)?.[0] : undefined;
 const speculationRules = JSON.stringify({ prerender: [{ where: { and: [{ href_matches: '/*' }, { not: { href_matches: ['/admin*', '/api/*', '/assets/*', '/woaidumuyibeizi/*'] } }, { not: { selector_matches: '[target=_blank], [download]' } }] }, eagerness: 'moderate' }] });
