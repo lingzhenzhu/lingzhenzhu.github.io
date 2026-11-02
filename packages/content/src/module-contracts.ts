@@ -17,6 +17,18 @@ const imageUrl = z
   .refine((value) => safeUrl(value, true), 'Invalid image URL');
 const base = { id, version: z.literal(1).default(1) };
 const uniqueIds = (items: { id: string }[]) => new Set(items.map((item) => item.id)).size === items.length;
+const articleListOptions = {
+  year: z
+    .string()
+    .regex(/^\d{4}$/)
+    .optional(),
+  month: z
+    .string()
+    .regex(/^(0[1-9]|1[0-2])$/)
+    .optional(),
+  title: z.string().max(100).optional(),
+  pageSize: z.number().int().min(5).max(50).optional(),
+};
 export const CourseSchema = z.object({
   id,
   year: z.number().int().min(1900).max(2200),
@@ -181,22 +193,32 @@ export const moduleDefinitions = {
     label: 'Article list',
     group: 'Feeds and links',
     icon: 'pages',
-    description: 'Articles with optional date filters.',
+    description: 'Articles, with optional search and filters.',
     sharedSource: 'articles',
     allowedPath: null,
     schema: z.object({
       ...base,
       type: z.literal('archive'),
-      year: z
-        .string()
-        .regex(/^\d{4}$/)
-        .optional(),
-      month: z
-        .string()
-        .regex(/^(0[1-9]|1[0-2])$/)
-        .optional(),
+      ...articleListOptions,
     }),
     initial: () => ({}),
+  },
+  articleSearch: {
+    label: 'Article list',
+    variantOf: 'archive',
+    group: 'Feeds and links',
+    icon: 'search',
+    description: 'Full-text search with tag and date filters.',
+    sharedSource: 'articles',
+    allowedPath: null,
+    schema: z.object({
+      ...base,
+      ...articleListOptions,
+      type: z.literal('articleSearch'),
+      title: z.string().max(100),
+      pageSize: z.number().int().min(5).max(50).default(12),
+    }),
+    initial: () => ({ title: 'Explore the archive', pageSize: 12 }),
   },
   podcast: {
     label: 'Podcast',

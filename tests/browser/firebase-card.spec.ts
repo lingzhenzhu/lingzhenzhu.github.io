@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../fixtures';
 import type { Content } from '@lzzhu/content';
 
 test('Firebase card preserves public submission and password-only administration at desktop and mobile widths', async ({

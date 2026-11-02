@@ -65,6 +65,14 @@ export async function csrfToken(env: Env, identity: Identity) {
   const signed = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode('studio:' + identity.id));
   return Array.from(new Uint8Array(signed), (b) => b.toString(16).padStart(2, '0')).join('');
 }
+/** Compares secrets without revealing, through timing, how many leading characters matched. */
+export function sameSecret(received: string | undefined, expected: string) {
+  if (received === undefined || received.length !== expected.length) return false;
+  let difference = 0;
+  for (let index = 0; index < expected.length; index++)
+    difference |= received.charCodeAt(index) ^ expected.charCodeAt(index);
+  return difference === 0;
+}
 export const authenticate: MiddlewareHandler<AppEnv> = async (c, next) => {
   const identity = await identify(c.env, c.req.raw);
   if (!identity) return c.json({ error: 'Authentication required' }, 401);
@@ -82,7 +90,7 @@ export const authenticate: MiddlewareHandler<AppEnv> = async (c, next) => {
     const validOrigin = identity.local
       ? /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/.test(requestOrigin)
       : requestOrigin === envOrigin(c.env);
-    if (!validOrigin || c.req.header('X-CSRF-Token') !== (await csrfToken(c.env, identity)))
+    if (!validOrigin || !sameSecret(c.req.header('X-CSRF-Token'), await csrfToken(c.env, identity)))
       return c.json({ error: 'Request verification failed' }, 403);
   }
   await next();

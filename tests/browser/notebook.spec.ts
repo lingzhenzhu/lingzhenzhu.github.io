@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import axe from 'axe-core';
 
 test.use({ bypassCSP: true });
@@ -13,6 +13,10 @@ test('notebook controls and formatting popover pass accessibility at desktop and
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.getByRole('button', { name: 'Choose formatting mode' }).click();
+    // The popover fades in; measure contrast once it has settled, not mid-fade.
+    await page.evaluate(() =>
+      Promise.all(document.getAnimations().map((animation) => animation.finished.catch(() => {}))),
+    );
     const violations = await page.evaluate(async () =>
       (
         await window.axe.run(document, {

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { ContentSchema } from '@lzzhu/content';
-import { seedSql } from '../packages/content/src/seed';
+import { seedSql } from '@lzzhu/content/seed';
 const snapshotFlag = process.argv.indexOf('--snapshot');
 const snapshot = snapshotFlag < 0 ? 'content/site.json' : process.argv[snapshotFlag + 1];
 if (!snapshot || snapshot.startsWith('--')) throw new Error('--snapshot requires a JSON file path');

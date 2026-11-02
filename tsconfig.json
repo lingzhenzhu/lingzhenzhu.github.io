@@ -20,6 +20,7 @@
     "packages/**/*.tsx",
     "scripts/**/*.ts",
     "tests/**/*.ts",
+    "tests/**/*.tsx",
     "*.ts"
   ],
   "exclude": ["node_modules", "**/dist", ".artifacts"]

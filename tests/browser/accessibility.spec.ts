@@ -1,4 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import axe from 'axe-core';
 import content from '../../content/site.json' with { type: 'json' };
 declare global {
@@ -8,8 +9,12 @@ declare global {
 }
 
 async function audit(page: Page, label: string) {
-  await page.locator('body').evaluate(async (body) => {
-    await Promise.all(body.getAnimations().map((animation) => animation.finished.catch(() => {})));
+  // Every running transition must settle, including the navigation's colour changes;
+  // body.getAnimations() alone sees only animations on <body> itself.
+  await page.evaluate(async () => {
+    await Promise.all(
+      document.getAnimations().map((animation) => animation.finished.catch(() => {})),
+    );
   });
   await page.evaluate(() => document.fonts.ready);
   await page.addScriptTag({ content: axe.source });
@@ -62,7 +67,7 @@ test('published pages pass automated accessibility checks', async ({ page }) => 
     await page.goto(item.path, { waitUntil: 'domcontentloaded' });
     await audit(page, item.path);
     for (const theme of ['dark-theme', 'a11y-high-contrast', 'dark-theme a11y-high-contrast']) {
-      await page.locator('body').evaluate((body, classes) => {
+      await page.locator('html').evaluate((body, classes) => {
         body.setAttribute('class', classes);
       }, theme);
       await audit(page, item.path + ' · ' + theme);

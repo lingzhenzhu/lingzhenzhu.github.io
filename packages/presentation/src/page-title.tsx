@@ -4,12 +4,7 @@ import { responsiveImage, useAssetUrl } from './asset-context';
 /** Shared title system: one compact banner and one optional-media opening. */
 export function PageTitle({ page }: { page: Page }) {
   const assetUrl = useAssetUrl();
-  if (!page.showTitle)
-    return (
-      <h1 className="post-title visually-empty-title">
-        <span className="sr-only">{page.title}</span>
-      </h1>
-    );
+  if (!page.showTitle) return <h1 className="visually-hidden">{page.title}</h1>;
   const home = page.template === 'home';
   const choice = home ? page.homeHero?.image : undefined;
   const image = choice?.source === 'profile' ? page.blocks.find((block) => block.type === 'profile') : choice;

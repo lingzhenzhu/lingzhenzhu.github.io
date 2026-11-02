@@ -32,6 +32,7 @@ export function useDraft() {
   const [message, setMessage] = useState('Connecting…');
   const [error, setError] = useState('');
   const [local, setLocal] = useState(false);
+  const [identity, setIdentity] = useState<{ id: string; local: boolean }>();
   const [previewVersion, setPreviewVersion] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const loading = useRef<Promise<void> | null>(null);
@@ -50,7 +51,7 @@ export function useDraft() {
       // A previous save must finish before GET chooses the saved draft to restore.
       await saving.current?.catch(() => {});
       const counter = edits.current;
-      const session = await api<{ identity: { local: boolean } }>('/session');
+      const session = await api<{ identity: { id: string; local: boolean } }>('/session');
       const snapshot = await api<WorkspaceSnapshot>('/content');
       const { resourceVersions, ...data } = snapshot;
       if (edits.current !== counter)
@@ -58,6 +59,7 @@ export function useDraft() {
           'The draft changed while reloading. Your new edits were kept. Reload again to discard them.',
         );
       setLocal(session.identity.local);
+      setIdentity(session.identity);
       draft.current = data;
       baseline.current = data;
       versions.current = resourceVersions;
@@ -212,10 +214,11 @@ export function useDraft() {
     window.addEventListener('beforeunload', listener);
     return () => window.removeEventListener('beforeunload', listener);
   }, []);
-  const run = (task: () => Promise<unknown>) => {
+  // Stable, so effects can depend on it without re-running each render.
+  const run = useCallback((task: () => Promise<unknown>) => {
     if (!halted.current) setError('');
     task().catch((e) => setError(e.message));
-  };
+  }, []);
   const historyAction = (back: boolean) => {
     const value = (back ? undo.current : redo.current).pop();
     if (!value || !draft.current) return;
@@ -229,6 +232,7 @@ export function useDraft() {
     load,
     run,
     local,
+    identity,
     message,
     setMessage,
     error,

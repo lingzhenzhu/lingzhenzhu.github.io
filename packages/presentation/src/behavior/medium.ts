@@ -1,5 +1,6 @@
 import type { MediumEntry } from '@lzzhu/content';
 import { displayDate } from '../date';
+import { createExternalArrow } from '../external-arrow';
 const fallback = '/assets/medium-fallback.svg';
 function card(entry: MediumEntry) {
   const link = document.createElement('a');
@@ -15,7 +16,8 @@ function card(entry: MediumEntry) {
   date.dateTime = entry.publishedAt;
   date.textContent = displayDate(entry.publishedAt);
   more.className = 'medium-read';
-  more.textContent = 'Read on Medium ↗';
+  more.textContent = 'Read on Medium ';
+  more.appendChild(createExternalArrow());
   [title, date, more].forEach((node) => copy.appendChild(node));
   const image = document.createElement('img');
   image.src = entry.coverOverride || entry.cover || fallback;

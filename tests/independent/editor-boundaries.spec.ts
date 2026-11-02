@@ -1,4 +1,5 @@
-import { test, expect, type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
+import { type Page as BrowserPage, type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import type { Content, RichNode } from '@lzzhu/content';
 import { readFile } from 'node:fs/promises';
 
@@ -233,9 +234,14 @@ test('IND-05 unpublished rich text upload displays in editor without corrupting 
     await expect.poll(() => image.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     const editor = page.getByRole('textbox', { name: 'Content editor' });
     // A center click can select the image; Control+End does not move that
-    // NodeSelection in WebKit. Explicitly edit the caption beside the image.
-    await editor.getByText('Image caption', { exact: true }).click();
-    await editor.press('End');
+    // NodeSelection in WebKit. Explicitly edit the caption beside the image. Late font
+    // metrics can nudge the caption as it is clicked, and typing over a selected image
+    // replaces it, so type only once the caret is confirmed inside the caption.
+    await expect(async () => {
+      await editor.getByText('Image caption', { exact: true }).click();
+      await editor.press('End');
+      expect(await page.evaluate(() => getSelection()?.anchorNode?.textContent)).toBe('Image caption');
+    }).toPass();
     await editor.pressSequentially(' changed');
     await save(page);
     const saved = (await (await request.get('/admin/api/content')).json()) as Content;
@@ -244,6 +250,65 @@ test('IND-05 unpublished rich text upload displays in editor without corrupting 
     expect(JSON.stringify(block)).not.toContain('/admin/api/assets/');
     expect(JSON.stringify(block)).toContain('Image caption changed');
   } finally {
+    await fixture.restore();
+  }
+});
+
+test('IND-09 rich text images reserve their final space before they load', async ({ page, request }) => {
+  const fixture = await setup(request, page);
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => (release = resolve));
+  try {
+    const { csrf } = await (await request.get('/admin/api/session')).json();
+    const response = await request.post('/admin/api/assets', {
+      headers: {
+        Origin: origin,
+        'X-CSRF-Token': csrf,
+        'X-Filename': 'reserved-space.jpg',
+        'Content-Type': 'image/jpeg',
+      },
+      data: await readFile('assets/source/card.jpg'),
+    });
+    const upload = await response.json();
+    expect([upload.width, upload.height]).toEqual([1520, 1519]);
+    const content = structuredClone(fixture.original);
+    content.pages.find((p) => p.id === 'home')!.blocks = [
+      {
+        id: 'ind-reserved-image',
+        version: 1,
+        type: 'richText',
+        document: {
+          type: 'doc',
+          content: [
+            { type: 'image', attrs: { src: upload.src, alt: 'Reserved image' } },
+            { type: 'paragraph', content: [{ type: 'text', text: 'Caption below' }] },
+          ],
+        },
+      },
+    ];
+    await fixture.put(content);
+    // Hold the image itself; the asset list still answers.
+    await page.route('**/admin/api/assets/' + upload.id, async (route) => {
+      await held;
+      await route.continue();
+    });
+    await openHome(page);
+    await page.locator('.block-select').filter({ hasText: 'Text & headings' }).click();
+    const editor = page.getByRole('textbox', { name: 'Content editor' });
+    const image = editor.getByAltText('Reserved image');
+    const caption = editor.getByText('Caption below', { exact: true });
+    await expect(image).toHaveAttribute('width', '1520');
+    expect(await image.evaluate((el) => (el as HTMLImageElement).complete)).toBe(false);
+    const before = await caption.boundingBox();
+    const reserved = await image.boundingBox();
+    expect(reserved!.height).toBeGreaterThan(100);
+    release();
+    await expect.poll(() => image.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBe(1520);
+    // Loading the image moves nothing: same image box, caption where it was.
+    expect(await image.boundingBox()).toEqual(reserved);
+    expect(await caption.boundingBox()).toEqual(before);
+  } finally {
+    release();
     await fixture.restore();
   }
 });
@@ -283,16 +348,21 @@ test('IND-06 transient save failure retains the draft and manual retry commits i
       }
       return route.continue();
     });
+    // The page's clock is controlled, so the manual save always precedes the 1.2s autosave
+    // however slowly the browser types; otherwise the autosave can make the first attempt.
+    await page.clock.install();
     await page.goto('/admin/');
     await page.getByRole('button', { name: 'Site settings', exact: true }).click();
+    await page.clock.pauseAt(Date.now() + 60_000);
     await page.getByLabel('Footer', { exact: true }).fill('RECOVERABLE OFFLINE EDIT');
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.getByRole('alert')).toContainText('Independent temporary outage');
     await expect(page.getByLabel('Footer', { exact: true })).toHaveValue('RECOVERABLE OFFLINE EDIT');
     // Let the pre-existing 1.2s debounce expire: a failed manual save must
     // pause that queued autosave as well, preserving an explicit retry.
-    await page.waitForTimeout(1600);
+    await page.clock.runFor(1600);
     expect(attempts).toBe(1);
+    await page.clock.resume();
     await expect(page.getByText('Saving paused', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Try saving again', exact: true }).click();
     await expect(page.getByText('All changes saved', { exact: true })).toBeVisible();

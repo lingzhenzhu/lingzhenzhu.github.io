@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { Page } from '@lzzhu/content';
 import { Button } from './Button';
+import { Icon } from './icons';
 import { pageName } from './page-model';
 
 type Props = {
@@ -15,10 +16,14 @@ export function PageWorkspaceHeader({ page, go, children }: Props) {
     <header className="page-workspace-header">
       <div>
         <div className="breadcrumbs">
-          <Button compactIcons="keep" onClick={() => go(page.template === 'article' ? 'articles' : 'pages')}>
+          <Button
+            variant="quiet"
+            compactIcons="keep"
+            onClick={() => go(page.template === 'article' ? 'articles' : 'pages')}
+          >
             {page.template === 'article' ? 'Articles' : 'Pages'}
           </Button>
-          <span>/</span>
+          <Icon name="arrow" />
           <span>{pageName(page)}</span>
         </div>
         <h1>

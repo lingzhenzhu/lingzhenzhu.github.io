@@ -5,6 +5,10 @@ export default defineConfig({
   workers: 1,
   fullyParallel: false,
   timeout: 45000,
+  // CI logs name each failing test and its error as it happens, even if the job is cut short,
+  // and a broken environment stops after ten failures instead of timing out test by test.
+  reporter: process.env.CI ? 'line' : 'list',
+  maxFailures: process.env.CI ? 10 : 0,
   use: {
     baseURL: 'http://127.0.0.1:4173',
     colorScheme: 'light',
@@ -27,7 +31,15 @@ export default defineConfig({
               : { ...devices['Desktop Edge'], channel: 'msedge' },
           },
           { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-          { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+          {
+            name: 'webkit',
+            use: {
+              ...devices['Desktop Safari'],
+              // Linux CI paints WebKit on the CPU; the profile's 2x density quadruples that work.
+              // Assertions use CSS pixels, so 1x changes speed, not results.
+              ...(process.env.CI && process.platform === 'linux' ? { deviceScaleFactor: 1 } : {}),
+            },
+          },
         ]
       : [{ name: 'edge', use: { ...devices['Desktop Edge'], channel: 'msedge' } }],
 });

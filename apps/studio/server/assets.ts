@@ -11,6 +11,7 @@ export function imageFilename(header = 'image'): string {
     Array.from(
       decodeURIComponent(header)
         .normalize('NFC')
+        // oxlint-disable-next-line no-control-regex -- strips control characters from file names
         .replace(/[\u0000-\u001f\u007f]/g, ''),
     )
       .slice(0, 200)
@@ -18,10 +19,30 @@ export function imageFilename(header = 'image'): string {
   );
 }
 
+type AssetRow = { id: string; key: string; width: number | null; height: number | null };
+// Assets uploaded before sizes were recorded are measured a few at a time, then kept.
+const BACKFILL_PER_REQUEST = 12;
+
 export const assets = new Hono<AppEnv>();
-assets.get('/', async (c) =>
-  c.json((await c.env.DB.prepare('SELECT * FROM assets ORDER BY created_at DESC LIMIT 500').all()).results),
-);
+assets.get('/', async (c) => {
+  const rows = (await c.env.DB.prepare('SELECT * FROM assets ORDER BY created_at DESC LIMIT 500').all<AssetRow>())
+    .results;
+  for (const row of rows.filter((row) => row.width == null).slice(0, BACKFILL_PER_REQUEST)) {
+    const object = await c.env.PRIVATE.get(row.key);
+    if (!object) continue;
+    try {
+      const info = await c.env.IMAGES.info(object.body);
+      if (!('width' in info)) continue;
+      await c.env.DB.prepare('UPDATE assets SET width=?, height=? WHERE id=?')
+        .bind(info.width, info.height, row.id)
+        .run();
+      Object.assign(row, { width: info.width, height: info.height });
+    } catch {
+      // A size is an optimisation; the asset itself stays listed and usable.
+    }
+  }
+  return c.json(rows);
+});
 
 assets.post('/', async (c) => {
   const body = await c.req.arrayBuffer();
@@ -36,7 +57,7 @@ assets.post('/', async (c) => {
     return c.json({ error: 'The image filename is not valid UTF-8.' }, 400);
   }
 
-  let extension: string;
+  let extension: string, width: number, height: number;
   try {
     const stream = () => new Blob([body]).stream();
     const info = await c.env.IMAGES.info(stream());
@@ -50,6 +71,7 @@ assets.post('/', async (c) => {
       .output({ format: 'image/png' });
     await decoded.response().arrayBuffer();
     extension = info.format === 'image/jpeg' ? 'jpg' : info.format.slice('image/'.length);
+    ({ width, height } = info);
   } catch (error) {
     console.warn('Image decoding failed', error instanceof Error ? error.message : 'Unknown error');
     return c.json({ error: 'This image could not be decoded. Export it again as JPEG, PNG or WebP.' }, 400);
@@ -59,11 +81,13 @@ assets.post('/', async (c) => {
   // Keep the full resolution original. Content addressing makes retried uploads idempotent.
   await c.env.PRIVATE.put('assets/' + id, body, { httpMetadata: { contentType: mime } });
   await c.env.DB.prepare(
-    'INSERT OR IGNORE INTO assets(id,key,mime,size,filename,created_at) VALUES(?,?,?,?,?,?)',
+    // Content addressing: a repeat upload keeps the first record and only fills in a missing size.
+    'INSERT INTO assets(id,key,mime,size,filename,created_at,width,height) VALUES(?,?,?,?,?,?,?,?) ' +
+      'ON CONFLICT(id) DO UPDATE SET width=coalesce(width,excluded.width), height=coalesce(height,excluded.height)',
   )
-    .bind(id, 'assets/' + id, mime, body.byteLength, filename, new Date().toISOString())
+    .bind(id, 'assets/' + id, mime, body.byteLength, filename, new Date().toISOString(), width, height)
     .run();
-  return c.json({ id, src: '/assets/uploads/' + id, preview: '/admin/api/assets/' + id });
+  return c.json({ id, src: '/assets/uploads/' + id, preview: '/admin/api/assets/' + id, width, height });
 });
 
 assets.get('/:id', async (c) => {

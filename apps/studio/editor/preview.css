@@ -1,0 +1,51 @@
+.preview-panel {
+  min-width: 0;
+  align-self: start;
+  position: sticky;
+  top: 92px;
+  overflow: hidden;
+  border: 1px solid #d4cbbb;
+  border-radius: 20px;
+  background: #faf9f6;
+  box-shadow: 0 4px 12px #53442608;
+}
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 55px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #d9d0be;
+  background: linear-gradient(#fffefa, #eeeadf);
+}
+.preview-toolbar strong {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.preview-toolbar .icon-button {
+  min-width: 32px;
+  min-height: 34px;
+  padding: 5px;
+}
+.preview-toolbar .ui-icon {
+  width: 18px;
+  height: 18px;
+}
+.preview-surface {
+  overflow: hidden;
+  position: relative;
+}
+.preview-panel iframe {
+  display: block;
+  max-width: none;
+  transform-origin: top left;
+  border: 0;
+  background: #fafaf8;
+}
+@container workspace (width < 740px) {
+  .preview-panel {
+    position: static;
+    margin-top: 20px;
+  }
+}

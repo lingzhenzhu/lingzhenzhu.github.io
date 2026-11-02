@@ -4,10 +4,10 @@ import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { z } from 'zod';
 import { ContentSchema, mergeMedium, type Content } from '@lzzhu/content';
-import { SiteShell } from '@lzzhu/presentation';
+import { SiteShell, pageStylesheets, pageScripts } from '@lzzhu/presentation';
+import { articleIndex } from '@lzzhu/content';
 import { authenticate, csrfToken, localDevelopment } from './auth';
 import {
-  audit,
   Conflict,
   InvalidContent,
   getContent,
@@ -153,6 +153,10 @@ app.get('/admin/image-preview', (c) => {
       ),
   );
 });
+app.get('/admin/api/article-index', async (c) => {
+  const content = await getContent(c.env);
+  return content ? c.json(articleIndex(content)) : c.notFound();
+});
 app.get('/admin/preview/:id', async (c) => {
   const content = await getContent(c.env);
   const page = content?.pages.find((p) => p.id === c.req.param('id'));
@@ -166,6 +170,9 @@ app.get('/admin/preview/:id', async (c) => {
         <title>{page.title}</title>
         <link rel="stylesheet" href="/admin/site.css" />
         <link rel="stylesheet" href="/admin/assets/fonts.css" />
+        {pageStylesheets(page, true).map((href) => (
+          <link key={href} rel="stylesheet" href={href} />
+        ))}
         <style>
           {
             '@view-transition { navigation: none; } @font-face{font-family:lanting;font-weight:300;font-display:swap;src:url("/admin/fonts/lanting.woff2") format("woff2")}'
@@ -176,6 +183,9 @@ app.get('/admin/preview/:id', async (c) => {
       <body>
         <SiteShell content={content} page={page} preview />
         <script type="module" src="/admin/runtime.js" />
+        {pageScripts(page, true).map((src) => (
+          <script key={src} type="module" src={src} />
+        ))}
       </body>
     </html>,
   );

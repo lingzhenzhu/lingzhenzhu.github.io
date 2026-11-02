@@ -5,6 +5,7 @@ import { RESOURCE_BYTES, WORKSPACE_BYTES } from './limits';
 import { workspaceIssues } from './workspace-structure';
 export * from './rich-document';
 export * from './module-contracts';
+export * from './article';
 
 export const localPath = z
   .string()
@@ -14,6 +15,7 @@ export const localPath = z
       value.startsWith('/') &&
       value.endsWith('/') &&
       !value.startsWith('//') &&
+      // oxlint-disable-next-line no-control-regex -- control characters are what this rejects
       !/[\\?#\u0000-\u0020]/.test(value) &&
       !value.split('/').some((part) => part === '..' || part === '.') &&
       !/%(?:2f|5c|2e|00)/i.test(value),
@@ -54,7 +56,9 @@ export const PageSchema = z
     navOrder: z.number().int().min(0).max(1000).default(0),
     inNavigation: z.boolean().default(false),
     status: z.enum(['draft', 'published']).default('draft'),
-    template: z.enum(['page', 'home', 'article']).default('page'),
+    // Identity is stored, never inferred from modules. An archive is a dated list page outside the
+    // main site structure, such as /archives/2023/.
+    template: z.enum(['page', 'home', 'article', 'archive']).default('page'),
     description: z.string().max(500).default(''),
     homeHero: z
       .object({
@@ -70,6 +74,32 @@ export const PageSchema = z
     date: z.iso.date().optional(),
     articleDetails: z
       .object({
+        author: z.string().max(200).optional(),
+        publishedDisplay: z.enum(['hidden', 'date', 'datetime']).optional(),
+        updatedDisplay: z.enum(['hidden', 'date', 'datetime']).optional(),
+        updatedDate: z.iso.date().optional(),
+        updatedTime: z
+          .string()
+          .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+          .optional(),
+        tags: z
+          .array(z.string().trim().min(1).max(60))
+          .max(30)
+          .refine((tags) => new Set(tags).size === tags.length, 'Tags must be unique')
+          .optional(),
+        showLicense: z.boolean().optional(),
+        license: z
+          .enum([
+            'reserved',
+            'cc-by-4.0',
+            'cc-by-sa-4.0',
+            'cc-by-nc-4.0',
+            'cc-by-nc-sa-4.0',
+            'cc-by-nd-4.0',
+            'cc-by-nc-nd-4.0',
+            'cc0',
+          ])
+          .optional(),
         time: z
           .string()
           .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
@@ -130,6 +160,19 @@ export const SettingsSchema = z.object({
   footer: z.string().max(300),
   description: z.string().max(500),
   logo: imageUrl,
+  articleNavigation: z
+    .array(
+      z.object({
+        action: z.enum(['all', 'home', 'previous', 'next']),
+        align: z.enum(['left', 'right']),
+      }),
+    )
+    .max(2)
+    .refine(
+      (items) => new Set(items.map((item) => item.action)).size === items.length,
+      'Choose each navigation link once',
+    )
+    .optional(),
   contacts: z
     .array(
       z.object({

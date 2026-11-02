@@ -6,10 +6,23 @@
   "exports": {
     ".": "./src/index.tsx",
     "./styles.css": "./src/styles/index.css",
-    "./runtime": "./src/behavior/index.ts"
+    "./runtime": "./src/behavior/index.ts",
+    "./bootstrap": "./src/behavior/bootstrap.ts",
+    "./formula": "./src/formula.ts",
+    "./code-highlight": "./src/code-highlight.ts",
+    "./code-languages": "./src/code-languages.ts",
+    "./filter-select": "./src/filter-select.tsx",
+    "./filter-select/behavior": "./src/behavior/filter-select.ts",
+    "./icons": "./src/icons.tsx",
+    "./asset-context": "./src/asset-context.ts",
+    "./request-card-copy": "./src/request-card-copy.ts",
+    "./styles/filter-select.css": "./src/styles/filter-select.css",
+    "./styles/technical-text.css": "./src/styles/technical-text.css"
   },
   "dependencies": {
-    "react": "19.3.1",
-    "@lzzhu/content": "workspace:*"
+    "@lzzhu/content": "workspace:*",
+    "katex": "0.18.10",
+    "lowlight": "3.3.0",
+    "react": "19.3.1"
   }
 }

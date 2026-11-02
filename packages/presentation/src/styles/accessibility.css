@@ -61,7 +61,7 @@
 .a11y-menu-title {
   font-family: 'Inter', sans-serif;
   font-size: 0.72em;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -92,7 +92,7 @@
 }
 .a11y-option.active {
   color: var(--accent);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .a11y-option.active .a11y-icon {
   color: var(--accent);
@@ -120,37 +120,46 @@
   display: block;
   fill: currentColor;
 }
-body.a11y-large-text {
+.a11y-large-text body {
   font-size: 13.5pt;
 }
-body.a11y-large-text .post-wrap .post-title {
+.a11y-large-text .post-wrap .post-title {
   font-size: 2.4em;
 }
-body.a11y-high-contrast {
+.a11y-high-contrast {
+  --field-focus-ink: #000;
+  --field-focus-shadow: inset 0 1px 3px #0002, 0 0 0 2px #000, 0 0 0 5px #0002;
   --text-muted: #333;
   --accent: #49351f;
   background-color: #fff !important;
   color: #000 !important;
 }
-body.a11y-high-contrast.dark-theme {
+.a11y-high-contrast.dark-theme {
+  --field-focus-ink: #fff;
+  --field-focus-shadow: inset 0 1px 3px #fff2, 0 0 0 2px #fff, 0 0 0 5px #fff2;
   --text-muted: #e5e5dd;
   --accent: #eed6b2;
   background-color: #000 !important;
   color: #fff !important;
 }
-body.a11y-high-contrast .navbar {
+.a11y-high-contrast .navbar {
   background-color: #fff !important;
   border-bottom: 2px solid #000 !important;
 }
-body.a11y-high-contrast.dark-theme .navbar {
+.a11y-high-contrast.dark-theme .navbar {
   background-color: #000 !important;
   border-bottom: 2px solid #fff !important;
 }
-body.a11y-high-contrast .post-content,
-body.a11y-high-contrast .post-wrap .post-title {
+.a11y-high-contrast .post-content,
+.a11y-high-contrast .post-wrap .post-title {
   color: #000 !important;
 }
-body.a11y-high-contrast.dark-theme .post-content,
-body.a11y-high-contrast.dark-theme .post-wrap .post-title {
+.a11y-high-contrast.dark-theme .post-content,
+.a11y-high-contrast.dark-theme .post-wrap .post-title {
   color: #fff !important;
+}
+
+.a11y-high-contrast body {
+  background-color: inherit;
+  color: inherit;
 }

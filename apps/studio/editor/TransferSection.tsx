@@ -1,3 +1,5 @@
+import { Select } from './Select';
+import { SegmentedControl } from './SegmentedControl';
 import { Button, Pagination } from './controls';
 import { usePagination } from './usePagination';
 import { moduleDefinitions, moduleCapabilities } from '@lzzhu/content';
@@ -5,8 +7,8 @@ import { SharedSourceNotice } from './SharedSourceNotice';
 import { useState } from 'react';
 import type { CollectionProps } from './types';
 import { Dialog, Icon } from './ui';
-import { isArchiveView, pageName } from './page-model';
-import { copySection, moveSection } from '../../../packages/content/src/operations';
+import { isSitePage, pageName } from './page-model';
+import { copySection, moveSection } from '@lzzhu/content/operations';
 export function TransferSection({
   content,
   change,
@@ -28,7 +30,7 @@ export function TransferSection({
   const pages = content.pages.filter(
     (page) =>
       (mode === 'copy' || page.id !== pageId) &&
-      (scope === 'all' || (page.template !== 'article' && !isArchiveView(page))) &&
+      (scope === 'all' || isSitePage(page)) &&
       (page.title + ' ' + page.path).toLowerCase().includes(query.toLowerCase()),
   );
   const pagination = usePagination(pages.length, `${mode}:${scope}:${query}`);
@@ -44,29 +46,18 @@ export function TransferSection({
       returnFocusTo={returnFocusTo}
       onClose={onClose}
     >
-      <div className="writing-modes" aria-label="Transfer action">
-        <Button
-          data-dialog-focus
-          aria-pressed={mode === 'move'}
-          onClick={() => {
-            setMode('move');
-            setTargets([]);
-          }}
-        >
-          <Icon name="move" /> Move
-        </Button>
-        {canCopy && (
-          <Button
-            aria-pressed={mode === 'copy'}
-            onClick={() => {
-              setMode('copy');
-              setTargets([]);
-            }}
-          >
-            <Icon name="copy" /> Copy to pages
-          </Button>
-        )}
-      </div>
+      <SegmentedControl
+        label="Transfer action"
+        value={mode}
+        options={[
+          { value: 'move', label: 'Move', icon: 'move' },
+          ...(canCopy ? [{ value: 'copy', label: 'Copy to pages', icon: 'copy' }] : []),
+        ]}
+        onChange={(value) => {
+          setMode(value as 'move' | 'copy');
+          setTargets([]);
+        }}
+      />
       <p>
         {mode === 'move'
           ? 'Choose a page. The section will be placed first.'
@@ -75,7 +66,7 @@ export function TransferSection({
       {source && <SharedSourceNotice content={content} source={source} />}
       <label>
         Show destinations
-        <select
+        <Select
           value={scope}
           onChange={(event) => {
             setScope(event.target.value);
@@ -84,7 +75,7 @@ export function TransferSection({
         >
           <option value="pages">Website pages</option>
           <option value="all">All pages, including articles and archive views</option>
-        </select>
+        </Select>
       </label>
       <label>
         Find a destination

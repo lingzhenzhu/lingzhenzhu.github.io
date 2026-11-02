@@ -1,4 +1,5 @@
-import { test, expect, type Page, type APIRequestContext } from '@playwright/test';
+import { type Page, type APIRequestContext } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import { ContentSchema, type Content } from '@lzzhu/content';
 import type { WorkspaceSnapshot, ChangeRequest } from '@lzzhu/content/resources';
 import { largeWorkspace } from '../helpers/large-workspace';
@@ -155,9 +156,11 @@ test('shared content lists its affected pages and common actions use the same co
   await page.getByRole('button', { name: 'News', exact: true }).click();
   await expect(page.getByRole('complementary', { name: 'Shared content' })).toContainText('Home');
   await page.setViewportSize({ width: 390, height: 844 });
+  // On phones the primary actions keep their icons and an accessible, visually hidden label.
   for (const name of ['Save', 'Review & publish']) {
     const button = page.getByRole('button', { name, exact: true });
-    await expect(button.locator('svg')).toBeHidden();
+    await expect(button.locator('svg')).toBeVisible();
+    expect((await button.locator('.button-label').boundingBox())!.width).toBeLessThanOrEqual(1);
     expect((await button.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
   await expect(

@@ -63,7 +63,8 @@ export class NewsController {
     this.update();
   }
   private pause(reason: string, value: boolean) {
-    value ? this.paused.add(reason) : this.paused.delete(reason);
+    if (value) this.paused.add(reason);
+    else this.paused.delete(reason);
     this.update();
   }
   private update() {

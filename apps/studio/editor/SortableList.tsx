@@ -58,6 +58,7 @@ function SortableRow({
     <div ref={ref} className={isDragging ? 'sortable-row dragging' : 'sortable-row'}>
       {children(
         <Button
+          variant="quiet"
           compactIcons="keep"
           type="button"
           ref={handleRef}

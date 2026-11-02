@@ -5,6 +5,10 @@
   --motion-page: 220ms;
   --accent: #796044;
   --text-muted: #6b6b63;
+  --page-surface: #fafaf8;
+  /* Perceptual lightness steps preserve the paper's hue across surfaces. */
+  --surface-inset: oklch(from var(--page-surface) calc(l - 0.02) c h);
+  --surface-raised: oklch(from var(--page-surface) min(1, l + 0.02) c h);
 }
 html {
   line-height: 1.15;
@@ -21,10 +25,7 @@ html::-webkit-scrollbar-thumb {
 }
 body {
   margin: 0;
-  font-weight: normal;
-  transition:
-    color 0.2s,
-    background 0.2s;
+  font-weight: var(--weight-regular);
 }
 button,
 input,
@@ -58,7 +59,15 @@ img {
 }
 strong,
 b {
-  font-weight: 700;
+  font-weight: var(--weight-bold);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: var(--weight-bold);
 }
 .wrapper {
   display: flex;
@@ -171,69 +180,9 @@ b {
   float: right;
   text-align: right;
 }
-.navbar-mobile {
-  display: none;
-}
 @media (max-width: 479px) {
   .main {
     padding-top: 40pt;
-  }
-  .navbar {
-    display: none;
-  }
-  .navbar-mobile {
-    display: block;
-    position: fixed;
-    width: 100%;
-    z-index: 100;
-  }
-  .navbar-mobile .container {
-    padding: 0;
-    margin: 0;
-    line-height: 5.5em;
-    background: #fff;
-  }
-  .navbar-mobile .navbar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-inline: 1em;
-    box-sizing: border-box;
-  }
-  .menu-toggle {
-    border: 0;
-    background: none;
-    color: inherit;
-    padding: 0;
-    line-height: 5.5em;
-  }
-  .navbar-mobile .site-logo {
-    height: 22px;
-    width: auto;
-  }
-  .navbar-mobile .menu {
-    display: none;
-    text-align: center;
-    background: #fff;
-    border-top: 1px solid #000;
-    padding-block: 1em;
-    box-shadow:
-      0 2px 4px #0001,
-      0 4px 8px #0001;
-  }
-  .navbar-mobile .menu.active {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    white-space: normal;
-  }
-  .navbar-mobile .menu a {
-    display: inline-block;
-    margin: 0 1em;
-    line-height: 2.5em;
-  }
-  .dark-theme .navbar-mobile .container,
-  .dark-theme .navbar-mobile .menu {
-    background: #292a2d;
   }
   .footer {
     padding-top: 2em;

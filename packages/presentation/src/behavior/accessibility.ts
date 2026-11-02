@@ -59,7 +59,7 @@ export function initAccessibility(): () => void {
   }
   button('toggle-dark').addEventListener(
     'click',
-    () => change({ theme: document.body.classList.contains('dark-theme') ? 'light' : 'dark' }),
+    () => change({ theme: document.documentElement.classList.contains('dark-theme') ? 'light' : 'dark' }),
     { signal },
   );
   button('toggle-font-size').addEventListener('click', () => change({ largeText: !preferences.largeText }), {

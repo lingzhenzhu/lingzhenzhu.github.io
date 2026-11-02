@@ -2,6 +2,7 @@
 export function initGallery(root: HTMLElement) {
   const slides = [...root.querySelectorAll<HTMLElement>('[data-gallery-slide]')];
   const thumbs = [...root.querySelectorAll<HTMLButtonElement>('[data-gallery-index]')];
+  const captions = [...root.querySelectorAll<HTMLElement>('[data-gallery-caption]')];
   const abort = new AbortController(),
     options = { signal: abort.signal };
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -21,8 +22,7 @@ export function initGallery(root: HTMLElement) {
     const count = root.querySelector('[data-gallery-count]');
     if (count)
       count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-    const caption = root.querySelector('[data-gallery-caption]');
-    if (caption) caption.textContent = slides[current].dataset.caption || '';
+    captions.forEach((caption, i) => caption.setAttribute('aria-hidden', String(i !== current)));
     if (manual)
       root.querySelector('[data-gallery-status]')!.textContent = `Photo ${current + 1} of ${slides.length}`;
   };

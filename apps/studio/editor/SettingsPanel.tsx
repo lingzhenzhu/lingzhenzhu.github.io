@@ -1,10 +1,12 @@
+import { Select } from './Select';
+import { ArticleNavigationSettings } from './ArticleNavigationSettings';
 import { Button } from './controls';
 import type { CollectionProps } from './types';
 import { ImageField, type ImageTools } from './ImageField';
-import { Icon as SocialIcon } from '../../../packages/presentation/src/icons';
+import { Icon as SocialIcon } from '@lzzhu/presentation/icons';
 import { Icon } from './ui';
 import { SharedSourceNotice } from './SharedSourceNotice';
-export function SettingsPanel({ content, change, run, upload }: CollectionProps & ImageTools) {
+export function SettingsPanel({ content, change, upload }: CollectionProps & ImageTools) {
   return (
     <div className="collection">
       <h1>Site settings</h1>
@@ -25,13 +27,13 @@ export function SettingsPanel({ content, change, run, upload }: CollectionProps 
           />
         </label>
       ))}
+      <ArticleNavigationSettings content={content} change={change} />
       <h2>Website logo</h2>
       <ImageField
         src={content.settings.logo}
         alt="Website logo"
         logo
         logoHelp="Used on the website and in Admin."
-        run={run}
         upload={upload}
         onChange={(patch) => {
           if (patch.src !== undefined)
@@ -66,7 +68,7 @@ export function SettingsPanel({ content, change, run, upload }: CollectionProps 
           ))}
           <label>
             Icon
-            <select
+            <Select
               value={contact.icon}
               onChange={(e) =>
                 change((c) => ({
@@ -93,7 +95,7 @@ export function SettingsPanel({ content, change, run, upload }: CollectionProps 
                   {label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <Button
             onClick={() =>

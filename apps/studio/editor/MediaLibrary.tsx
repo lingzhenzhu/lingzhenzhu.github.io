@@ -2,6 +2,7 @@ import { Button, Pagination } from './controls';
 import { useState } from 'react';
 import { usePagination } from './usePagination';
 import type { Asset, RunTask } from './types';
+import { ImageUpload } from './ImageUpload';
 export function MediaLibrary({
   assets,
   run,
@@ -22,17 +23,7 @@ export function MediaLibrary({
         Search images
         <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} />
       </label>
-      <label>
-        Upload image
-        <input
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) run(() => upload(file));
-          }}
-        />
-      </label>
+      <ImageUpload onUpload={upload} />
       <div className="asset-grid">
         {rows.slice(pagination.start, pagination.end).map((asset) => (
           <div className="card" key={asset.id}>

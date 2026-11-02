@@ -99,8 +99,8 @@
 /* The existing Firebase card is a separately art-directed component.
    Its original orange/white login is an explicit owner-approved contrast exception. */
 .rewards[data-provider='firebase'] {
-  --card-text-font: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
-  --card-heading-font: 'Cormorant Garamond', 'lanting', serif;
+  --card-text-font: Arial, 'Microsoft JhengHei', '微軟正黑體', 'PingFang TC', 'Noto Sans TC', sans-serif;
+  --card-heading-font: var(--card-text-font);
   font-family: var(--card-text-font);
   font-weight: 400;
   line-height: 1.9em;

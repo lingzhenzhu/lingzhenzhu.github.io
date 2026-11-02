@@ -1,6 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { safeUrl, type RichNode } from '@lzzhu/content';
 import { useAssetUrl, responsiveImage } from './asset-context';
+import { renderFormula } from './formula';
+import { codeHighlighter, codeLanguageLabel } from './code-highlight';
 export function RichText({ node }: { node: RichNode }): ReactNode {
   let previous = 1;
   const outline = (item: RichNode): RichNode => {
@@ -87,12 +89,55 @@ function RichTextNode({ node }: { node: RichNode }): ReactNode {
       return <li>{children}</li>;
     case 'blockquote':
       return <blockquote>{children}</blockquote>;
-    case 'codeBlock':
-      return (
-        <pre>
-          <code>{children}</code>
-        </pre>
+    case 'inlineMath':
+    case 'blockMath': {
+      const latex = String(attrs.latex || '');
+      const block = node.type === 'blockMath';
+      const result = renderFormula(latex, block);
+      const Tag = block ? 'div' : 'span';
+      return result.error ? (
+        <Tag className="formula-error">
+          <code>{latex}</code>
+        </Tag>
+      ) : (
+        <Tag
+          className={block ? 'article-formula block-formula' : 'article-formula'}
+          dangerouslySetInnerHTML={{ __html: result.html }}
+        />
       );
+    }
+    case 'codeBlock': {
+      const language = String(attrs.language || 'plaintext');
+      const source = node.content?.map((child) => child.text || '').join('') || '';
+      const tree =
+        language !== 'plaintext' && source.length < 30000 && codeHighlighter.registered(language)
+          ? codeHighlighter.highlight(language, source)
+          : undefined;
+      const highlight = (
+        item: { type: string; value?: string; properties?: { className?: unknown }; children?: unknown[] },
+        key: number,
+      ): ReactNode =>
+        item.type === 'text' ? (
+          item.value
+        ) : (
+          <span
+            key={key}
+            className={
+              Array.isArray(item.properties?.className) ? item.properties.className.join(' ') : undefined
+            }
+          >
+            {item.children?.map((child, i) => highlight(child as typeof item, i))}
+          </span>
+        );
+      return (
+        <figure className="article-code">
+          <figcaption>{language === 'plaintext' ? 'Code' : codeLanguageLabel(language)}</figcaption>
+          <pre tabIndex={0} aria-label={'Code · ' + codeLanguageLabel(language)}>
+            <code>{tree ? tree.children.map(highlight) : source}</code>
+          </pre>
+        </figure>
+      );
+    }
     case 'image':
       return typeof attrs.src === 'string' && safeUrl(attrs.src, true) ? (
         <img

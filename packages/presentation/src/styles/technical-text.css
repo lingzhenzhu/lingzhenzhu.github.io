@@ -1,0 +1,115 @@
+.article-formula {
+  color: inherit;
+}
+.block-formula {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5em 0;
+  margin: 1em 0;
+}
+.formula-error {
+  overflow-wrap: anywhere;
+}
+.article-code {
+  margin: 1.5em 0;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.article-code figcaption {
+  padding: 8px 16px;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+  font:
+    var(--weight-medium) 12px/1.5 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+.article-code pre {
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  background: transparent;
+}
+.article-code code,
+.rich-editor pre code {
+  font:
+    var(--weight-regular) 0.9em/1.7 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal {
+  color: #8a3463;
+}
+.hljs-string,
+.hljs-attr {
+  color: #356448;
+}
+.hljs-number,
+.hljs-title,
+.hljs-built_in {
+  color: #855026;
+}
+.hljs-comment {
+  color: #696963;
+  font-style: italic;
+}
+.dark-theme .hljs-keyword,
+.dark-theme .hljs-selector-tag,
+.dark-theme .hljs-literal {
+  color: #e6a9ca;
+}
+.dark-theme .hljs-string,
+.dark-theme .hljs-attr {
+  color: #a3cfb3;
+}
+.dark-theme .hljs-number,
+.dark-theme .hljs-title,
+.dark-theme .hljs-built_in {
+  color: #dcb28b;
+}
+.dark-theme .hljs-comment {
+  color: #babbb3;
+}
+
+.a11y-high-contrast .article-code {
+  background: #fff;
+  border-color: #222;
+  color: #000;
+}
+.a11y-high-contrast :is(.hljs-keyword, .hljs-selector-tag, .hljs-literal) {
+  color: #74004b;
+  font-weight: var(--weight-semibold);
+}
+.a11y-high-contrast :is(.hljs-string, .hljs-attr) {
+  color: #005528;
+}
+.a11y-high-contrast :is(.hljs-number, .hljs-title, .hljs-built_in) {
+  color: #794000;
+}
+.a11y-high-contrast .hljs-comment {
+  color: #454545;
+}
+.a11y-high-contrast.dark-theme .article-code {
+  background: #000;
+  border-color: #ddd;
+  color: #fff;
+}
+.a11y-high-contrast.dark-theme :is(.hljs-keyword, .hljs-selector-tag, .hljs-literal) {
+  color: #ffb9e6;
+}
+.a11y-high-contrast.dark-theme :is(.hljs-string, .hljs-attr) {
+  color: #95f0b6;
+}
+.a11y-high-contrast.dark-theme :is(.hljs-number, .hljs-title, .hljs-built_in) {
+  color: #ffd196;
+}
+.a11y-high-contrast.dark-theme .hljs-comment {
+  color: #d6d6d6;
+}

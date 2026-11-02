@@ -29,11 +29,13 @@ const cases = [
   ['research-mobile', '/research/', false],
   ['media-mobile', '/media/', false],
 ];
+// A single Lighthouse run varies by a point or two; each page is judged on the median of
+// several runs (Lighthouse's own guidance), with every threshold unchanged.
+const runs = Number(process.env.AUDIT_RUNS || 3);
 const results = [];
-for (const [name, route, desktop] of cases) {
-  console.log('Starting ' + name);
+async function lighthouse(output, route, desktop) {
   for (const extension of ['json', 'html'])
-    await fs.rm(path.join(directory, name + '.report.' + extension), { force: true });
+    await fs.rm(path.join(directory, output + '.report.' + extension), { force: true });
   const port = await new Promise((resolve) => {
     const server = net.createServer();
     server.listen(0, '127.0.0.1', () => {
@@ -55,7 +57,7 @@ for (const [name, route, desktop] of cases) {
     '--only-categories=performance,accessibility,best-practices,seo',
     '--output=json',
     '--output=html',
-    '--output-path=' + path.join(directory, name),
+    '--output-path=' + path.join(directory, output),
     '--no-enable-error-reporting',
     ...(desktop ? ['--preset=desktop'] : []),
   ];
@@ -72,19 +74,42 @@ for (const [name, route, desktop] of cases) {
   });
   await browser.close();
   if (exit !== 0) {
-    console.error(name + ' did not complete: ' + exit);
-    continue;
+    console.error(output + ' did not complete: ' + exit);
+    return null;
   }
-  let report;
   try {
-    report = JSON.parse(await fs.readFile(path.join(directory, name + '.report.json'), 'utf8'));
+    return JSON.parse(await fs.readFile(path.join(directory, output + '.report.json'), 'utf8'));
   } catch {
-    console.log(name + ' failed: ' + exit);
-    continue;
+    console.log(output + ' failed: ' + exit);
+    return null;
   }
+}
+for (const [name, route, desktop] of cases) {
+  console.log('Starting ' + name);
+  const attempts = [];
+  for (let run = 1; run <= runs; run++) {
+    // No dot: with several output formats Lighthouse strips anything after a final dot.
+    const output = runs === 1 ? name : `${name}-run${run}`;
+    const report = await lighthouse(output, route, desktop);
+    if (report) attempts.push({ output, report });
+  }
+  if (!attempts.length) continue;
+  attempts.sort((a, b) => a.report.categories.performance.score - b.report.categories.performance.score);
+  const median = attempts[Math.floor((attempts.length - 1) / 2)];
+  console.log(
+    name + ' performance per run: ' + attempts.map((a) => Math.round(a.report.categories.performance.score * 100)).join(', '),
+  );
+  // The median run is the page's report of record.
+  if (median.output !== name)
+    for (const extension of ['json', 'html'])
+      await fs.copyFile(
+        path.join(directory, median.output + '.report.' + extension),
+        path.join(directory, name + '.report.' + extension),
+      );
+  const report = median.report;
   const result = {
     name,
-    exit,
+    runs: attempts.map((attempt) => Math.round(attempt.report.categories.performance.score * 100)),
     fetchTime: report.fetchTime,
     lighthouseVersion: report.lighthouseVersion,
     environment: report.environment,

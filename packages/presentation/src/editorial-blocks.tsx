@@ -2,6 +2,7 @@ import type { Block } from '@lzzhu/content';
 import { createElement } from 'react';
 import { useAssetUrl, responsiveImage } from './asset-context';
 import { RichText } from './rich-text';
+import { SectionHeading } from './section-heading';
 
 export function Teaching({ block }: { block: Extract<Block, { type: 'teaching' }> }) {
   const asset = useAssetUrl();
@@ -121,13 +122,12 @@ export function Gallery({
       data-autoplay={String(block.autoplay)}
       data-interval={block.interval}
     >
-      {block.title && <h2>{block.title}</h2>}
+      {block.title && <SectionHeading>{block.title}</SectionHeading>}
       <div className="gallery-stage">
         {block.photos.map((photo, index) => (
           <figure
             key={photo.id}
             data-gallery-slide
-            data-caption={photo.caption}
             role="group"
             aria-roledescription="slide"
             aria-label={index + 1 + ' of ' + block.photos.length}
@@ -147,10 +147,34 @@ export function Gallery({
       </div>
       <div className="gallery-footer">
         <div className="gallery-description">
-          <p data-gallery-caption>{block.photos[0].caption}</p>
-          <span data-gallery-count aria-hidden="true">
-            01 / {String(block.photos.length).padStart(2, '0')}
-          </span>
+          {block.photos.map((photo, index) => (
+            <p key={photo.id} data-gallery-caption aria-hidden={index !== 0}>
+              {photo.caption}
+            </p>
+          ))}
+        </div>
+        <span data-gallery-count aria-hidden="true">
+          01 / {String(block.photos.length).padStart(2, '0')}
+        </span>
+      </div>
+      <div className="gallery-tools">
+        <div className="gallery-thumbnails" hidden>
+          {block.photos.map((photo, index) => (
+            <button
+              key={photo.id}
+              data-gallery-index={index}
+              aria-label={'Show photo ' + (index + 1) + (photo.alt ? ': ' + photo.alt : '')}
+              aria-pressed={index === 0}
+            >
+              <img
+                src={asset(photo.src)}
+                {...responsiveImage(photo.src, 62, asset)}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          ))}
         </div>
         <div className="gallery-controls" hidden>
           <button data-gallery-prev aria-label="Previous photo" title="Previous photo">
@@ -177,24 +201,6 @@ export function Gallery({
             </svg>
           </button>
         </div>
-      </div>
-      <div className="gallery-thumbnails" hidden>
-        {block.photos.map((photo, index) => (
-          <button
-            key={photo.id}
-            data-gallery-index={index}
-            aria-label={'Show photo ' + (index + 1) + (photo.alt ? ': ' + photo.alt : '')}
-            aria-pressed={index === 0}
-          >
-            <img
-              src={asset(photo.src)}
-              {...responsiveImage(photo.src, 62, asset)}
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
-          </button>
-        ))}
       </div>
       <span className="visually-hidden" data-gallery-status role="status" />
     </section>

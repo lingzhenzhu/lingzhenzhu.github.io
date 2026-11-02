@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export function safeUrl(value: string, image = false): boolean {
+  // oxlint-disable-next-line no-control-regex -- control characters are what this rejects
   if (value.startsWith('/') && !value.startsWith('//')) return !/[\\\u0000-\u001f]/.test(value);
   if (!image && value.startsWith('#')) return true;
   try {
@@ -34,12 +35,25 @@ const richTypes = new Set([
   'image',
   'taskList',
   'taskItem',
+  'inlineMath',
+  'blockMath',
 ]);
 export function validRichText(value: unknown, depth = 0, count = { value: 0 }): value is RichNode {
   if (!value || typeof value !== 'object' || depth > 24 || ++count.value > 20000) return false;
   const node = value as RichNode;
   if (!richTypes.has(node.type) || (node.text !== undefined && typeof node.text !== 'string')) return false;
   if (node.attrs && (typeof node.attrs !== 'object' || Array.isArray(node.attrs))) return false;
+  if (
+    (node.type === 'inlineMath' || node.type === 'blockMath') &&
+    (typeof node.attrs?.latex !== 'string' || node.attrs.latex.length > 4000 || node.content?.length)
+  )
+    return false;
+  if (
+    node.type === 'codeBlock' &&
+    node.attrs?.language != null &&
+    (typeof node.attrs.language !== 'string' || !/^[\w#+.-]{1,40}$/.test(node.attrs.language))
+  )
+    return false;
   if (
     (node.type === 'paragraph' || node.type === 'heading') &&
     node.attrs?.textAlign != null &&

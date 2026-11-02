@@ -1,7 +1,9 @@
+import { Select } from './Select';
+import { ArticleListFields } from './ArticleListFields';
+import { Switch } from './Switch';
 import { Suspense, lazy, type ReactNode } from 'react';
 import { moduleDefinitions, type Block, type Content, type ModuleAdapters } from '@lzzhu/content';
 import { SharedSourceNotice } from './SharedSourceNotice';
-import type { RunTask } from './types';
 import { ImageField } from './ImageField';
 import { TeachingFields } from './TeachingFields';
 import { ResearchFields } from './ResearchFields';
@@ -11,7 +13,6 @@ const RichEditor = lazy(() => import('./RichEditor').then((module) => ({ default
 type EditorContext = {
   content: Content;
   updateBlock: (id: string, update: Record<string, unknown>) => void;
-  run: RunTask;
   upload: (file: File) => Promise<string>;
   setSection: (section: string) => void;
 };
@@ -19,13 +20,11 @@ type Props = EditorContext & { block: Block };
 const imageFields = ({
   block,
   updateBlock,
-  run,
   upload,
 }: EditorContext & { block: Extract<Block, { type: 'image' | 'profile' }> }) => (
   <ImageField
     src={block.src}
     alt={block.alt}
-    run={run}
     upload={upload}
     onChange={(patch) => updateBlock(block.id, patch)}
   />
@@ -33,35 +32,32 @@ const imageFields = ({
 
 // Exhaustive, browser-only adapters. Adding a contract without an editor is a type error.
 export const blockEditors = {
-  richText: ({ block, run, upload, updateBlock }) => (
+  richText: ({ block, upload, updateBlock }) => (
     <Suspense fallback={<p>Loading editor…</p>}>
       <RichEditor
-        run={run}
-        upload={upload}
+            upload={upload}
         id={block.id}
         document={block.document}
         onChange={(document) => updateBlock(block.id, { document })}
       />
     </Suspense>
   ),
-  teaching: ({ block, updateBlock, run, upload }) => (
+  teaching: ({ block, updateBlock, upload }) => (
     <TeachingFields
       block={block}
       update={(patch) => updateBlock(block.id, patch)}
-      run={run}
-      upload={upload}
+        upload={upload}
     />
   ),
-  research: ({ block, updateBlock, run, upload }) => (
+  research: ({ block, updateBlock, upload }) => (
     <ResearchFields
       block={block}
       update={(patch) => updateBlock(block.id, patch)}
-      run={run}
-      upload={upload}
+        upload={upload}
     />
   ),
-  gallery: ({ block, updateBlock, run, upload }) => (
-    <GalleryFields block={block} update={(patch) => updateBlock(block.id, patch)} run={run} upload={upload} />
+  gallery: ({ block, updateBlock, upload }) => (
+    <GalleryFields block={block} update={(patch) => updateBlock(block.id, patch)} upload={upload} />
   ),
   profile: imageFields,
   image: (props) => (
@@ -79,18 +75,17 @@ export const blockEditors = {
       </label>
       <label>
         Alignment
-        <select
+        <Select
           value={props.block.align}
           onChange={(e) => props.updateBlock(props.block.id, { align: e.target.value })}
         >
           <option value="left">Left</option>
           <option value="center">Center</option>
           <option value="right">Right</option>
-        </select>
+        </Select>
       </label>
       <label className="check">
-        <input
-          type="checkbox"
+        <Switch
           checked={props.block.rounded}
           onChange={(e) => props.updateBlock(props.block.id, { rounded: e.target.checked })}
         />
@@ -101,8 +96,7 @@ export const blockEditors = {
   news: ({ block, updateBlock, setSection }) => (
     <>
       <label className="check">
-        <input
-          type="checkbox"
+        <Switch
           checked={block.autoplay}
           onChange={(e) => updateBlock(block.id, { autoplay: e.target.checked })}
         />
@@ -141,27 +135,8 @@ export const blockEditors = {
       </Button>
     </>
   ),
-  archive: ({ block, updateBlock, setSection }) => (
-    <>
-      <Button icon="articles" onClick={() => setSection('articles')}>
-        Manage articles
-      </Button>
-      <label>
-        Year (leave empty for all)
-        <input
-          value={block.year || ''}
-          onChange={(e) => updateBlock(block.id, { year: e.target.value || undefined })}
-        />
-      </label>
-      <label>
-        Month
-        <input
-          value={block.month || ''}
-          onChange={(e) => updateBlock(block.id, { month: e.target.value || undefined })}
-        />
-      </label>
-    </>
-  ),
+  archive: (props) => <ArticleListFields {...props} />,
+  articleSearch: (props) => <ArticleListFields {...props} />,
   podcast: ({ block, updateBlock }) => (
     <label>
       Apple Podcasts embed URL
@@ -197,8 +172,7 @@ export const blockEditors = {
         This card uses Firebase. Its balance and history are managed on the card page.
       </p>
       <label className="check">
-        <input
-          type="checkbox"
+        <Switch
           checked={!block.hidden}
           onChange={(event) => updateBlock(block.id, { hidden: !event.target.checked })}
         />
@@ -220,10 +194,13 @@ export function BlockFields(props: Props) {
           settings
         />
       )}
-      {'title' in block && (
+      {('title' in block || block.type === 'archive') && (
         <label>
           Heading
-          <input value={block.title} onChange={(e) => updateBlock(block.id, { title: e.target.value })} />
+          <input
+            value={block.title || ''}
+            onChange={(e) => updateBlock(block.id, { title: e.target.value })}
+          />
         </label>
       )}
       {render(props)}

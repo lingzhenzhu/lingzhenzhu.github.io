@@ -1,6 +1,17 @@
 export function Icon({ name }: { name: string }) {
   const paths: Record<string, string> = {
+    more: 'M4 12h.01M12 12h.01M20 12h.01',
+    logout: 'M9 4H3v16h6M10 12h11m-4-4 4 4-4 4',
+    sidebar: 'M3 4h18v16H3zM9 4v16',
+    history: 'M3 11a9 9 0 1 1 2 7M3 5v6h6M12 7v5l3 2',
+    research: 'M9 3h6M10 3v7l-6 9c-1 2 0 2 2 2h12c2 0 3 0 2-2l-6-9V3M7 16h10',
+    teaching: 'm2 9 10-5 10 5-10 5-10-5Zm4 2v7c4 3 8 3 12 0v-7M22 9v8',
+    media: 'M3 4h18v16H3zM10 8l6 4-6 4V8Z',
+    archive: 'M3 3h18v5H3zM5 8v13h14V8M9 12h6',
+    refresh: 'M20 7a9 9 0 1 0 1 9M20 2v6h-6',
+    external: 'M14 3h7v7M21 3 10 14M10 4H3v17h17v-7',
     add: 'M12 5v14M5 12h14',
+    search: 'M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14Zm5 12 6 6',
     cloudflare: 'M2 16h13l1-3a5 5 0 0 0-9-4 3 3 0 0 0-4 3 3 3 0 0 0-1 4Zm15 0h5a4 4 0 0 0-5-5M2 19h20',
     firebase: 'm4 18 2-15 5 9 3-7 6 13-8 4-8-4Zm0 0 7-6 9 6M6 3l6 10',
     link: 'm10 13 4-4M8 16l-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0M16 8l1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0',

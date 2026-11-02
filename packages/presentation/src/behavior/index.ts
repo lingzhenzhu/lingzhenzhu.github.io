@@ -1,48 +1,47 @@
 import { initAccessibility } from './accessibility';
-import { NewsController } from './news';
-import { initRewards } from './rewards';
-import { initMedium } from './medium';
-import { initGallery } from './gallery';
+import { initOpening } from './opening';
+import { initNavigation } from './navigation';
 import { applyPreferences, readPreferences } from './preferences';
+
+type Stop = () => void;
+/** Module controllers load only on pages that contain their module, keeping the shared runtime small. */
+const features: [string, () => Promise<(element: HTMLElement) => Stop>][] = [
+  [
+    '[data-news]',
+    () =>
+      import('./news').then(({ NewsController }) => (element) => {
+        const news = new NewsController(element);
+        return () => news.destroy();
+      }),
+  ],
+  ['[data-rewards]', () => import('./rewards').then((module) => module.initRewards)],
+  ['[data-medium]', () => import('./medium').then((module) => module.initMedium)],
+  ['[data-gallery]', () => import('./gallery').then((module) => module.initGallery)],
+];
 
 export function initializeSite() {
   applyPreferences(readPreferences());
   const cleanup = initAccessibility();
-  const news = [...document.querySelectorAll<HTMLElement>('[data-news]')].map(
-    (element) => new NewsController(element),
-  );
-  const rewards = [...document.querySelectorAll<HTMLElement>('[data-rewards]')].map(initRewards);
-  const medium = [...document.querySelectorAll<HTMLElement>('[data-medium]')].map(initMedium);
-  const galleries = [...document.querySelectorAll<HTMLElement>('[data-gallery]')].map(initGallery);
+  const stopNavigation = initNavigation();
+  const cue = document.querySelector<HTMLElement>('.explore-cue');
+  const stopOpening = cue ? initOpening(cue) : undefined;
+  const stops: Stop[] = [];
+  let active = true;
+  for (const [selector, load] of features) {
+    const elements = [...document.querySelectorAll<HTMLElement>(selector)];
+    if (elements.length)
+      void load().then((init) => {
+        // The page may have been hidden while the controller was loading.
+        if (active) stops.push(...elements.map(init));
+      });
+  }
   const abort = new AbortController();
-  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
-  const menu = document.querySelector('#mobile-menu');
   document.querySelector('[data-back]')?.addEventListener(
     'click',
     (event) => {
       if (document.referrer && new URL(document.referrer).origin === location.origin) {
         event.preventDefault();
         history.back();
-      }
-    },
-    { signal: abort.signal },
-  );
-  toggle?.addEventListener(
-    'click',
-    () => {
-      const open = !menu?.classList.contains('active');
-      menu?.classList.toggle('active', open);
-      toggle.setAttribute('aria-expanded', String(open));
-    },
-    { signal: abort.signal },
-  );
-  document.addEventListener(
-    'keydown',
-    (event) => {
-      if (event.key === 'Escape' && menu?.classList.contains('active')) {
-        menu.classList.remove('active');
-        toggle?.setAttribute('aria-expanded', 'false');
-        toggle?.focus();
       }
     },
     { signal: abort.signal },
@@ -61,11 +60,11 @@ export function initializeSite() {
     );
   }
   const destroy = () => {
+    active = false;
+    stopOpening?.();
+    stopNavigation();
     cleanup();
-    news.forEach((item) => item.destroy());
-    rewards.forEach((stop) => stop());
-    medium.forEach((stop) => stop());
-    galleries.forEach((stop) => stop());
+    stops.splice(0).forEach((stop) => stop());
     abort.abort();
   };
   window.addEventListener('pagehide', destroy, { once: true });

@@ -8,7 +8,13 @@ export type ReleaseInfo = {
   error?: string;
   artifact_hash?: string;
 };
-export type Asset = { id: string; filename: string; size: number };
+export type Asset = {
+  id: string;
+  filename: string;
+  size: number;
+  width?: number | null;
+  height?: number | null;
+};
 export type Revision = { revision: number; created_at: string; created_by: string };
 export type FeedState = { entries: string; succeeded_at?: string; error?: string };
 export interface CollectionProps {

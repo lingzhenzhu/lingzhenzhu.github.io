@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 import content from '../../content/site.json' with { type: 'json' };
 const routes = ['/', '/research/', '/teaching/', '/media/', '/archives/'];
 
@@ -15,8 +15,9 @@ test('vector content images reserve their final space before loading', async ({ 
   try {
     await page.goto('/research/', { waitUntil: 'domcontentloaded' });
     // WebKit's FontFaceSet.ready can wait on the deliberately blocked eager image.
-    // Load the faces directly so only image decoding remains pending during measurement.
-    await page.evaluate(() => Promise.all(Array.from(document.fonts, (font) => font.load())));
+    // Load the faces directly so only image decoding remains pending during measurement. Settle
+    // rather than require each one: Firefox rejects forcing an unused font-display: optional face.
+    await page.evaluate(() => Promise.allSettled(Array.from(document.fonts, (font) => font.load())));
     const image = page.locator('.content-image img').first();
     const before = await image.boundingBox();
     expect(before!.height).toBeGreaterThan(100);
@@ -85,6 +86,11 @@ test('shared page shell has identical navigation and compact banner coordinates'
   let titleReference: unknown;
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
+  // Only this site's scripts are checked for errors; Apple's live player reports its own
+  // (WebKit surfaces them as page errors), so it is replaced by a local stand-in here.
+  await page.route('https://embed.podcasts.apple.com/**', (route) =>
+    route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Podcast</title>' }),
+  );
   for (const route of routes) {
     await page.goto(route);
     await page.evaluate(() => document.fonts.ready);
@@ -104,7 +110,8 @@ test('shared page shell has identical navigation and compact banner coordinates'
       await expect(page.getByRole('link', { name: 'Explore more' })).toBeVisible();
       await expect(page.locator('.opening-portrait')).toHaveCount(0);
       const hero = await page.locator('.home-opening').boundingBox();
-      expect(Math.abs(hero!.y + hero!.height - page.viewportSize()!.height)).toBeLessThanOrEqual(1);
+      expect(hero!.height).toBeLessThanOrEqual(640);
+      expect(hero!.y + hero!.height).toBeLessThan(page.viewportSize()!.height - 40);
     }
   }
   expect(errors).toEqual([]);
@@ -115,10 +122,10 @@ test('accessibility controls persist across navigation and reset', async ({ page
   await page.locator('#toggle-dark').click();
   await page.locator('#toggle-font-size').click();
   await page.locator('#toggle-contrast').click();
-  await expect(page.locator('body')).toHaveClass(/dark-theme/);
-  await expect(page.locator('body')).toHaveClass(/a11y-large-text/);
+  await expect(page.locator('html')).toHaveClass(/dark-theme/);
+  await expect(page.locator('html')).toHaveClass(/a11y-large-text/);
   await page.goto('/research/');
-  await expect(page.locator('body')).toHaveClass(/a11y-high-contrast/);
+  await expect(page.locator('html')).toHaveClass(/a11y-high-contrast/);
   await page.locator('#a11y-btn').click();
   await expect(page.locator('#toggle-dark')).toHaveAttribute('aria-pressed', 'true');
   await page.locator('#reset-a11y').click();
@@ -179,6 +186,8 @@ test('Medium is first-party markup linking to the official profile', async ({ pa
   await page.goto('/media/');
   await expect(page.locator('.medium-card')).toHaveCount(1);
   await expect(page.locator('.medium-card')).toHaveAttribute('href', /https:\/\/medium.com\/@lzzhu718\//);
+  await expect(page.locator('.medium-read svg')).toHaveCount(1);
+  await expect(page.locator('.medium-read')).not.toContainText('↗');
   expect(await page.locator('script[src*="sociable"],iframe[src*="medium"]').count()).toBe(0);
 });
 test('accessibility button remains in the viewport bottom-right while scrolling', async ({ page }) => {
@@ -198,5 +207,34 @@ test('accessibility button remains in the viewport bottom-right while scrolling'
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(100);
     expect(await page.locator('#a11y-btn').boundingBox()).toEqual(before);
+  }
+});
+test('every preloaded font is a face the page actually draws with', async ({ page }) => {
+  for (const route of routes) {
+    await page.goto(route);
+    await page.evaluate(() => document.fonts.ready);
+    const unused = await page.evaluate(() => {
+      const faces = [...document.styleSheets].flatMap((sheet) => {
+        try {
+          return [...sheet.cssRules].filter((rule): rule is CSSFontFaceRule => rule instanceof CSSFontFaceRule);
+        } catch {
+          return [];
+        }
+      });
+      const unquote = (value: string) => value.replace(/["']/g, '').trim();
+      return [...document.querySelectorAll<HTMLLinkElement>('link[rel="preload"][as="font"]')]
+        .map((link) => new URL(link.href).pathname)
+        .filter((path) => {
+          // A preload only helps if its @font-face is one the page loaded for drawing text.
+          const face = faces.find((rule) => rule.style.getPropertyValue('src').includes(path));
+          return !face || ![...document.fonts].some(
+            (font) =>
+              font.status === 'loaded' &&
+              unquote(font.family) === unquote(face.style.getPropertyValue('font-family')) &&
+              String(font.weight) === face.style.getPropertyValue('font-weight'),
+          );
+        });
+    });
+    expect(unused, route).toEqual([]);
   }
 });

@@ -6,20 +6,28 @@ import TextAlign from '@tiptap/extension-text-align';
 import { NotebookParagraph, NotebookHeading } from './notebook-nodes';
 import { EditorialImage } from './editorial-image';
 import { HeadingAnchors } from './heading-anchors';
+import { EditorialCode } from './editor-code';
+import { editorMathematics, FormulaDocument } from './editor-mathematics';
+import type { FormulaDraft } from './FormulaDialog';
 /** The Markdown dependency is confined to this editing adapter; persisted data is validated RichNode JSON. */
-export function editorExtensions(id: string) {
+export function editorExtensions(id: string, editFormula?: (draft: FormulaDraft) => void) {
   return [
     StarterKit.configure({
+      document: false,
       heading: false,
       paragraph: false,
+      codeBlock: false,
       link: { openOnClick: false, protocols: ['https', 'mailto'], defaultProtocol: 'https' },
     }),
+    FormulaDocument,
     NotebookParagraph,
     NotebookHeading.configure({ levels: [2, 3, 4, 5, 6] }),
     TaskList,
     TaskItem.configure({ nested: true }),
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
     EditorialImage,
+    EditorialCode,
+    ...editorMathematics(editFormula),
     Markdown,
     HeadingAnchors.configure({ prefix: id }),
   ];

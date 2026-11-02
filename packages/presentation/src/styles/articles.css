@@ -1,0 +1,95 @@
+.article-dates {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 24px;
+  font-size: 0.85em;
+  margin: 16px 0 36px;
+}
+.article-dates time {
+  font-variant-numeric: tabular-nums;
+}
+.article-end {
+  padding: 20px 0 28px;
+}
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 0.85em;
+}
+.article-tags a,
+.article-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  color: var(--accent);
+  padding: 4px 12px;
+}
+.article-return {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.article-return a {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 0;
+  font-size: 0.85em;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.article-return svg {
+  width: 21px;
+  height: 21px;
+  flex-shrink: 0;
+}
+.article-return a:hover span {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+.article-tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.article-tag-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8em;
+  color: var(--text-muted);
+}
+.article-tag-label svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.4;
+  align-self: center;
+}
+.article-tags a:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.article-return-left,
+.article-return-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+.article-return-right {
+  justify-content: flex-end;
+  margin-left: auto;
+}

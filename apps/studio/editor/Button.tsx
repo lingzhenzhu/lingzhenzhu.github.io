@@ -6,6 +6,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: string;
   variant?: 'default' | 'primary' | 'danger' | 'quiet';
   compactIcons?: 'hide' | 'keep';
+  compactLabel?: boolean;
   busy?: boolean;
 };
 
@@ -14,6 +15,7 @@ export function Button({
   icon,
   variant = 'default',
   compactIcons = 'hide',
+  compactLabel = false,
   busy = false,
   className = '',
   children,
@@ -27,11 +29,19 @@ export function Button({
       type={type}
       disabled={disabled || busy}
       aria-busy={busy || undefined}
+      data-glass={
+        variant === 'quiet'
+          ? undefined
+          : variant === 'primary' || className.split(' ').includes('primary')
+            ? 'tinted'
+            : 'clear'
+      }
       data-compact-icons={compactIcons}
+      data-compact-label={compactLabel || undefined}
       className={`studio-button ${variant} ${className}`}
     >
       {busy ? <span className="button-progress" aria-hidden="true" /> : icon && <Icon name={icon} />}
-      {children}
+      {compactLabel ? <span className="button-label">{children}</span> : children}
     </button>
   );
 }

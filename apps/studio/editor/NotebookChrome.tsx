@@ -1,6 +1,7 @@
 import { Button } from './controls';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import type { Editor } from '@tiptap/core';
+import { Icon } from './icons';
 export type WritingMode = 'rich' | 'markdown';
 export function NoteIcon({ name }: { name: string }) {
   const paths: Record<string, string> = {
@@ -12,6 +13,8 @@ export function NoteIcon({ name }: { name: string }) {
     check: 'M4 3h16v18H4zM8 11l3 3 5-6',
     link: 'M9 15l6-6M9 7l2-2a5 5 0 0 1 7 7l-2 2M15 17l-2 2a5 5 0 0 1-7-7l2-2',
     more: 'M4 12h.01M12 12h.01M20 12h.01',
+    formula: 'M20 4H8l7 8-7 8h12M3 10h5M3 14h5',
+    code: 'm8 5-6 7 6 7m8-14 6 7-6 7M14 3l-4 18',
   };
   return (
     <svg
@@ -70,12 +73,15 @@ export function FormatPicker({
     >
       <summary role="button" aria-label="Choose formatting mode">
         <span className={'format-badge ' + mode}>{mode === 'rich' ? 'RTF' : 'M↓'}</span>
-        <span aria-hidden="true">▾</span>
+        <span className="format-chevron">
+          <Icon name="arrow" />
+        </span>
       </summary>
-      <div className="format-popover" role="group" aria-label="Formatting mode">
+      <div className="format-popover" data-glass="popover" role="group" aria-label="Formatting mode">
         <p>Choose formatting mode</p>
         {(['rich', 'markdown'] as const).map((value) => (
           <Button
+            variant="quiet"
             compactIcons="keep"
             key={value}
             type="button"
@@ -90,7 +96,7 @@ export function FormatPicker({
             <span className={'format-badge ' + value}>{value === 'rich' ? 'RTF' : 'M↓'}</span>
             <span>{value === 'rich' ? 'Rich text' : 'Markdown'}</span>
             <span className="format-check" aria-hidden="true">
-              {mode === value ? '✓' : ''}
+              {mode === value && <Icon name="check" />}
             </span>
           </Button>
         ))}
@@ -104,12 +110,14 @@ export function NotebookTools({
   insertMarkdown,
   onLink,
   linkRef,
+  onFormula,
 }: {
   editor: Editor;
   mode: WritingMode;
   insertMarkdown: (before: string, after?: string) => void;
   onLink: () => void;
   linkRef: RefObject<HTMLButtonElement | null>;
+  onFormula: (trigger: HTMLButtonElement) => void;
 }) {
   const [more, setMore] = useState(false);
   const actions = [
@@ -172,6 +180,7 @@ export function NotebookTools({
       >
         {actions.map((action) => (
           <Button
+            variant="quiet"
             compactIcons="keep"
             key={action.name}
             type="button"
@@ -201,6 +210,23 @@ export function NotebookTools({
           </Button>
         ))}
         <Button
+          variant="quiet"
+          compactIcons="keep"
+          onClick={() =>
+            mode === 'rich'
+              ? editor.chain().focus().toggleCodeBlock().run()
+              : insertMarkdown('```\n', '\n```')
+          }
+        >
+          <NoteIcon name="code" />
+          <small>Code</small>
+        </Button>
+        <Button variant="quiet" compactIcons="keep" onClick={(event) => onFormula(event.currentTarget)}>
+          <NoteIcon name="formula" />
+          <small>Formula</small>
+        </Button>
+        <Button
+          variant="quiet"
           compactIcons="keep"
           type="button"
           aria-label="More formatting"
@@ -214,6 +240,7 @@ export function NotebookTools({
       {more && (
         <div className="note-extra-tools" role="toolbar" aria-label="More text formatting">
           <Button
+            variant="quiet"
             compactIcons="keep"
             aria-label="Italic"
             onClick={() =>
@@ -223,6 +250,7 @@ export function NotebookTools({
             <i>I</i>
           </Button>
           <Button
+            variant="quiet"
             compactIcons="keep"
             aria-label="Underline"
             onClick={() =>
@@ -232,6 +260,7 @@ export function NotebookTools({
             <u>U</u>
           </Button>
           <Button
+            variant="quiet"
             compactIcons="keep"
             onClick={() =>
               mode === 'rich' ? editor.chain().focus().setParagraph().run() : insertMarkdown('\n\n')
@@ -240,6 +269,7 @@ export function NotebookTools({
             Paragraph
           </Button>
           <Button
+            variant="quiet"
             compactIcons="keep"
             onClick={() =>
               mode === 'rich'
@@ -250,6 +280,7 @@ export function NotebookTools({
             H3
           </Button>
           <Button
+            variant="quiet"
             compactIcons="keep"
             onClick={() =>
               mode === 'rich' ? editor.chain().focus().toggleOrderedList().run() : insertMarkdown('1. ')
@@ -258,16 +289,7 @@ export function NotebookTools({
             Numbered list
           </Button>
           <Button
-            compactIcons="keep"
-            onClick={() =>
-              mode === 'rich'
-                ? editor.chain().focus().toggleCodeBlock().run()
-                : insertMarkdown('```\n', '\n```')
-            }
-          >
-            Code
-          </Button>
-          <Button
+            variant="quiet"
             compactIcons="keep"
             ref={linkRef}
             onClick={() => (mode === 'rich' ? onLink() : insertMarkdown('[', '](https://example.com)'))}
