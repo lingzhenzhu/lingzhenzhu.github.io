@@ -4,6 +4,7 @@ export default defineConfig({
   testMatch: ['browser/**/*.spec.ts', 'audit/findings.spec.ts', 'independent/**/*.spec.ts'],
   workers: 1,
   fullyParallel: false,
+  forbidOnly: !!process.env.CI,
   timeout: 45000,
   // CI logs name each failing test and its error as it happens, even if the job is cut short,
   // and a broken environment stops after ten failures instead of timing out test by test.

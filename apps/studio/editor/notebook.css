@@ -200,9 +200,11 @@
   box-shadow: none;
 }
 .writing-paper:focus-within {
+  border-color: var(--field-focus-border);
   box-shadow: var(--field-focus-shadow);
 }
-.writing-paper :is(.rich-editor, .markdown-editor):focus {
+/* The paper carries the rings; this outranks the Admin field focus rule. */
+.studio .writing-paper :is(.rich-editor, .markdown-editor):focus {
   outline: none;
   box-shadow: none;
 }
@@ -286,19 +288,20 @@
   background: linear-gradient(145deg, #e6edc46b, #eff4da44);
   color: #617028;
 }
-.note-primary-tools {
+/* Primary and More rows share one button format and column width. */
+.note-tool-row {
   display: flex;
   overflow-x: auto;
   scrollbar-width: thin;
   padding: 4px 5px;
 }
-.note-primary-tools > button {
+.note-tool-row > button {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 2px;
-  flex: 1 0 50px;
+  flex: 0 0 max(50px, calc(100% / var(--tool-columns, 9)));
   border: 0;
   border-radius: 9px;
   min-height: 49px;
@@ -306,44 +309,32 @@
   background: transparent;
   padding: 4px 8px;
 }
-.note-primary-tools small {
+.note-tool-row small {
   font-size: 10px;
   font-weight: 400;
   white-space: nowrap;
   line-height: 17px;
 }
-.note-primary-tools button[aria-pressed='true'] {
+.note-tool-row button[aria-pressed='true'] {
   background: #b8995c25;
 }
-.note-primary-tools button:hover {
+.note-tool-row button:hover {
   background: #fff7;
   box-shadow:
     inset 0 1px 1px #fff9,
     0 2px 5px #8060310a;
 }
-.markdown .note-primary-tools button {
-  flex-basis: auto;
+.markdown .note-tool-row button {
+  flex: 1 0 auto;
   min-height: 42px;
   white-space: nowrap;
   font-size: 13px;
 }
 .note-extra-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 8px;
   border-top: 1px solid #bfa57033;
 }
-.note-extra-tools button {
-  border: 0;
-  color: inherit;
-  background: transparent;
-  font-size: 13px;
-  min-height: 36px;
-}
-.note-extra-tools .note-icon {
-  width: 17px;
-  height: 17px;
+.markdown .note-extra-tools button {
+  flex-grow: 0;
 }
 .notebook-footer {
   padding: 9px 20px 11px;
@@ -393,7 +384,7 @@
   .note-paper-body {
     max-height: 430px;
   }
-  .note-primary-tools > button {
+  .note-tool-row > button {
     min-width: 50px;
   }
   .note-topbar {

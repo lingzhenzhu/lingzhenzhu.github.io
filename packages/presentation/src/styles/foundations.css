@@ -6,10 +6,13 @@
   --weight-semibold: 600;
   --weight-bold: 700;
   --field-focus-ink: #806746;
+  /* A focused field drops its border (see --field-focus-border) and shows two rings
+     in the focus ink: a defined inner ring and a soft outer halo. */
   --field-focus-shadow:
-    inset 0 1px 3px color-mix(in srgb, var(--field-focus-ink) 10%, transparent),
-    0 0 0 2px color-mix(in srgb, var(--field-focus-ink) 30%, transparent),
-    0 0 0 5px color-mix(in srgb, var(--field-focus-ink) 10%, transparent);
+    inset 0 1px 2px color-mix(in srgb, var(--field-focus-ink) 8%, transparent),
+    0 0 0 1.5px color-mix(in srgb, var(--field-focus-ink) 62%, transparent),
+    0 0 0 5.5px color-mix(in srgb, var(--field-focus-ink) 17%, transparent);
+  --field-focus-border: transparent;
   --inline-icon-baseline: -0.125em;
   font-variant-numeric: tabular-nums;
 }
@@ -23,12 +26,32 @@
 :where(pre, code, .katex, .katex *) {
   text-wrap-style: auto;
 }
+/* Phones must not zoom the page on their own. Double-tap zoom is off for the whole page
+   (pinch zoom stays available for reading). Safari zooms into any focused field whose
+   text is under 16px, so touch screens give fields at least 16px; the extra specificity
+   outranks `font: inherit` resets in either app. */
+:root,
+:where(a, button, input, select, textarea, label, summary, [role='button'], [role='option']) {
+  touch-action: manipulation;
+}
+@media (pointer: coarse) {
+  :root
+    :is(
+      input:not([type='checkbox'], [type='radio'], [type='range'], [type='file']),
+      textarea,
+      select,
+      [contenteditable='true']
+    ) {
+    font-size: max(16px, 1em);
+  }
+}
 /* Numeric features are restored by owners of explicit font shorthands. */
 :where(input, textarea, select) {
   font-variant-numeric: tabular-nums;
 }
 :where(input:not([type='checkbox']):not([type='radio']), textarea, select):focus {
   outline: none;
+  border-color: var(--field-focus-border);
   box-shadow: var(--field-focus-shadow);
 }
 @media (forced-colors: active) {

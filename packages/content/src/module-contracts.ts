@@ -62,7 +62,7 @@ export const moduleDefinitions = {
   teaching: {
     label: 'Teaching institution',
     group: 'Academic',
-    icon: 'pages',
+    icon: 'teaching',
     description: 'An institution, its logo and courses.',
     sharedSource: null,
     allowedPath: null,
@@ -79,7 +79,7 @@ export const moduleDefinitions = {
   research: {
     label: 'Research project',
     group: 'Academic',
-    icon: 'pages',
+    icon: 'research',
     description: 'Project description, figures and paper link.',
     sharedSource: null,
     allowedPath: null,
@@ -96,7 +96,7 @@ export const moduleDefinitions = {
   gallery: {
     label: 'Photo gallery',
     group: 'Text and images',
-    icon: 'image',
+    icon: 'gallery',
     description: 'Photos, captions and slideshow settings.',
     sharedSource: null,
     allowedPath: null,
@@ -113,7 +113,7 @@ export const moduleDefinitions = {
   richText: {
     label: 'Text & headings',
     group: 'Text and images',
-    icon: 'pages',
+    icon: 'text',
     description: 'Rich text or Markdown.',
     sharedSource: null,
     allowedPath: null,
@@ -141,7 +141,7 @@ export const moduleDefinitions = {
   profile: {
     label: 'Portrait',
     group: 'Text and images',
-    icon: 'home',
+    icon: 'portrait',
     description: 'Circular profile photo.',
     sharedSource: null,
     allowedPath: null,
@@ -151,7 +151,7 @@ export const moduleDefinitions = {
   news: {
     label: 'News display',
     group: 'Feeds and links',
-    icon: 'pages',
+    icon: 'news',
     description: 'News updates.',
     sharedSource: 'news',
     allowedPath: null,
@@ -167,7 +167,7 @@ export const moduleDefinitions = {
   contacts: {
     label: 'Contact links',
     group: 'Feeds and links',
-    icon: 'globe',
+    icon: 'contact',
     description: 'Social profiles and contact links.',
     sharedSource: 'contacts',
     allowedPath: null,
@@ -177,7 +177,7 @@ export const moduleDefinitions = {
   medium: {
     label: 'Medium feed',
     group: 'Feeds and links',
-    icon: 'globe',
+    icon: 'medium',
     description: 'Latest articles from Medium.',
     sharedSource: 'medium',
     allowedPath: null,
@@ -192,7 +192,7 @@ export const moduleDefinitions = {
   archive: {
     label: 'Article list',
     group: 'Feeds and links',
-    icon: 'pages',
+    icon: 'list',
     description: 'Articles, with optional search and filters.',
     sharedSource: 'articles',
     allowedPath: null,
@@ -223,7 +223,7 @@ export const moduleDefinitions = {
   podcast: {
     label: 'Podcast',
     group: 'Feeds and links',
-    icon: 'globe',
+    icon: 'podcast',
     description: 'An Apple Podcasts player.',
     sharedSource: null,
     allowedPath: null,

@@ -17,6 +17,17 @@
   border-radius: 5px;
   font-size: 16px;
 }
+/* The request cards keep their original field focus: the border stays and the rings
+   stay light. High-contrast mode still uses its own rings. */
+.rewards:not(.a11y-high-contrast *) {
+  --field-focus-shadow:
+    inset 0 1px 3px color-mix(in srgb, var(--field-focus-ink) 10%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--field-focus-ink) 30%, transparent),
+    0 0 0 5px color-mix(in srgb, var(--field-focus-ink) 10%, transparent);
+}
+.rewards input:is(:focus, :focus-visible) {
+  border-color: #ccc;
+}
 .rewards button {
   background: #1b5e20;
   color: #fff;
@@ -144,6 +155,9 @@
   margin: 0;
   border-color: #aaa;
   font-size: 1em;
+}
+.rewards[data-provider='firebase'] [name='password']:is(:focus, :focus-visible) {
+  border-color: #aaa;
 }
 .rewards[data-provider='firebase'] [data-card-login] {
   background: #ff9800;

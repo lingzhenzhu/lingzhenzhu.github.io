@@ -1,8 +1,8 @@
-import { Button } from './controls';
 import { useState } from 'react';
 import { newBlock, moduleDefinitions, moduleCapabilities, type Block, type BlockType } from '@lzzhu/content';
 import { blockNames } from './page-model';
-import { Dialog, Icon } from './ui';
+import { Dialog } from './ui';
+import { ChoiceCard, ChoiceGrid } from './ChoiceCard';
 const catalog = [...new Set(Object.values(moduleDefinitions).map((definition) => definition.group))].map(
   (group) => ({
     group,
@@ -44,24 +44,20 @@ export function SectionLibrary({
           !!items.length && (
             <section key={group.group} className="section-library">
               <h3>{group.group}</h3>
-              <div className="section-library-grid">
+              <ChoiceGrid>
                 {items.map((item) => (
-                  <Button
-                    compactIcons="keep"
+                  <ChoiceCard
                     key={item.type}
+                    icon={item.icon}
+                    title={blockNames[item.type]}
+                    description={item.description}
                     onClick={() => {
                       onAdd(newBlock(item.type));
                       onClose();
                     }}
-                  >
-                    <Icon name={item.icon} />
-                    <span>
-                      <strong>{blockNames[item.type]}</strong>
-                      <small>{item.description}</small>
-                    </span>
-                  </Button>
+                  />
                 ))}
-              </div>
+              </ChoiceGrid>
             </section>
           )
         );

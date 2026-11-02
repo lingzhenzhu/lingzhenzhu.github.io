@@ -3,7 +3,8 @@ import { ConfirmDialog, Button, Pagination } from './controls';
 import { usePagination } from './usePagination';
 import { useEffect, useRef, useState } from 'react';
 import type { CollectionProps } from './types';
-import { EmptyState, Icon } from './ui';
+import { EmptyState, HeadingRow, Icon } from './ui';
+import { SearchField } from './SearchField';
 function readFilters() {
   try {
     const value = JSON.parse(sessionStorage.getItem('website-admin-article-filters') || '{}');
@@ -58,36 +59,28 @@ export function ArticlesPanel({
   const pagination = usePagination(rows.length, [query, year, status, sort].join('|'));
   return (
     <section>
-      <div className="section-heading">
-        <div>
-          {standalone ? <h1>Articles</h1> : <h2>Articles</h2>}
-          <p className="muted">
-            {rows.length} {rows.length === 1 ? 'article' : 'articles'}
-          </p>
-        </div>
-        <Button className="primary" onClick={addArticle}>
-          <Icon name="add" /> Add article
-        </Button>
-      </div>
+      <HeadingRow
+        level={standalone ? 1 : 2}
+        title="Articles"
+        description={`${rows.length} ${rows.length === 1 ? 'article' : 'articles'}`}
+        action={
+          <Button className="primary" onClick={addArticle}>
+            <Icon name="add" /> Add article
+          </Button>
+        }
+      />
       <div className="article-filters">
         <label className="article-search">
           <span>Search</span>
-          <span className="studio-search-field">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="10" cy="10" r="6.5" />
-              <path d="m15 15 6 6" />
-            </svg>
-            <input
-              type="search"
-              aria-label="Search articles"
-              placeholder="Title or address"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setSelection([]);
-              }}
-            />
-          </span>
+          <SearchField
+            aria-label="Search articles"
+            placeholder="Title or address"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setSelection([]);
+            }}
+          />
         </label>
         <label>
           Year

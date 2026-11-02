@@ -32,6 +32,7 @@ for (const glyph of new Set(JSON.stringify(requestCardCopy).match(/[\u3400-\u9ff
 }
 let maxScript = 0;
 let internalLinks = 0;
+const stylesheetsByPage: Record<string, { files: string[]; gzipBytes: number }> = {};
 const anchorCache = new Map<string, Set<string>>();
 async function anchors(filename: string) {
   let ids = anchorCache.get(filename);
@@ -92,6 +93,22 @@ for (const file of all) {
     const data = await fs.readFile(path.join(directory, src.split('?')[0]));
     maxScript = Math.max(maxScript, gzipSync(data).length);
   }
+  const stylesheets = [
+    ...new Set(
+      $('link[rel=stylesheet][href^="/"]')
+        .toArray()
+        .map((node) => $(node).attr('href')!.split('?')[0]),
+    ),
+  ];
+  let stylesheetBytes = 0;
+  for (const href of stylesheets) {
+    try {
+      stylesheetBytes += gzipSync(await fs.readFile(path.join(directory, href))).length;
+    } catch {
+      failures.push('Cannot measure stylesheet ' + href + ' in ' + relative);
+    }
+  }
+  stylesheetsByPage[relative] = { files: stylesheets, gzipBytes: stylesheetBytes };
   for (const element of $('[src^="/"],link[rel=stylesheet][href^="/"]').toArray()) {
     const url = $(element).attr('src') || $(element).attr('href')!;
     if (url.startsWith('/api/')) continue;
@@ -113,8 +130,13 @@ for (const page of content.pages) {
 const homepage = await fs.readFile(path.join(directory, 'index.html'));
 if (homepage.length > 14_000) failures.push('Homepage HTML exceeds 14,000 bytes');
 if (maxScript > 6_000) failures.push('Public script exceeds 6,000 gzip bytes');
-for (const file of all.filter((file) => file.endsWith('.css')))
-  if (gzipSync(await fs.readFile(file)).length > 10_000) failures.push('CSS budget exceeded: ' + file);
+const cssBudget = 10_000;
+let maxCss = 0;
+for (const file of all.filter((file) => file.endsWith('.css'))) {
+  const bytes = gzipSync(await fs.readFile(file)).length;
+  maxCss = Math.max(maxCss, bytes);
+  if (bytes > cssBudget) failures.push(`CSS budget exceeded: ${file} (${bytes} gzip bytes > ${cssBudget})`);
+}
 const sitemap = await fs.readFile(path.join(directory, 'sitemap.xml'), 'utf8');
 for (const page of content.pages.filter((page) => !page.indexable)) {
   const html = await fs.readFile(path.join(directory, decodeURIComponent(page.path), 'index.html'), 'utf8');
@@ -130,7 +152,9 @@ const report = {
   homeHtmlBytes: homepage.length,
   homeHtmlGzipBytes: gzipSync(homepage).length,
   maxScriptGzipBytes: maxScript,
+  maxCssGzipBytes: maxCss,
   internalLinks,
+  stylesheetsByPage,
 };
 await fs.mkdir('.artifacts', { recursive: true });
 await fs.writeFile('.artifacts/build-audit.json', JSON.stringify(report, null, 2));

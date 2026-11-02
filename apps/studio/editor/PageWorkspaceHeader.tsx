@@ -10,30 +10,29 @@ type Props = {
   children?: ReactNode;
 };
 
-/** Page identity remains available while the editing tools load. */
+/** Page identity remains available while the editing tools load. The breadcrumb keeps
+ * one line and shortens the page name before it reaches the header actions. */
 export function PageWorkspaceHeader({ page, go, children }: Props) {
   return (
     <header className="page-workspace-header">
-      <div>
-        <div className="breadcrumbs">
-          <Button
-            variant="quiet"
-            compactIcons="keep"
-            onClick={() => go(page.template === 'article' ? 'articles' : 'pages')}
-          >
-            {page.template === 'article' ? 'Articles' : 'Pages'}
-          </Button>
-          <Icon name="arrow" />
-          <span>{pageName(page)}</span>
-        </div>
-        <h1>
-          {pageName(page)}{' '}
-          <span className={'badge ' + (page.status === 'published' ? 'live' : '')}>
-            {page.status === 'published' ? 'Public' : 'Draft'}
-          </span>
-        </h1>
-      </div>
-      {children}
+      <nav className="breadcrumbs" aria-label="Breadcrumb">
+        <Button
+          variant="quiet"
+          compactIcons="keep"
+          onClick={() => go(page.template === 'article' ? 'articles' : 'pages')}
+        >
+          {page.template === 'article' ? 'Articles' : 'Pages'}
+        </Button>
+        <Icon name="arrow" />
+        <span title={pageName(page)}>{pageName(page)}</span>
+      </nav>
+      <h1>
+        {pageName(page)}{' '}
+        <span className={'badge ' + (page.status === 'published' ? 'live' : '')}>
+          {page.status === 'published' ? 'Public' : 'Draft'}
+        </span>
+      </h1>
+      {children && <div className="page-workspace-actions">{children}</div>}
     </header>
   );
 }

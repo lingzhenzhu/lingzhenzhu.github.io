@@ -35,10 +35,20 @@ export function SegmentedControl({
       if (!selected) return;
       const target = { x: selected.offsetLeft, width: selected.offsetWidth };
       const from = position.current;
+      // The spring overshoots and stretches the lens. Keep it inside the track (the
+      // padding around the first and last choices), or it widens the scrollable area
+      // and flashes a scrollbar when it moves to an end.
+      const choices = group.querySelectorAll<HTMLElement>('[aria-pressed]');
+      const first = choices[0],
+        last = choices[choices.length - 1];
+      const trackStart = first.offsetLeft,
+        trackEnd = last.offsetLeft + last.offsetWidth;
       const paint = (x: number, width: number, stretch = 0) => {
         position.current = { x, width };
-        surface.style.width = width + stretch + 'px';
-        surface.style.transform = `translateX(${x - stretch / 2}px) scaleY(${1 - Math.min(0.065, stretch / 300)})`;
+        const left = Math.max(trackStart, x - stretch / 2),
+          right = Math.min(trackEnd, x + width + stretch / 2);
+        surface.style.width = Math.max(0, right - left) + 'px';
+        surface.style.transform = `translateX(${left}px) scaleY(${1 - Math.min(0.065, stretch / 300)})`;
       };
       if (!animate || !from || reduced.matches) {
         surface.dataset.moving = 'false';

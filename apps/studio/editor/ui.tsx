@@ -63,6 +63,37 @@ export function Dialog({
     </dialog>
   );
 }
+type HeadingProps = {
+  eyebrow?: string;
+  title: string;
+  description?: ReactNode;
+  action?: ReactNode;
+};
+/** Title, optional eyebrow, description and action on one grid. The action sits beside
+ * the eyebrow and title only, so the description always has the full width and never
+ * wraps early because of a button. */
+export function HeadingRow({
+  eyebrow,
+  title,
+  description,
+  action,
+  level = 2,
+  className = 'section-heading',
+}: HeadingProps & { level?: 1 | 2 | 3; className?: string }) {
+  const Title = (['h1', 'h2', 'h3'] as const)[level - 1];
+  return (
+    <div className={'heading-row ' + className}>
+      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+      <Title>{title}</Title>
+      {description && <p className="heading-description">{description}</p>}
+      {action && <div className="heading-action">{action}</div>}
+    </div>
+  );
+}
+/** The heading of a whole workspace, such as Pages or Publishing. */
+export function WorkspaceHeading(props: HeadingProps) {
+  return <HeadingRow {...props} level={1} className="workspace-heading" />;
+}
 export function EmptyState({ title, children }: { title: string; children?: ReactNode }) {
   return (
     <div className="empty-state">

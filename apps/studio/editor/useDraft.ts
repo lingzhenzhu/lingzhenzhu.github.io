@@ -129,6 +129,8 @@ export function useDraft() {
       if (!changes.length) {
         saved.current = counter;
         setMessage('All changes saved');
+        // An undone invalid edit leaves nothing to send; its validation error is stale.
+        setError('');
         return;
       }
       pending.current = {

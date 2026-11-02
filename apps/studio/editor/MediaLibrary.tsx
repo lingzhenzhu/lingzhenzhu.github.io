@@ -17,7 +17,7 @@ export function MediaLibrary({
   const rows = assets.filter((asset) => asset.filename.toLowerCase().includes(query.toLowerCase()));
   const pagination = usePagination(rows.length, query, 24);
   return (
-    <div className="collection">
+    <div className="collection media-library">
       <h1>Image library</h1>
       <label>
         Search images

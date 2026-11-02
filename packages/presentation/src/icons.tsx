@@ -33,16 +33,14 @@ export function Icon({
           </>
         )}
         {name === 'wechat' && (
-          <>
-            <path d="M18.5 20.2c-1.7 1-3.7 1.5-5.9 1.3l-4.4 2 .8-3.7C2 15.7 4.6 7 12.8 7c5.5 0 9.2 3.4 8.7 7.2" />
-            <path d="M28.8 20.9c0-3.8-3.5-6.8-7.8-6.8s-7.8 3-7.8 6.8 3.5 6.8 7.8 6.8c1 0 2-.2 2.8-.4l3.5 1.5-.6-3.1c1.3-1.2 2.1-2.9 2.1-4.8Z" />
-            <g fill="currentColor" stroke="none">
-              <circle cx="9.5" cy="12.9" r="1" />
-              <circle cx="16.3" cy="12.9" r="1" />
-              <circle cx="18.1" cy="19.8" r=".9" />
-              <circle cx="24" cy="19.8" r=".9" />
-            </g>
-          </>
+          // Solid like the other contact glyphs: the large bubble is cut by a gap
+          // around the small one, and the eyes are holes (evenodd).
+          <path
+            fill="currentColor"
+            stroke="none"
+            fillRule="evenodd"
+            d="M11.97 21.79A10.9 9.2 0 0 1 7.97 21L6 24.4l-1.17-5.18A10.9 9.2 0 1 1 23.22 11.46a10.2 8.8 0 0 0-11.25 10.33ZM7.15 9.9a1.45 1.45 0 1 0 2.9 0 1.45 1.45 0 1 0-2.9 0Zm7.3 0a1.45 1.45 0 1 0 2.9 0 1.45 1.45 0 1 0-2.9 0Zm11.32 16.77A8.6 7.2 0 1 1 27.97 25.38l-.07 3.32ZM17.8 18.4a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0Zm6 0a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0Z"
+          />
         )}
       </svg>
     );

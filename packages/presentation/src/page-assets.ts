@@ -13,6 +13,12 @@ export function pageStylesheets(page: Page, preview = false): string[] {
   const styles: string[] = [];
   if (page.blocks.some((block) => block.type === 'firebaseRewards' && !block.hidden))
     styles.push(versioned(base, 'card-fonts.css'));
+  if (
+    page.blocks.some(
+      (block) => block.type === 'rewards' || (block.type === 'firebaseRewards' && !block.hidden),
+    )
+  )
+    styles.push(versioned(base, 'request-card.css'));
   if (containsMath(page.blocks)) styles.push(versioned(base, 'math/katex.min.css'));
   return styles;
 }

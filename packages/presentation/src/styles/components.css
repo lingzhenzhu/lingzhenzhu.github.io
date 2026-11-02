@@ -191,6 +191,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
   outline: none;
+  border-color: var(--field-focus-border);
   box-shadow: var(--field-focus-shadow);
 }
 .sr-only {
@@ -288,8 +289,16 @@ select:focus-visible {
     bottom: 1rem;
     right: 1rem;
   }
-  .archive-item-date {
-    float: none;
-    display: block;
+  .archive-item-link {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  /* The year heading above already gives the year. */
+  .archive-date-full {
+    display: none;
+  }
+  .archive-date-short {
+    display: inline;
   }
 }
