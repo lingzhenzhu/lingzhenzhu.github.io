@@ -33,11 +33,12 @@ export function displacementMap(width: number, height: number, radius: number) {
       const t = Math.max(0, Math.min(1, distance / bezel));
       const theta = Math.atan(Math.pow(1 - t, 2) * 2.8);
       const bend = Math.tan(theta - Math.asin(Math.sin(theta) / 1.45)) * Math.sin(Math.PI * t) * 0.55;
+      // Written in place: an array per pixel was tens of thousands of allocations per map.
       const offset = (y * w + x) * 4;
-      pixels.data.set(
-        [Math.round(128 + dx * bend * 127), Math.round(128 + dy * bend * 127), 128, 255],
-        offset,
-      );
+      pixels.data[offset] = Math.round(128 + dx * bend * 127);
+      pixels.data[offset + 1] = Math.round(128 + dy * bend * 127);
+      pixels.data[offset + 2] = 128;
+      pixels.data[offset + 3] = 255;
     }
   context.putImageData(pixels, 0, 0);
   const result = canvas.toDataURL();

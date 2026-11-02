@@ -2,6 +2,7 @@
 export class NewsController {
   private abort = new AbortController();
   private observer: ResizeObserver;
+  private visibility: IntersectionObserver;
   private timer?: ReturnType<typeof setTimeout>;
   private frame = 0;
   private paused = new Set<string>();
@@ -51,6 +52,9 @@ export class NewsController {
     this.observer = new ResizeObserver(() => this.measure());
     this.observer.observe(this.scroller);
     this.observer.observe(this.scroller.querySelector('ul')!);
+    // Off screen nobody is reading: no timers, no scroll frames, no repaints of the masked feed.
+    this.visibility = new IntersectionObserver(([entry]) => this.pause('offscreen', !entry.isIntersecting));
+    this.visibility.observe(root);
     this.pause('motion', this.reduced.matches);
     this.pause('hidden', document.hidden);
     this.measure();
@@ -99,6 +103,7 @@ export class NewsController {
     clearTimeout(this.timer);
     cancelAnimationFrame(this.frame);
     this.observer.disconnect();
+    this.visibility.disconnect();
     this.abort.abort();
   }
 }

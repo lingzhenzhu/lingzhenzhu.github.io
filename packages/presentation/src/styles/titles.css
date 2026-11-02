@@ -107,7 +107,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.65em;
-  color: #d8c9b3;
+  color: #978c7e;
   font:
     var(--weight-regular) 0.33em/1.5 Inter,
     sans-serif;
@@ -116,11 +116,15 @@
   text-transform: uppercase;
   white-space: nowrap;
   padding: 0.6em;
+  transition: color 0.4s ease;
+}
+.explore-cue:is(:hover, :focus-visible) {
+  color: #c4b7a4;
 }
 .explore-cue span {
   width: 1px;
   height: 2.5em;
-  background: currentColor;
+  background: color-mix(in srgb, currentColor 55%, transparent);
   position: relative;
 }
 .explore-cue span::after {
@@ -130,45 +134,59 @@
   height: 0.5em;
   bottom: 0;
   left: -0.25em;
-  border-right: 1px solid;
-  border-bottom: 1px solid;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
   transform: rotate(45deg);
 }
-/* Two quiet flares: the cue brightens to warm white with a soft glow while the arrow
-   dips once, then settles. Brightening reads on the dark opening; dimming did not. */
+/* Two quiet passes: the cue rises from its dim resting tone to a soft warm tone (never
+   white, no glow) while a faint light runs down the line toward the arrow, then settles. */
 @media (prefers-reduced-motion: no-preference) {
   .explore-cue[data-inviting] {
-    animation: explore-invitation 2.4s cubic-bezier(0.33, 0, 0.2, 1) 2;
+    animation: explore-invitation 3.2s cubic-bezier(0.45, 0, 0.25, 1) 0.3s 2;
   }
-  .explore-cue[data-inviting] span {
-    animation: explore-arrow 2.4s cubic-bezier(0.33, 0, 0.2, 1) 2;
-  }
-  .explore-cue[data-inviting]:is(:hover, :focus-visible),
-  .explore-cue[data-inviting]:is(:hover, :focus-visible) span,
-  .a11y-high-contrast .explore-cue[data-inviting],
-  .a11y-high-contrast .explore-cue[data-inviting] span {
+  .explore-cue:is(:hover, :focus-visible),
+  .a11y-high-contrast .explore-cue {
     animation: none;
   }
   @keyframes explore-invitation {
     0%,
-    75%,
+    72%,
     100% {
-      color: #d8c9b3;
-      filter: drop-shadow(0 0 0 rgb(255 228 186 / 0%));
+      color: #978c7e;
     }
-    32% {
-      color: #fffaf0;
-      filter: drop-shadow(0 0 0.5em rgb(255 228 186 / 70%));
+    30% {
+      color: #d4c5ae;
     }
   }
-  @keyframes explore-arrow {
-    0%,
-    75%,
-    100% {
-      transform: none;
+  .explore-cue span::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 0.9em;
+    background: linear-gradient(transparent, #e8dac4, transparent);
+    opacity: 0;
+  }
+  .explore-cue[data-inviting] span::before {
+    animation: explore-trace 3.2s cubic-bezier(0.45, 0, 0.25, 1) 0.3s 2;
+  }
+  .explore-cue:is(:hover, :focus-visible) span::before,
+  .a11y-high-contrast .explore-cue span::before {
+    animation: none;
+  }
+  @keyframes explore-trace {
+    0% {
+      opacity: 0;
+      transform: translateY(-0.3em);
     }
-    32% {
-      transform: translateY(0.4em);
+    30% {
+      opacity: 0.85;
+    }
+    72%,
+    100% {
+      opacity: 0;
+      transform: translateY(1.9em);
     }
   }
 }

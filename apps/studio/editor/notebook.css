@@ -288,11 +288,12 @@
   background: linear-gradient(145deg, #e6edc46b, #eff4da44);
   color: #617028;
 }
-/* Primary and More rows share one button format and column width. */
+/* Primary and More rows share one column grid (counted in NotebookTools from the
+   available width); nothing scrolls sideways and no button overlaps its neighbour. */
 .note-tool-row {
-  display: flex;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  display: grid;
+  grid-template-columns: repeat(var(--tool-columns, 9), minmax(0, 1fr));
+  gap: 2px;
   padding: 4px 5px;
 }
 .note-tool-row > button {
@@ -301,19 +302,23 @@
   justify-content: center;
   align-items: center;
   gap: 2px;
-  flex: 0 0 max(50px, calc(100% / var(--tool-columns, 9)));
+  min-width: 0;
   border: 0;
   border-radius: 9px;
   min-height: 49px;
   color: inherit;
   background: transparent;
-  padding: 4px 8px;
+  padding: 4px;
 }
+/* A long name ("Numbered list") takes a second line inside its own column. */
 .note-tool-row small {
+  max-width: 100%;
   font-size: 10px;
   font-weight: 400;
-  white-space: nowrap;
-  line-height: 17px;
+  white-space: normal;
+  text-align: center;
+  line-height: 13px;
+  padding-block: 2px;
 }
 .note-tool-row button[aria-pressed='true'] {
   background: #b8995c25;
@@ -325,16 +330,17 @@
     0 2px 5px #8060310a;
 }
 .markdown .note-tool-row button {
-  flex: 1 0 auto;
   min-height: 42px;
-  white-space: nowrap;
   font-size: 13px;
+}
+.markdown .note-tool-row button > span {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .note-extra-tools {
   border-top: 1px solid #bfa57033;
-}
-.markdown .note-extra-tools button {
-  flex-grow: 0;
 }
 .notebook-footer {
   padding: 9px 20px 11px;
@@ -363,6 +369,7 @@
 }
 .code-language .studio-select {
   width: 130px;
+  margin-top: 0;
 }
 .code-language [data-filter-trigger] {
   min-height: 34px;
@@ -383,9 +390,6 @@
 @media (max-width: 600px) {
   .note-paper-body {
     max-height: 430px;
-  }
-  .note-tool-row > button {
-    min-width: 50px;
   }
   .note-topbar {
     padding-inline: 10px;

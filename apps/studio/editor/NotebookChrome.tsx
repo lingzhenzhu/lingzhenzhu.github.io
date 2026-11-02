@@ -1,6 +1,6 @@
 import { Button } from './controls';
 import type { ButtonProps } from './Button';
-import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import type { Editor } from '@tiptap/core';
 import { Icon } from './icons';
 export type WritingMode = 'rich' | 'markdown';
@@ -13,6 +13,15 @@ type FormatAction = {
   action: () => void;
   before: string;
   after?: string;
+};
+/** A toolbar button as placed in either row. */
+type Tool = {
+  name: string;
+  icon: string;
+  source?: string;
+  active?: boolean;
+  buttonRef?: RefObject<HTMLButtonElement | null>;
+  run: (trigger: HTMLButtonElement) => void;
 };
 export function NoteIcon({ name }: { name: string }) {
   const paths: Record<string, string> = {
@@ -287,43 +296,68 @@ export function NotebookTools({
       before: '1. ',
     },
   ];
-  const tool = (action: FormatAction) => (
+  const format = (action: FormatAction): Tool => ({
+    ...action,
+    run: () => (mode === 'rich' ? action.action() : insertMarkdown(action.before, action.after)),
+  });
+  const primary: Tool[] = [
+    ...actions.map(format),
+    {
+      name: 'Code',
+      icon: 'code',
+      run: () =>
+        mode === 'rich' ? editor.chain().focus().toggleCodeBlock().run() : insertMarkdown('```\n', '\n```'),
+    },
+    { name: 'Formula', icon: 'formula', run: onFormula },
+  ];
+  const secondary: Tool[] = [
+    ...extras.map(format),
+    {
+      name: 'Link',
+      icon: 'link',
+      buttonRef: linkRef,
+      run: () => (mode === 'rich' ? onLink() : insertMarkdown('[', '](https://example.com)')),
+    },
+  ];
+  // Both rows share one column grid. The first row never scrolls: tools that do not fit
+  // beside More move to the front of the More panel, which wraps onto as many rows as it needs.
+  const toolbar = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState(primary.length + 1);
+  useLayoutEffect(() => {
+    const element = toolbar.current!;
+    const columnWidth = mode === 'rich' ? 56 : 96;
+    const measure = () => setFit(Math.max(3, Math.floor((element.clientWidth - 10) / columnWidth)));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [mode]);
+  const columns = Math.min(fit, primary.length + 1);
+  const shown = Math.min(primary.length, columns - 1);
+  const tool = (item: Tool) => (
     <ToolButton
-      key={action.name}
+      key={item.name}
       mode={mode}
-      icon={action.icon}
-      label={action.name}
-      source={action.source}
-      pressed={action.active}
-      onClick={() => (mode === 'rich' ? action.action() : insertMarkdown(action.before, action.after))}
+      icon={item.icon}
+      label={item.name}
+      source={item.source}
+      pressed={item.active}
+      buttonRef={item.buttonRef}
+      onClick={(event) => item.run(event.currentTarget)}
     />
   );
-  // Both rows share one column width, so the extra tools line up under the primary ones.
-  const columns = actions.length + 3;
   return (
-    <div className={'notebook-tools ' + mode} style={{ '--tool-columns': columns } as CSSProperties}>
+    <div
+      ref={toolbar}
+      className={'notebook-tools ' + mode}
+      style={{ '--tool-columns': columns } as CSSProperties}
+    >
       <div
         className="note-tool-row"
         role="toolbar"
         aria-label={mode === 'rich' ? 'Text formatting' : 'Markdown shortcuts'}
       >
-        {actions.map(tool)}
-        <ToolButton
-          mode={mode}
-          icon="code"
-          label="Code"
-          onClick={() =>
-            mode === 'rich'
-              ? editor.chain().focus().toggleCodeBlock().run()
-              : insertMarkdown('```\n', '\n```')
-          }
-        />
-        <ToolButton
-          mode={mode}
-          icon="formula"
-          label="Formula"
-          onClick={(event) => onFormula(event.currentTarget)}
-        />
+        {primary.slice(0, shown).map(tool)}
         <ToolButton
           mode={mode}
           icon="more"
@@ -335,14 +369,7 @@ export function NotebookTools({
       </div>
       {more && (
         <div className="note-tool-row note-extra-tools" role="toolbar" aria-label="More text formatting">
-          {extras.map(tool)}
-          <ToolButton
-            mode={mode}
-            icon="link"
-            label="Link"
-            buttonRef={linkRef}
-            onClick={() => (mode === 'rich' ? onLink() : insertMarkdown('[', '](https://example.com)'))}
-          />
+          {[...primary.slice(shown), ...secondary].map(tool)}
         </div>
       )}
     </div>
