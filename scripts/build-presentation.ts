@@ -40,10 +40,17 @@ export async function buildPresentation() {
     bundle: true,
     minify: true,
   });
+  await build({
+    entryPoints: [path.join(root, 'packages/presentation/src/styles/request-card.css')],
+    outfile: path.join(site, 'assets/request-card.css'),
+    bundle: true,
+    minify: true,
+  });
+  await fs.copyFile(path.join(site, 'assets/request-card.css'), path.join(studio, 'assets/request-card.css'));
   // Assets with fixed URLs get a content version, so a newly published page never pairs with a
   // cached script or stylesheet from the previous release. Missing files are simply unversioned.
   const versions: Record<string, string> = {};
-  for (const file of ['article-search.js', 'card-fonts.css', 'math/katex.min.css']) {
+  for (const file of ['article-search.js', 'card-fonts.css', 'request-card.css', 'math/katex.min.css']) {
     try {
       // Hash the text with normalised line endings: a Windows checkout writes CRLF, and the version
       // must not change (and dirty the committed manifest) when only the checkout differs.

@@ -233,16 +233,28 @@ test('IND-05 unpublished rich text upload displays in editor without corrupting 
     await image.scrollIntoViewIfNeeded();
     await expect.poll(() => image.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     const editor = page.getByRole('textbox', { name: 'Content editor' });
-    // A center click can select the image; Control+End does not move that
-    // NodeSelection in WebKit. Explicitly edit the caption beside the image. Late font
-    // metrics can nudge the caption as it is clicked, and typing over a selected image
-    // replaces it, so type only once the caret is confirmed inside the caption.
-    await expect(async () => {
-      await editor.getByText('Image caption', { exact: true }).click();
-      await editor.press('End');
-      expect(await page.evaluate(() => getSelection()?.anchorNode?.textContent)).toBe('Image caption');
-    }).toPass();
-    await editor.pressSequentially(' changed');
+    const caption = editor.getByText('Image caption', { exact: true });
+    // Test image persistence without a coordinate click that can select the image as the paper scrolls.
+    await editor.focus();
+    await caption.evaluate((element) => {
+      const text = element.firstChild!;
+      getSelection()!.collapse(text, text.textContent!.length);
+    });
+    await expect
+      .poll(() =>
+        caption.evaluate((element) => {
+          const selection = getSelection();
+          return (
+            selection?.isCollapsed &&
+            selection.anchorNode?.nodeType === Node.TEXT_NODE &&
+            element.contains(selection.anchorNode) &&
+            selection.anchorOffset === selection.anchorNode.textContent?.length &&
+            document.activeElement === element.closest('[contenteditable="true"]')
+          );
+        }),
+      )
+      .toBe(true);
+    await page.keyboard.type(' changed');
     await save(page);
     const saved = (await (await request.get('/admin/api/content')).json()) as Content;
     const block = saved.pages.find((p) => p.id === 'home')!.blocks[0];
