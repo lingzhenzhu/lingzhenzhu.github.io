@@ -226,6 +226,30 @@ it('keeps the administrator token in a secure cookie and detects stale updates a
     (await fixture.request('/admin/balance', 'PUT', { remaining: 100, expectedRevision: 2 }, headers)).status,
   ).toBe(401);
 });
+it('clears only the selected records when the administrator names them', async () => {
+  const fixture = setup();
+  const id = crypto.randomUUID();
+  expect((await fixture.request('', 'POST', { id, request: 'Kept request' })).status).toBe(200);
+  const login = await fixture.request('/session', 'POST', { password: 'test-password' });
+  const headers = { Cookie: login.headers.get('Set-Cookie')!.split(';')[0] };
+  expect(
+    (await fixture.request('/admin/requests', 'DELETE', { expectedRevision: 1, ids: [] }, headers)).status,
+  ).toBe(400);
+  const cleared = await fixture.request(
+    '/admin/requests',
+    'DELETE',
+    { expectedRevision: 1, ids: ['old-entry'] },
+    headers,
+  );
+  expect(cleared.status).toBe(200);
+  expect(await cleared.json()).toMatchObject({ requests: [{ id, text: 'Kept request' }] });
+  expect(fixture.state().requests).toEqual({ [id]: 'Kept request' });
+  expect(fixture.state().remainingCount).toBe(1);
+  expect(
+    (await fixture.request('/admin/requests', 'DELETE', { expectedRevision: 2, ids: [id] }, headers)).status,
+  ).toBe(200);
+  expect(fixture.state().requests).toBeNull();
+});
 it('does not convert corrupted or missing remote data into an empty balance', async () => {
   const fixture = setup();
   vi.stubGlobal(

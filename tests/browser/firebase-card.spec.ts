@@ -4,7 +4,7 @@ import type { Content } from '@lzzhu/content';
 test('Firebase card preserves public submission and password-only administration at desktop and mobile widths', async ({
   page,
 }) => {
-  let state = { remaining: 2, revision: 0, requests: [{ text: 'Original request' }] };
+  let state = { remaining: 2, revision: 0, requests: [{ id: 'original', text: 'Original request' }] };
   let authenticated = false;
   await page.route('**/api/firebase-card**', async (route) => {
     const request = route.request();
@@ -25,12 +25,17 @@ test('Firebase card preserves public submission and password-only administration
       state = { ...state, remaining: body.remaining, revision: state.revision + 1 };
     } else if (path.endsWith('/admin/requests')) {
       expect(authenticated).toBe(true);
-      state = { ...state, requests: [], revision: state.revision + 1 };
+      const ids: string[] | undefined = body.ids;
+      state = {
+        ...state,
+        requests: ids ? state.requests.filter((r) => !ids.includes(r.id)) : [],
+        revision: state.revision + 1,
+      };
     } else if (request.method() === 'POST') {
       state = {
         remaining: state.remaining - 1,
         revision: state.revision + 1,
-        requests: [...state.requests, { text: body.request }],
+        requests: [...state.requests, { id: body.id, text: body.request }],
       };
     }
     return route.fulfill({ json: state });
@@ -41,7 +46,9 @@ test('Firebase card preserves public submission and password-only administration
   await page.locator('[data-rewards-form] button').click();
   await expect(page.locator('[data-rewards-balance]')).toHaveText('1');
   await expect(page.locator('[data-rewards-history]')).toContainText('A public request');
+  await expect(page.locator('[data-rewards-history]')).toHaveCSS('padding-left', '0px');
   await expect(page.locator('[data-card-password]')).toBeVisible();
+  await expect(page.locator('[data-rewards-history] input')).toHaveCount(0);
   await expect(page.locator('[data-card-password-dialog]')).toHaveCount(0);
   await expect(page.locator('[data-card-login]')).toHaveCSS('background-color', 'rgb(255, 152, 0)');
   await expect(page.locator('[data-card-login]')).toHaveCSS('color', 'rgb(255, 255, 255)');
@@ -56,29 +63,45 @@ test('Firebase card preserves public submission and password-only administration
   await expect(page.locator('[data-card-admin]')).toBeVisible();
   await expect(page.locator('[data-card-password]')).toBeHidden();
   await expect(page.locator('[data-card-action="increase"]')).toBeFocused();
+  const original = page.getByRole('checkbox', { name: 'Original request' });
+  await expect(page.locator('[data-rewards-history] input')).toHaveCount(2);
+  await original.check();
   await page.locator('[data-card-action="increase"]').click();
   await expect(page.locator('[data-rewards-balance]')).toHaveText('2');
   await page.locator('[data-card-action="decrease"]').click();
   await expect(page.locator('[data-rewards-balance]')).toHaveText('1');
   await page.locator('[data-card-action="reset"]').click();
   await expect(page.locator('[data-rewards-balance]')).toHaveText('2');
+  await expect(original).toBeChecked();
   for (const [selector, color] of [
-    ['[data-card-action="increase"]', 'rgb(56, 142, 60)'],
-    ['[data-card-action="decrease"]', 'rgb(211, 47, 47)'],
-    ['[data-card-action="reset"]', 'rgb(25, 118, 210)'],
-    ['[data-card-clear]', 'rgb(97, 97, 97)'],
-  ])
+    ['[data-card-action="increase"]', 'rgb(74, 124, 126)'],
+    ['[data-card-action="decrease"]', 'rgb(142, 59, 59)'],
+    ['[data-card-action="reset"]', 'rgb(61, 90, 128)'],
+    ['[data-card-clear]', 'rgb(122, 92, 69)'],
+    ['[data-card-logout]', 'rgb(90, 90, 90)'],
+  ]) {
     await expect(page.locator(selector)).toHaveCSS('background-color', color);
+    await expect(page.locator(selector)).toHaveCSS('color', 'rgb(255, 255, 255)');
+    await expect(page.locator(selector)).toHaveCSS('border-radius', '5px');
+  }
   await page.locator('[data-card-clear]').click();
   await page.locator('[data-card-clear-dialog] [data-card-cancel]').click();
   await expect(page.locator('[data-rewards-history] li')).toHaveCount(2);
   await page.locator('[data-card-clear]').click();
+  await expect(page.locator('#firebase-clear-title')).toContainText('1');
+  await page.locator('[data-card-confirm-clear]').click();
+  await expect(page.locator('[data-rewards-history] li')).toHaveCount(1);
+  await expect(page.locator('[data-rewards-history]')).toContainText('A public request');
+  await expect(page.locator('[data-card-clear]')).toBeFocused();
+  await page.locator('[data-card-clear]').click();
+  await expect(page.locator('#firebase-clear-title')).toHaveText('清空申请记录？');
   await page.locator('[data-card-confirm-clear]').click();
   await expect(page.locator('[data-rewards-history] li')).toHaveCount(0);
   await expect(page.locator('[data-card-clear]')).toBeFocused();
   await expect(page.locator('[data-rewards-balance]')).toHaveText('2');
   await page.locator('[data-card-logout]').click();
   await expect(page.locator('[data-card-admin]')).toBeHidden();
+  await expect(page.locator('[data-rewards-history] input')).toHaveCount(0);
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator('[name="password"]')).toBeFocused();
   await page.locator('[name="password"]').fill('test-password');

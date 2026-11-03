@@ -1,4 +1,5 @@
 import type { CardState } from './rewards';
+import { requestCardCopy as copy } from '../request-card-copy';
 
 export function initFirebaseAdmin(
   root: HTMLElement,
@@ -14,9 +15,13 @@ export function initFirebaseAdmin(
   const password = passwordForm.elements.namedItem('password') as HTMLInputElement;
   let busy = false;
   let clearRevision: number | undefined;
+  let clearIds: string[] = [];
   const session = (authenticated: boolean) => {
     panel.hidden = authenticated === false;
     passwordForm.hidden = authenticated;
+    root.toggleAttribute('data-admin', authenticated);
+    const state = current();
+    if (state) show(state);
   };
   const api = async <T>(path: string, method = 'GET', body?: unknown): Promise<T> => {
     const response = await fetch('/api/firebase-card' + path, {
@@ -120,6 +125,19 @@ export function initFirebaseAdmin(
     'click',
     () => {
       clearRevision = current()?.revision;
+      clearIds = [...root.querySelectorAll<HTMLInputElement>('[data-rewards-history] input:checked')].map(
+        (box) => box.value,
+      );
+      const selected = clearIds.length > 0;
+      query('#firebase-clear-title').textContent = selected
+        ? copy.clearSelectedTitle.replace('{count}', String(clearIds.length))
+        : copy.clearTitle;
+      query('[data-card-clear-description]').textContent = selected
+        ? copy.clearSelectedDescription
+        : copy.clearDescription;
+      query('[data-card-confirm-clear]').textContent = selected
+        ? copy.confirmClearSelected
+        : copy.confirmClear;
       query<HTMLElement>('[data-card-clear-status]').textContent = '';
       // Safari does not focus buttons on pointer clicks; give the dialog a return target.
       query('[data-card-clear]').focus();
@@ -134,9 +152,16 @@ export function initFirebaseAdmin(
         '[data-card-clear-status]',
         async () => {
           if (clearRevision === undefined) throw new Error('请等待记录读取完成');
-          show(await api<CardState>('/admin/requests', 'DELETE', { expectedRevision: clearRevision }));
+          show(
+            await api<CardState>('/admin/requests', 'DELETE', {
+              expectedRevision: clearRevision,
+              ...(clearIds.length ? { ids: clearIds } : {}),
+            }),
+          );
           clearDialog.close();
-          query<HTMLElement>('[data-card-admin-status]').textContent = '记录已清空';
+          query<HTMLElement>('[data-card-admin-status]').textContent = clearIds.length
+            ? copy.clearedSelected
+            : '记录已清空';
         },
         query('[data-card-clear]'),
       );

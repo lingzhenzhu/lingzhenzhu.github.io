@@ -19,4 +19,8 @@ export const requestCardCopy = {
   clearDescription: '所有申请记录将被删除，剩余次数保持不变。',
   cancel: '取消',
   confirmClear: '清空记录',
+  clearSelectedTitle: '清除选中的 {count} 条记录？',
+  clearSelectedDescription: '只删除勾选的记录，其余记录和剩余次数保持不变。',
+  confirmClearSelected: '清除选中记录',
+  clearedSelected: '选中记录已清除',
 };

@@ -432,6 +432,12 @@ a:hover {
     padding-right: 1em;
   }
 
+  /* Justified News lines otherwise run to the phone's edges, unlike the centered sections above. */
+  .news-feed {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+
   .a11y-panel {
     bottom: 1rem;
     right: 1rem;

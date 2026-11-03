@@ -38,7 +38,8 @@
   border-radius: 5px;
   margin-top: 10px;
 }
-.rewards-box ul {
+/* Outranks `.post-content ul`, whose 2em indent pushed the history off the box's left edge. */
+.rewards .rewards-box ul {
   list-style: none;
   padding: 0;
 }
@@ -179,27 +180,47 @@
   border: 0;
   padding-bottom: 0.3em;
 }
+/* Admin and dialog buttons share the login button's flat shape in a muted retro Hong Kong and
+   Taiwan palette, apart from the green submit and orange login; white text passes 4.5:1 on each. */
+.rewards-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .rewards[data-provider='firebase'] :where(.rewards-admin-actions) button {
   font-size: 1em;
   font-weight: 400;
-  color: #000;
-  background: #efefef;
+  color: #fff;
+  background: #5a5a5a;
   margin: 0;
-  padding: 1px 6px;
-  border: 2px outset #000;
-  border-radius: 0;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 5px;
 }
 .rewards[data-provider='firebase'] [data-card-action='increase'] {
-  background: #388e3c;
+  background: #4a7c7e;
 }
-.rewards[data-provider='firebase'] [data-card-action='decrease'] {
-  background: #d32f2f;
+.rewards[data-provider='firebase'] :is([data-card-action='decrease'], [data-card-confirm-clear]) {
+  background: #8e3b3b;
 }
 .rewards[data-provider='firebase'] [data-card-action='reset'] {
-  background: #1976d2;
+  background: #3d5a80;
 }
 .rewards[data-provider='firebase'] [data-card-clear] {
-  background: #616161;
+  background: #7a5c45;
+}
+.rewards-box li label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.rewards-box li input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
 }
 .rewards[data-provider='firebase'] .rewards-dialog {
   background: #fff;
