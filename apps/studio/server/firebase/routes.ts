@@ -122,13 +122,27 @@ firebaseCard.put(prefix + '/admin/balance', async (c) => {
 });
 firebaseCard.delete(prefix + '/admin/requests', async (c) => {
   const body = z
-    .object({ expectedRevision: revision })
+    .object({
+      expectedRevision: revision,
+      ids: z
+        .array(z.string().regex(/^[a-zA-Z0-9_-]{1,128}$/))
+        .min(1)
+        .max(10000)
+        .optional(),
+    })
     .strict()
     .parse(await c.req.json());
   const state = await changeFirebaseState(c.env, (state) => {
     if (state.revision !== body.expectedRevision)
       throw new FirebaseCardError('次数或记录已经变化，请刷新后重试', 409);
-    return { ...state, requests: null, revision: state.revision + 1 };
+    // Without ids every record is cleared; the revision check pins ids to the list the administrator saw.
+    const selected = new Set(body.ids);
+    const kept = body.ids ? Object.entries(state.requests || {}).filter(([id]) => !selected.has(id)) : [];
+    return {
+      ...state,
+      requests: kept.length ? Object.fromEntries(kept) : null,
+      revision: state.revision + 1,
+    };
   });
   return c.json(publicFirebaseState(state));
 });

@@ -47,7 +47,7 @@ export function FirebaseCardAdmin({ preview }: { preview: boolean }) {
         <h2 data-heading-level="3" className="rewards-heading" id="firebase-clear-title">
           {copy.clearTitle}
         </h2>
-        <p>{copy.clearDescription}</p>
+        <p data-card-clear-description>{copy.clearDescription}</p>
         <div className="rewards-admin-actions">
           <button type="button" data-card-cancel>
             {copy.cancel}

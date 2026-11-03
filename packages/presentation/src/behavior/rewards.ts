@@ -1,5 +1,5 @@
 import { initFirebaseAdmin } from './firebase-admin';
-export type CardState = { remaining: number; revision: number; requests: { text: string }[] };
+export type CardState = { remaining: number; revision: number; requests: { id?: string; text: string }[] };
 export function initRewards(root: HTMLElement) {
   if (root.dataset.preview === 'true') return () => {};
   const abort = new AbortController();
@@ -14,10 +14,23 @@ export function initRewards(root: HTMLElement) {
     current = state;
     root.querySelector('[data-rewards-balance]')!.textContent = String(state.remaining);
     const history = root.querySelector('[data-rewards-history]')!;
+    // Signed-in Firebase administrators tick records to clear; ticks survive re-renders.
+    const selectable = firebase && root.hasAttribute('data-admin');
+    const checked = new Set(
+      [...history.querySelectorAll<HTMLInputElement>('input:checked')].map((box) => box.value),
+    );
     history.replaceChildren(
       ...state.requests.map((request) => {
         const li = document.createElement('li');
-        li.textContent = request.text;
+        if (selectable && request.id) {
+          const label = document.createElement('label');
+          const box = document.createElement('input');
+          box.type = 'checkbox';
+          box.value = request.id;
+          box.checked = checked.has(request.id);
+          label.replaceChildren(box, request.text);
+          li.appendChild(label);
+        } else li.textContent = request.text;
         return li;
       }),
     );
